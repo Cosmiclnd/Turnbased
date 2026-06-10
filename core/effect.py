@@ -137,12 +137,12 @@ class ModifierEffect(CommonEffect):
     def __init__(self, nameid, name, id, type, duration, duration_type, max_stacks, modifier, stat):
         super().__init__(nameid, name, id, type, duration, duration_type, max_stacks)
         self.modifier = modifier
-        self.desc = modifier.stat_desc.desc
+        self.stat_desc = modifier.stat_desc.scale(1)
         self.stat = stat
     
     def refresh(self, target):
         stacks = self.get_stacks()
-        self.modifier.stat_desc.desc = self.desc * stacks
+        self.modifier.stat_desc = self.stat_desc.scale(stacks)
         if self.target is not None and  self.modifier not in self.stat.modifiers:
             self.stat.modifiers.append(self.modifier)
         if self.target is None and self.modifier in self.stat.modifiers:

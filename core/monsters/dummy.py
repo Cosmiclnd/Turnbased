@@ -16,8 +16,9 @@ class Dummy(target.Monster):
             if self is not skill:
                 return
             t = self.get_target()
-            dmg = damage.Damage(self.target, t, self.target.stats["atk"], None, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
-            dmg.factors[damage.DamageFactorType.MULTIPLIER] = 0
+            dmg = damage.Damage(self.target, t,
+                modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, 0)),
+                None, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = 10
             await battle.current.event_bus.dispatch("attack", dmg)
 

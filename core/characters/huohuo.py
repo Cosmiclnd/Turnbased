@@ -19,8 +19,9 @@ class Huohuo(target.Character):
                 return
             level = self.level + self.bonus_level
             t = self.get_main_target()
-            dmg = damage.Damage(self.target, t, self.target.stats["hp"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
-            dmg.factors[damage.DamageFactorType.MULTIPLIER] = 0.2 + 0.05 * level
+            dmg = damage.Damage(self.target, t,
+                modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, 0.2 + 0.05 * level)),
+                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, 10, self.target.element)
             dmg.energy_regen = 20
             await battle.current.event_bus.dispatch("attack", dmg)

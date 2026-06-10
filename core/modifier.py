@@ -1,9 +1,12 @@
 import item
+import enums
 
-class ModifierFilter:
-    BASE = 0
-    SELF_CONVERSION = 1
-    CALCULATED = 2
+class ModifierFilter(enums.Enum):
+    BASE = item.Item("base", "Base")
+    SELF_CONVERSION = item.Item("self_conversion", "Self Conversion")
+    CALCULATED = item.Item("calculated", "Calculated")
+    ALL = (BASE, SELF_CONVERSION, CALCULATED)
+ModifierFilter.init()
 
 class Stat:
     __slots__ = ("name", "target", "base_value", "calculated_value", "modifiers")
@@ -34,14 +37,17 @@ class StatDesc:
         # stat为None时value作为offset，此时filter也为None
         # stat不为None时value作为scale
     
-    def calculate(self):
+    def calculate(self, **kwargs):
         result = 0
         for stat, filter, value in self.desc:
             if stat is None:
                 result += value
             else:
-                result += stat.calculate(filter) * value
+                result += stat.calculate(filter, **kwargs) * value
         return result
+    
+    def scale(self, scale):
+        return StatDesc(tuple((stat, filter, value * scale) for stat, filter, value in self.desc))
     
     def calcutale_self_conversion(self, target_stat):
         # 只计算自身转化得到的值

@@ -1,3 +1,4 @@
-*.pyc
 *.log
-.vscode
+.vscode/
+utilities/output/
+__pycache__/

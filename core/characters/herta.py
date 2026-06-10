@@ -19,16 +19,18 @@ class Herta(target.Character):
                 return
             level = self.level + self.bonus_level
             t = self.get_main_target()
-            dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
-            dmg.factors[damage.DamageFactorType.MULTIPLIER] = 0.4 + 0.1 * level
+            dmg = damage.Damage(self.target, t,
+                modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, 0.4 + 0.1 * level)),
+                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, 10, self.target.element)
             dmg.energy_regen = 20
             await battle.current.event_bus.dispatch("attack", dmg)
             if self.target.eidolons >= 1:
                 hp = t.stats["hp"].calculate()
                 if t.cur_hp <= hp * 0.5:
-                    dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATTACK)
-                    dmg.factors[damage.DamageFactorType.MULTIPLIER] = 0.4
+                    dmg = damage.Damage(self.target, t,
+                        modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, 0.4)),
+                        self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATTACK)
                     await battle.current.event_bus.dispatch("deal_damage", dmg)
 
     class Skill(target.Character.CharacterSkill):
@@ -43,8 +45,9 @@ class Herta(target.Character):
             level = self.level + self.bonus_level
             mult = (0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8125, 0.875, 0.9375, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25)[level - 1]
             for t in battle.current.monsters[:]:
-                dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-                dmg.factors[damage.DamageFactorType.MULTIPLIER] = mult
+                dmg = damage.Damage(self.target, t,
+                    modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, mult)),
+                    self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, 10, self.target.element)
                 dmg.energy_regen = 30 / len(battle.current.monsters)
                 dmg.hit_split = (0.3, 0.7)
@@ -68,8 +71,9 @@ class Herta(target.Character):
             level = self.level + self.bonus_level
             mult = (1.2, 1.28, 1.36, 1.44, 1.52, 1.6, 1.7, 1.8, 1.9, 2, 2.08, 2.16, 2.24, 2.32, 2.4)[level - 1]
             for t in battle.current.monsters[:]:
-                dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
-                dmg.factors[damage.DamageFactorType.MULTIPLIER] = mult
+                dmg = damage.Damage(self.target, t,
+                    modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, mult)),
+                    self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, 20, self.target.element)
                 dmg.energy_regen = 5 / len(battle.current.monsters)
                 if self.target.traces_unlocked[2] and t.frozen:
@@ -113,7 +117,9 @@ class Herta(target.Character):
                 i = 0
                 while i < self.attacks:
                     for t in battle.current.monsters[:]:
-                        dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
+                        dmg = damage.Damage(self.target, t,
+                            modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, 1)),
+                            self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
                         dmg.factors[damage.DamageFactorType.MULTIPLIER] = mult
                         dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, 5, self.target.element)
                         dmg.energy_regen = 5 / len(battle.current.monsters)

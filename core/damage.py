@@ -77,7 +77,7 @@ def mitigation_factor_base_func(dmg):
 def break_eff_base_func(dmg):
     return dmg.dealer.stats["break_eff"].calculate(damage=dmg)
 
-DamageFactorType.MULTIPLIER = DamageFactorType(lambda dmg, value: value, multiplier_base_func)
+DamageFactorType.MULTIPLIER = DamageFactorType(lambda dmg, value: value, multiplier_base_func)  # 特指击破的倍率
 DamageFactorType.CRIT = DamageFactorType(crit_factor_func, crit_factor_base_func)
 DamageFactorType.DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, dmg_boost_base_func)
 DamageFactorType.WEAKEN = DamageFactorType(lambda dmg, value: 1 - value, lambda dmg: 0)
@@ -90,10 +90,13 @@ DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, brea
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
 
 class Damage:
-    def __init__(self, dealer, t, stat, element, types, source):
+    def __init__(self, dealer, t, stat_desc, element, types, source):
         self.dealer = dealer
         self.target = t
-        self.stat = stat
+        self.stat_desc = stat_desc
+        # temp
+        if type(stat_desc) is not modifier.StatDesc:
+            raise TypeError
         self.element = element
         self.types = types if isinstance(types, tuple) else (types,)
         self.source = source
@@ -105,7 +108,6 @@ class Damage:
 
         if self.has_types(DmgType.NORMAL, DmgType.ADDITIONAL):
             for factor in (
-                DamageFactorType.MULTIPLIER,
                 DamageFactorType.DMG_BOOST,
                 DamageFactorType.WEAKEN,
                 DamageFactorType.DEFENCE,
@@ -140,7 +142,7 @@ class Damage:
         self.factors[factor] = factor.base_func(self)
     
     def calculate(self):
-        damage = self.stat.calculate(damage=self)
+        damage = self.stat_desc.calculate(damage=self)
         for factor, value in self.factors.items():
             damage *= factor.func(self, value)
         self.damage = damage
@@ -155,19 +157,17 @@ class Damage:
         if self.hit_split is None:
             await battle.current.event_bus.dispatch("hit", self)
         else:
-            mult = self.factors[DamageFactorType.MULTIPLIER]
             toughness_reduction = self.toughness_reduction.base_amount if self.toughness_reduction is not None else None
             energy_regen = self.energy_regen
             for rate in self.hit_split:
                 dmg = copy.copy(self)
+                dmg.stat_desc = self.stat_desc.scale(rate)
                 dmg.hit_split = None
-                dmg.factors[DamageFactorType.MULTIPLIER] = mult * rate
                 if dmg.toughness_reduction is not None:
                     dmg.toughness_reduction.base_amount = toughness_reduction * rate
                 if dmg.energy_regen is not None:
                     dmg.energy_regen = energy_regen * rate
                 await battle.current.event_bus.dispatch("hit", dmg)
-            self.factors[DamageFactorType.MULTIPLIER] = mult
             if toughness_reduction is not None:
                 self.toughness_reduction.base_amount = toughness_reduction
             self.energy_regen = energy_regen

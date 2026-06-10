@@ -362,12 +362,16 @@ class Character(Target):
     async def break_weakness(self, tr):
         if self is not tr.dealer:
             return
-        dmg = damage.Damage(self, tr.target, self.stats["base_break_dmg"], self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+        dmg = damage.Damage(self, tr.target,
+            modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
+            self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
         await battle.current.event_bus.dispatch("deal_damage", dmg)
         Target.NormalTurn.delay_target(tr.target, 0.25)
         if self.element is enums.Element.ICE:
-            dmg = damage.Damage(self, tr.target, self.stats["base_break_dmg"], self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
-            dmg.factors[damage.DamageFactorType.MULTIPLIER] = 1
+            dmg = damage.Damage(self, tr.target,
+                modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
+                self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+            del dmg.factors[damage.DamageFactorType.MULTIPLIER]  # 击破造成的附加伤害没有击破倍率
             dmg.types = (damage.DmgType.ADDITIONAL, damage.DmgType.BREAK)  # 附加伤害类型是副类型，单独设置
             await self.try_apply_debuff(tr.target, effect.FrozenEffect(1, dmg), 1.5)
     
