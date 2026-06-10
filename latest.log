@@ -1,0 +1,2914 @@
+2026-05-30 19:48:35 [INFO] Hello world! from Turnbased
+2026-05-30 19:48:35 [INFO] server listening on [::1]:55716
+2026-05-30 19:48:35 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 19:48:37 [INFO] connection open
+2026-05-30 19:48:37 [ERROR] unhashable type: 'list'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 142, in __init__
+    super().__init__("herta", "Herta", enums.Element.ICE, enums.Path.ERUDITION)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 179, in __init__
+    super().__init__(nameid, name, None)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 53, in __init__
+    self.stats.new_stats(stat_names)
+  File "d:\Cosmicland\Turnbased\core\modifier.py", line 26, in new_stats
+    self[name] = Stat(name)
+    ~~~~^^^^^^
+TypeError: unhashable type: 'list'
+2026-05-30 19:48:37 [ERROR] Event stack (most recent dispatch last):
+2026-05-30 19:48:37 [INFO] server closing
+2026-05-30 19:49:29 [INFO] Hello world! from Turnbased
+2026-05-30 19:49:29 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 19:49:29 [INFO] server listening on [::1]:55716
+2026-05-30 19:49:31 [INFO] connection open
+2026-05-30 19:49:35 [ERROR] name 'prnt' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 126, in action_unit_trigger
+    await battle.current.event_bus.dispatch("attack", damage.Damage(self.target, t, "atk", mult))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 101, in attack
+    await battle.current.event_bus.dispatch("deal_damage", damage)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 110, in receive_damage
+    await battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 124, in check_death
+    prnt(f"{self.name} is dead!")
+    ^^^^
+NameError: name 'prnt' is not defined. Did you mean: 'print'?
+2026-05-30 19:49:35 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  deal_damage -> Baryon (baryon)
+  cur_hp_modify -> Baryon (baryon)
+2026-05-30 19:49:35 [INFO] server closing
+2026-05-30 19:49:52 [INFO] Hello world! from Turnbased
+2026-05-30 19:49:52 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 19:49:52 [INFO] server listening on [::1]:55716
+2026-05-30 19:49:54 [INFO] connection open
+2026-05-30 19:50:16 [WARNING] No listener for event regen_energy
+2026-05-30 19:50:16 [INFO] connection closed
+2026-05-30 21:43:02 [INFO] Hello world! from Turnbased
+2026-05-30 21:43:03 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:43:03 [INFO] server listening on [::1]:55716
+2026-05-30 21:43:06 [INFO] connection open
+2026-05-30 21:43:09 [ERROR] Damage.__init__() missing 1 required positional argument: 'type'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 88, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 342, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\monsters\dummy.py", line 18, in skill_trigger
+    dmg = damage.Damage(self, t, "atk", 0)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Damage.__init__() missing 1 required positional argument: 'type'
+2026-05-30 21:43:09 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Dummy (dummy)
+  normal_turn -> Dummy (dummy)
+  skill_group_trigger -> Dummy (dummy)
+  skill_trigger -> Dummy (dummy)
+2026-05-30 21:43:09 [INFO] server closing
+2026-05-30 21:44:21 [INFO] Hello world! from Turnbased
+2026-05-30 21:44:21 [INFO] server listening on [::1]:55716
+2026-05-30 21:44:21 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:44:23 [INFO] connection open
+2026-05-30 21:44:23 [ERROR] name 'skill' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 22, in handle_message
+    monster = target.load_class("monsters", message["name"])(message["level"], message["moc"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\monsters\dummy.py", line 24, in __init__
+    self.skills.add(Dummy.Skill(self))
+                    ^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\monsters\dummy.py", line 9, in __init__
+    super().__init__("dummy", "Dummy", skill.SkillType.SINGLE, t)
+                                       ^^^^^
+NameError: name 'skill' is not defined
+2026-05-30 21:44:23 [ERROR] Event stack (most recent dispatch last):
+2026-05-30 21:44:23 [INFO] server closing
+2026-05-30 21:44:40 [INFO] Hello world! from Turnbased
+2026-05-30 21:44:40 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:44:40 [INFO] server listening on [::1]:55716
+2026-05-30 21:44:41 [INFO] connection open
+2026-05-30 21:44:43 [ERROR] 'Skill' object has no attribute 'stats'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 88, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 342, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\monsters\dummy.py", line 19, in skill_trigger
+    dmg = damage.Damage(self, t, self.target.stats["atk"], None, enums.DmgType.NORMAL)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 70, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 88, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 20, in dmg_boost_base_func
+    value = dmg.dealer.stats["dmg_boost"].calculate(damage=dmg)
+            ^^^^^^^^^^^^^^^^
+AttributeError: 'Skill' object has no attribute 'stats'
+2026-05-30 21:44:43 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Dummy (dummy)
+  normal_turn -> Dummy (dummy)
+  skill_group_trigger -> Dummy (dummy)
+  skill_trigger -> Dummy (dummy)
+2026-05-30 21:44:43 [INFO] server closing
+2026-05-30 21:44:59 [INFO] Hello world! from Turnbased
+2026-05-30 21:44:59 [INFO] server listening on [::1]:55716
+2026-05-30 21:44:59 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:45:00 [INFO] connection open
+2026-05-30 21:45:01 [ERROR] 'Herta' object has no attribute 'Character'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 88, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 342, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\monsters\dummy.py", line 19, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], None, enums.DmgType.NORMAL)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 71, in __init__
+    if isinstance(self.dealer, target.Character):
+                               ^^^^^^^^^^^^^^^^
+AttributeError: 'Herta' object has no attribute 'Character'
+2026-05-30 21:45:01 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Dummy (dummy)
+  normal_turn -> Dummy (dummy)
+  skill_group_trigger -> Dummy (dummy)
+  skill_trigger -> Dummy (dummy)
+2026-05-30 21:45:01 [INFO] server closing
+2026-05-30 21:45:18 [INFO] Hello world! from Turnbased
+2026-05-30 21:45:18 [INFO] server listening on [::1]:55716
+2026-05-30 21:45:18 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:45:20 [INFO] connection open
+2026-05-30 21:45:25 [ERROR] Damage.__init__() missing 1 required positional argument: 'type'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 130, in action_unit_trigger
+    await battle.current.event_bus.dispatch("attack", damage.Damage(self.target, t, "atk", mult))
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Damage.__init__() missing 1 required positional argument: 'type'
+2026-05-30 21:45:25 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+2026-05-30 21:45:25 [INFO] server closing
+2026-05-30 21:45:56 [INFO] Hello world! from Turnbased
+2026-05-30 21:45:56 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:45:56 [INFO] server listening on [::1]:55716
+2026-05-30 21:45:59 [INFO] connection open
+2026-05-30 21:46:03 [ERROR] Damage.__init__() missing 1 required positional argument: 'type'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 130, in action_unit_trigger
+    await battle.current.event_bus.dispatch("attack", damage.Damage(self.target, t, "atk", mult))
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Damage.__init__() missing 1 required positional argument: 'type'
+2026-05-30 21:46:03 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+2026-05-30 21:46:03 [INFO] server closing
+2026-05-30 21:47:06 [INFO] Hello world! from Turnbased
+2026-05-30 21:47:06 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:47:06 [INFO] server listening on [::1]:55716
+2026-05-30 21:47:07 [INFO] connection open
+2026-05-30 21:47:15 [ERROR] Damage.__init__() missing 1 required positional argument: 'type'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 88, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 260, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", damage.Damage(self.target, t, "atk", mult))
+                                                      ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Damage.__init__() missing 1 required positional argument: 'type'
+2026-05-30 21:47:15 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-05-30 21:47:15 [INFO] server closing
+2026-05-30 21:50:31 [INFO] Hello world! from Turnbased
+2026-05-30 21:50:31 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:50:31 [INFO] server listening on [::1]:55716
+2026-05-30 21:50:33 [INFO] connection open
+2026-05-30 21:50:35 [ERROR] name 'DamageFactorType' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 88, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 260, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 54, in skill_trigger
+    dmg.factors[DamageFactorType.MULTIPLIER] = mult
+                ^^^^^^^^^^^^^^^^
+NameError: name 'DamageFactorType' is not defined
+2026-05-30 21:50:35 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-05-30 21:50:35 [INFO] server closing
+2026-05-30 21:50:51 [INFO] Hello world! from Turnbased
+2026-05-30 21:50:51 [INFO] server listening on [::1]:55716
+2026-05-30 21:50:51 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:50:53 [INFO] connection open
+2026-05-30 21:51:11 [WARNING] No listener for event regen_energy
+2026-05-30 21:51:11 [INFO] connection closed
+2026-05-30 21:51:22 [INFO] connection open
+2026-05-30 21:51:59 [WARNING] No listener for event regen_energy
+2026-05-30 21:51:59 [INFO] connection closed
+2026-05-30 21:56:37 [INFO] Hello world! from Turnbased
+2026-05-30 21:56:37 [INFO] server listening on [::1]:55716
+2026-05-30 21:56:37 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:56:38 [INFO] connection open
+2026-05-30 21:56:48 [WARNING] No listener for event regen_energy
+2026-05-30 21:56:48 [INFO] connection closed
+2026-05-30 21:57:20 [INFO] Hello world! from Turnbased
+2026-05-30 21:57:21 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 21:57:21 [INFO] server listening on [::1]:55716
+2026-05-30 21:57:22 [INFO] connection open
+2026-05-30 21:57:27 [INFO] connection closed
+2026-05-30 22:03:38 [INFO] Hello world! from Turnbased
+2026-05-30 22:03:38 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 22:03:38 [INFO] server listening on [::1]:55716
+2026-05-30 22:03:40 [INFO] connection open
+2026-05-30 22:03:47 [WARNING] No listener for event regen_energy
+2026-05-30 22:03:47 [INFO] connection closed
+2026-05-30 22:06:17 [INFO] Hello world! from Turnbased
+2026-05-30 22:06:17 [INFO] server listening on [::1]:55716
+2026-05-30 22:06:17 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 22:06:19 [INFO] connection open
+2026-05-30 22:06:19 [ERROR] name 'offset' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 138, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 158, in set_record
+    self.lightcone.apply()
+  File "d:\Cosmicland\Turnbased\core\lightcones\the_birth_of_the_self.py", line 18, in apply
+    self.mod1 = modifier.Modifier(self.nameid, self.name, None, None, 0, offset, None, self.target)
+                                                                         ^^^^^^
+NameError: name 'offset' is not defined
+2026-05-30 22:06:19 [ERROR] Event stack (most recent dispatch last):
+2026-05-30 22:06:19 [INFO] server closing
+2026-05-30 22:06:29 [INFO] Hello world! from Turnbased
+2026-05-30 22:06:29 [INFO] server listening on [::1]:55716
+2026-05-30 22:06:29 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 22:06:30 [INFO] connection open
+2026-05-30 22:06:34 [ERROR] name 'damage' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 119, in action_unit_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 101, in attack
+    await battle.current.event_bus.dispatch("deal_damage", damage)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\lightcones\the_birth_of_the_self.py", line 24, in deal_damage
+    dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.dmg_boost
+                ^^^^^^
+NameError: name 'damage' is not defined
+2026-05-30 22:06:34 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  deal_damage -> Herta (herta)
+2026-05-30 22:06:34 [INFO] server closing
+2026-05-30 22:06:43 [INFO] Hello world! from Turnbased
+2026-05-30 22:06:43 [INFO] server listening on 127.0.0.1:55716
+2026-05-30 22:06:43 [INFO] server listening on [::1]:55716
+2026-05-30 22:06:45 [INFO] connection open
+2026-05-30 22:07:03 [INFO] connection closed
+2026-05-30 22:07:04 [INFO] connection open
+2026-05-30 22:07:13 [WARNING] No listener for event regen_energy
+2026-05-30 22:07:13 [INFO] connection closed
+2026-05-31 08:55:08 [INFO] Hello world! from Turnbased
+2026-05-31 08:55:08 [INFO] server listening on [::1]:55716
+2026-05-31 08:55:08 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 08:55:08 [INFO] connection open
+2026-05-31 08:55:57 [INFO] Hello world! from Turnbased
+2026-05-31 08:55:57 [INFO] server listening on [::1]:55716
+2026-05-31 08:55:57 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 08:55:59 [INFO] connection open
+2026-05-31 08:56:02 [ERROR] 'toughness'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 89, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 262, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("reduce_toughness", damage.ToughnessReduction(self.target, t, 30, self.target.element))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 360, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 268, in break_weakness
+    dmg = damage.Damage(self, tr.dealer, self.stats["base_break_dmg"], self.element, enums.DmgType.BREAK, enums.DmgSource.WEAKNESS_BREAK)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 101, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 104, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 13, in multiplier_base_func
+    mult = dmg.target.stats["toughness"] / 40 + 0.5
+           ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+KeyError: 'toughness'
+2026-05-31 08:56:02 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-05-31 08:56:02 [INFO] server closing
+2026-05-31 09:00:09 [INFO] Hello world! from Turnbased
+2026-05-31 09:00:09 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:00:09 [INFO] server listening on [::1]:55716
+2026-05-31 09:00:11 [INFO] connection open
+2026-05-31 09:00:13 [ERROR] unsupported operand type(s) for /: 'Stat' and 'int'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 89, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 262, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("reduce_toughness", damage.ToughnessReduction(self.target, t, 30, self.target.element))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 360, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 268, in break_weakness
+    dmg = damage.Damage(self, tr.target, self.stats["base_break_dmg"], self.element, enums.DmgType.BREAK, enums.DmgSource.WEAKNESS_BREAK)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 101, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 104, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 13, in multiplier_base_func
+    mult = dmg.target.stats["toughness"] / 40 + 0.5
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~
+TypeError: unsupported operand type(s) for /: 'Stat' and 'int'
+2026-05-31 09:00:13 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-05-31 09:00:13 [INFO] server closing
+2026-05-31 09:00:41 [INFO] Hello world! from Turnbased
+2026-05-31 09:00:41 [INFO] server listening on [::1]:55716
+2026-05-31 09:00:41 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:00:42 [INFO] connection open
+2026-05-31 09:00:46 [ERROR] 'int' object is not callable
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 89, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 262, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("reduce_toughness", damage.ToughnessReduction(self.target, t, 30, self.target.element))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 360, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 268, in break_weakness
+    dmg = damage.Damage(self, tr.target, self.stats["base_break_dmg"], self.element, enums.DmgType.BREAK, enums.DmgSource.WEAKNESS_BREAK)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 101, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 104, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+TypeError: 'int' object is not callable
+2026-05-31 09:00:46 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-05-31 09:00:46 [INFO] server closing
+2026-05-31 09:01:04 [INFO] Hello world! from Turnbased
+2026-05-31 09:01:04 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:01:04 [INFO] server listening on [::1]:55716
+2026-05-31 09:01:05 [INFO] connection open
+2026-05-31 09:01:14 [INFO] connection closed
+2026-05-31 09:02:02 [INFO] Hello world! from Turnbased
+2026-05-31 09:02:02 [INFO] server listening on [::1]:55716
+2026-05-31 09:02:02 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:02:04 [INFO] connection open
+2026-05-31 09:02:04 [ERROR] 'float' object has no attribute 'type'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 89, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 345, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\monsters\dummy.py", line 21, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 102, in attack
+    await battle.current.event_bus.dispatch("deal_damage", damage)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 109, in receive_damage
+    message = {"type": "deal_damage", "dealer": damage.dealer.get_info(), "target": self.get_info(), "amount": dmg, "dmg_type": dmg.type.nameid}
+                                                                                                                                ^^^^^^^^
+AttributeError: 'float' object has no attribute 'type'
+2026-05-31 09:02:04 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Dummy (dummy)
+  normal_turn -> Dummy (dummy)
+  skill_group_trigger -> Dummy (dummy)
+  skill_trigger -> Dummy (dummy)
+  attack -> Dummy (dummy)
+  deal_damage -> Herta (herta)
+2026-05-31 09:02:04 [INFO] server closing
+2026-05-31 09:02:19 [INFO] Hello world! from Turnbased
+2026-05-31 09:02:19 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:02:19 [INFO] server listening on [::1]:55716
+2026-05-31 09:02:22 [INFO] connection open
+2026-05-31 09:02:26 [INFO] connection closed
+2026-05-31 09:04:04 [INFO] Hello world! from Turnbased
+2026-05-31 09:04:04 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:04:04 [INFO] server listening on [::1]:55716
+2026-05-31 09:04:05 [INFO] connection open
+2026-05-31 09:04:06 [INFO] connection closed
+2026-05-31 09:04:47 [INFO] Hello world! from Turnbased
+2026-05-31 09:04:47 [INFO] server listening on [::1]:55716
+2026-05-31 09:04:47 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:04:49 [INFO] connection open
+2026-05-31 09:05:02 [INFO] connection closed
+2026-05-31 09:05:31 [INFO] Hello world! from Turnbased
+2026-05-31 09:05:31 [INFO] server listening on [::1]:55716
+2026-05-31 09:05:31 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 09:05:33 [INFO] connection open
+2026-05-31 09:06:06 [WARNING] No listener for event regen_energy
+2026-05-31 09:06:06 [INFO] connection closed
+2026-05-31 11:13:38 [INFO] Hello world! from Turnbased
+2026-05-31 11:13:38 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 11:13:38 [INFO] server listening on [::1]:55716
+2026-05-31 11:13:40 [INFO] connection open
+2026-05-31 11:13:49 [WARNING] No listener for event regen_energy
+2026-05-31 11:13:49 [INFO] connection closed
+2026-05-31 11:14:29 [INFO] Hello world! from Turnbased
+2026-05-31 11:14:29 [INFO] server listening on [::1]:55716
+2026-05-31 11:14:29 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 11:14:30 [INFO] connection open
+2026-05-31 11:14:45 [WARNING] No listener for event regen_energy
+2026-05-31 11:14:45 [INFO] connection closed
+2026-05-31 11:14:57 [INFO] connection open
+2026-05-31 11:15:05 [WARNING] No listener for event regen_energy
+2026-05-31 11:15:05 [INFO] connection closed
+2026-05-31 12:02:51 [INFO] Hello world! from Turnbased
+2026-05-31 12:02:51 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:02:51 [INFO] server listening on [::1]:55716
+2026-05-31 12:02:53 [INFO] connection open
+2026-05-31 12:02:56 [WARNING] No listener for event regen_energy
+2026-05-31 12:02:56 [INFO] connection closed
+2026-05-31 12:06:40 [INFO] Hello world! from Turnbased
+2026-05-31 12:06:40 [INFO] server listening on [::1]:55716
+2026-05-31 12:06:40 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:06:41 [INFO] connection open
+2026-05-31 12:06:45 [ERROR] name 't' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 91, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\effect.py", line 108, in turn_start
+    self.advance_turn()
+  File "d:\Cosmicland\Turnbased\core\effect.py", line 102, in advance_turn
+    self.refresh(t)
+                 ^
+NameError: name 't' is not defined
+2026-05-31 12:06:45 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Baryon (baryon)
+  normal_turn -> Frozen (frozen)
+2026-05-31 12:06:45 [INFO] server closing
+2026-05-31 12:07:31 [INFO] Hello world! from Turnbased
+2026-05-31 12:07:31 [INFO] server listening on [::1]:55716
+2026-05-31 12:07:31 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:07:33 [INFO] connection open
+2026-05-31 12:07:38 [WARNING] No listener for event regen_energy
+2026-05-31 12:07:38 [INFO] connection closed
+2026-05-31 12:08:32 [INFO] Hello world! from Turnbased
+2026-05-31 12:08:32 [INFO] server listening on [::1]:55716
+2026-05-31 12:08:32 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:08:34 [INFO] connection open
+2026-05-31 12:08:36 [ERROR] 'Battle' object has no attribute 'action_units'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 91, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 356, in normal_turn
+    for unit in battle.current.action_units:
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'Battle' object has no attribute 'action_units'. Did you mean: 'action_list'?
+2026-05-31 12:08:36 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Baryon (baryon)
+  normal_turn -> Baryon (baryon)
+2026-05-31 12:08:36 [INFO] server closing
+2026-05-31 12:08:49 [INFO] Hello world! from Turnbased
+2026-05-31 12:08:49 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:08:49 [INFO] server listening on [::1]:55716
+2026-05-31 12:08:50 [INFO] connection open
+2026-05-31 12:08:52 [ERROR] name 'target' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 91, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 357, in normal_turn
+    if isinstance(unit, Target.NormalTurn) and self is target.unit:
+                                                       ^^^^^^
+NameError: name 'target' is not defined. Did you mean: 'Target'?
+2026-05-31 12:08:52 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Baryon (baryon)
+  normal_turn -> Baryon (baryon)
+2026-05-31 12:08:52 [INFO] server closing
+2026-05-31 12:09:02 [INFO] Hello world! from Turnbased
+2026-05-31 12:09:02 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:09:02 [INFO] server listening on [::1]:55716
+2026-05-31 12:09:11 [INFO] connection open
+2026-05-31 12:09:20 [WARNING] No listener for event regen_energy
+2026-05-31 12:09:20 [INFO] connection closed
+2026-05-31 12:09:38 [INFO] connection open
+2026-05-31 12:09:51 [WARNING] No listener for event regen_energy
+2026-05-31 12:09:51 [INFO] connection closed
+2026-05-31 12:11:11 [INFO] Hello world! from Turnbased
+2026-05-31 12:11:11 [INFO] server listening on [::1]:55716
+2026-05-31 12:11:11 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:11:12 [INFO] connection open
+2026-05-31 12:11:19 [WARNING] No listener for event regen_energy
+2026-05-31 12:11:19 [INFO] connection closed
+2026-05-31 12:29:20 [INFO] Hello world! from Turnbased
+2026-05-31 12:29:20 [INFO] server listening on [::1]:55716
+2026-05-31 12:29:20 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:29:21 [INFO] connection open
+2026-05-31 12:29:23 [ERROR] module 'effect' has no attribute 'Frozen'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 106, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 282, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("reduce_toughness", damage.ToughnessReduction(self.target, t, 30, self.target.element))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 385, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 291, in break_weakness
+    await self.try_apply_debuff(tr.target, effect.Frozen(1), 1.5)
+                                           ^^^^^^^^^^^^^
+AttributeError: module 'effect' has no attribute 'Frozen'
+2026-05-31 12:29:23 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-05-31 12:29:23 [INFO] server closing
+2026-05-31 12:29:37 [INFO] Hello world! from Turnbased
+2026-05-31 12:29:37 [INFO] server listening on [::1]:55716
+2026-05-31 12:29:37 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:29:38 [INFO] connection open
+2026-05-31 12:29:40 [ERROR] name 'target' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 106, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 282, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("reduce_toughness", damage.ToughnessReduction(self.target, t, 30, self.target.element))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 385, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 291, in break_weakness
+    await self.try_apply_debuff(tr.target, effect.FrozenEffect(1), 1.5)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 89, in try_apply_debuff
+    chance *= 1 - target.stats["eff_res"].calculate(effect=debuff)
+                  ^^^^^^
+NameError: name 'target' is not defined. Did you mean: 'Target'?
+2026-05-31 12:29:40 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-05-31 12:29:40 [INFO] server closing
+2026-05-31 12:29:50 [INFO] Hello world! from Turnbased
+2026-05-31 12:29:50 [INFO] server listening on [::1]:55716
+2026-05-31 12:29:50 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:29:52 [INFO] connection open
+2026-05-31 12:29:56 [WARNING] No listener for event regen_energy
+2026-05-31 12:29:56 [INFO] connection closed
+2026-05-31 12:38:12 [INFO] Hello world! from Turnbased
+2026-05-31 12:38:12 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:38:12 [INFO] server listening on [::1]:55716
+2026-05-31 12:38:14 [INFO] connection open
+2026-05-31 12:38:15 [ERROR] <damage.DamageFactorType object at 0x000002A365ADDA00>
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 106, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 279, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 49, in skill_trigger
+    dmg.factors[damage.DamageFactorType.DMG_BOOST] += 0.2
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: <damage.DamageFactorType object at 0x000002A365ADDA00>
+2026-05-31 12:38:15 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-05-31 12:38:15 [INFO] server closing
+2026-05-31 12:39:13 [INFO] Hello world! from Turnbased
+2026-05-31 12:39:13 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:39:13 [INFO] server listening on [::1]:55716
+2026-05-31 12:39:16 [INFO] connection open
+2026-05-31 12:39:17 [ERROR] 'Damage' object has no attribute 'type'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 106, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 279, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 52, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 119, in attack
+    await battle.current.event_bus.dispatch("deal_damage", damage)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 126, in receive_damage
+    message = {"type": "deal_damage", "dealer": damage.dealer.get_info(), "target": self.get_info(), "amount": dmg, "dmg_type": damage.type.get_info()}
+                                                                                                                                ^^^^^^^^^^^
+AttributeError: 'Damage' object has no attribute 'type'. Did you mean: 'types'?
+2026-05-31 12:39:17 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  deal_damage -> Baryon (baryon)
+2026-05-31 12:39:17 [INFO] server closing
+2026-05-31 12:39:58 [INFO] Hello world! from Turnbased
+2026-05-31 12:39:58 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:39:58 [INFO] server listening on [::1]:55716
+2026-05-31 12:39:59 [INFO] connection open
+2026-05-31 12:40:00 [ERROR] unsupported operand type(s) for *: 'Stat' and 'int'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 106, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 279, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 53, in skill_trigger
+    await battle.current.event_bus.dispatch("reduce_toughness", damage.ToughnessReduction(self.target, t, 30, self.target.element))
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 381, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 288, in break_weakness
+    dmg = damage.Damage(self, tr.target, self.stats["break_eff"] * tr.calculate(), self.element, (enums.DmgType.ADDITIONAL, enums.DmgType.BREAK), enums.DmgSource.WEAKNESS_BREAK)
+                                         ~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~
+TypeError: unsupported operand type(s) for *: 'Stat' and 'int'
+2026-05-31 12:40:00 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-05-31 12:40:00 [INFO] server closing
+2026-05-31 12:40:26 [INFO] Hello world! from Turnbased
+2026-05-31 12:40:26 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:40:26 [INFO] server listening on [::1]:55716
+2026-05-31 12:40:28 [INFO] connection open
+2026-05-31 12:40:31 [ERROR] name 'Target' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 106, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\effect.py", line 157, in turn_end
+    Target.NormalTurn.advance_target(t, 0.5)
+    ^^^^^^
+NameError: name 'Target' is not defined
+2026-05-31 12:40:31 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Baryon (baryon)
+  normal_turn -> Frozen (frozen)
+2026-05-31 12:40:31 [INFO] server closing
+2026-05-31 12:40:53 [INFO] Hello world! from Turnbased
+2026-05-31 12:40:53 [INFO] server listening on 127.0.0.1:55716
+2026-05-31 12:40:53 [INFO] server listening on [::1]:55716
+2026-05-31 12:40:55 [INFO] connection open
+2026-05-31 12:41:04 [WARNING] No listener for event regen_energy
+2026-05-31 12:41:04 [INFO] connection closed
+2026-06-06 09:04:39 [INFO] Hello world! from Turnbased
+2026-06-06 09:04:39 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:04:39 [INFO] server listening on [::1]:55716
+2026-06-06 09:04:41 [INFO] connection open
+2026-06-06 09:04:52 [WARNING] No listener for event regen_energy
+2026-06-06 09:04:52 [INFO] connection closed
+2026-06-06 09:19:00 [INFO] Hello world! from Turnbased
+2026-06-06 09:19:00 [INFO] server listening on [::1]:55716
+2026-06-06 09:19:00 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:19:02 [INFO] connection open
+2026-06-06 09:19:04 [ERROR] 'NoneType' object is not iterable
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 287, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 54, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 120, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 132, in on_attack
+    for rate in self.hit_split:
+                ^^^^^^^^^^^^^^
+TypeError: 'NoneType' object is not iterable
+2026-06-06 09:19:04 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+2026-06-06 09:19:04 [INFO] server closing
+2026-06-06 09:19:24 [INFO] Hello world! from Turnbased
+2026-06-06 09:19:24 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:19:24 [INFO] server listening on [::1]:55716
+2026-06-06 09:19:26 [INFO] connection open
+2026-06-06 09:19:28 [ERROR] 'Damage' object has no attribute 'trigger'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 287, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 54, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 120, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 130, in on_attack
+    await battle.current.event_bus.dispatch("hit", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 126, in hit
+    await damage.on_hit()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 143, in on_hit
+    await battle.current.event_bus.dispatch("deal_damage", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 136, in receive_damage
+    await damage.trigger()
+          ^^^^^^^^^^^^^^
+AttributeError: 'Damage' object has no attribute 'trigger'
+2026-06-06 09:19:28 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  hit -> Baryon (baryon)
+  deal_damage -> Baryon (baryon)
+2026-06-06 09:19:28 [INFO] server closing
+2026-06-06 09:21:00 [INFO] Hello world! from Turnbased
+2026-06-06 09:21:00 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:21:00 [INFO] server listening on [::1]:55716
+2026-06-06 09:21:02 [INFO] connection open
+2026-06-06 09:21:40 [INFO] connection closed
+2026-06-06 09:22:45 [INFO] Hello world! from Turnbased
+2026-06-06 09:22:45 [INFO] server listening on [::1]:55716
+2026-06-06 09:22:45 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:22:47 [INFO] connection open
+2026-06-06 09:22:49 [ERROR] <damage.DamageFactorType object at 0x0000017126137320>
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 55, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 120, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 135, in on_attack
+    dmg.factors[DamageFactorType.MULTIPLIER] *= rate
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: <damage.DamageFactorType object at 0x0000017126137320>
+2026-06-06 09:22:49 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+2026-06-06 09:22:49 [INFO] server closing
+2026-06-06 09:24:38 [INFO] Hello world! from Turnbased
+2026-06-06 09:24:38 [INFO] server listening on [::1]:55716
+2026-06-06 09:24:38 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:24:39 [INFO] connection open
+2026-06-06 09:24:47 [WARNING] No listener for event regen_energy
+2026-06-06 09:24:47 [INFO] connection closed
+2026-06-06 09:25:34 [INFO] Hello world! from Turnbased
+2026-06-06 09:25:34 [INFO] server listening on [::1]:55716
+2026-06-06 09:25:34 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:25:36 [INFO] connection open
+2026-06-06 09:25:46 [WARNING] No listener for event regen_energy
+2026-06-06 09:25:46 [INFO] connection closed
+2026-06-06 09:29:05 [INFO] Hello world! from Turnbased
+2026-06-06 09:29:05 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:29:05 [INFO] server listening on [::1]:55716
+2026-06-06 09:29:06 [INFO] connection open
+2026-06-06 09:29:33 [INFO] connection closed
+2026-06-06 09:31:28 [INFO] Hello world! from Turnbased
+2026-06-06 09:31:28 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 09:31:28 [INFO] server listening on [::1]:55716
+2026-06-06 09:31:31 [INFO] connection open
+2026-06-06 09:31:41 [WARNING] No listener for event regen_energy
+2026-06-06 09:31:41 [INFO] connection closed
+2026-06-06 16:02:07 [INFO] Hello world! from Turnbased
+2026-06-06 16:02:07 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 16:02:07 [INFO] server listening on [::1]:55716
+2026-06-06 16:02:08 [INFO] connection open
+2026-06-06 16:02:09 [WARNING] No listener for event regen_energy
+2026-06-06 16:02:10 [ERROR] <damage.DamageFactorType object at 0x000001627AB173B0>
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 55, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 120, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 143, in on_attack
+    await battle.current.event_bus.dispatch("hit", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 126, in hit
+    await damage.on_hit()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 152, in on_hit
+    await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 389, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 293, in break_weakness
+    await battle.current.event_bus.dispatch("deal_damage", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 132, in receive_damage
+    dmg = damage.calculate()
+          ^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 119, in calculate
+    damage *= factor.func(self, value)
+              ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 39, in defence_factor_func
+    value += dmg.target.stats["def"].calculate(modifier.ModifierFilter.BASE) * dmg.factors[DamageFactorType.DEF_BOOST]
+                                                                               ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+KeyError: <damage.DamageFactorType object at 0x000001627AB173B0>
+2026-06-06 16:02:10 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  hit -> Baryon (baryon)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+  deal_damage -> Baryon (baryon)
+2026-06-06 16:02:10 [INFO] server closing
+2026-06-06 16:02:39 [INFO] Hello world! from Turnbased
+2026-06-06 16:02:39 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 16:02:39 [INFO] server listening on [::1]:55716
+2026-06-06 16:02:41 [INFO] connection open
+2026-06-06 16:02:56 [WARNING] No listener for event regen_energy
+2026-06-06 16:02:56 [INFO] connection closed
+2026-06-06 16:03:31 [INFO] Hello world! from Turnbased
+2026-06-06 16:03:31 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 16:03:31 [INFO] server listening on [::1]:55716
+2026-06-06 16:03:32 [INFO] connection open
+2026-06-06 16:03:46 [WARNING] No listener for event regen_energy
+2026-06-06 16:03:46 [INFO] connection closed
+2026-06-06 16:23:03 [INFO] Hello world! from Turnbased
+2026-06-06 16:23:03 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 16:23:03 [INFO] server listening on [::1]:55716
+2026-06-06 16:23:05 [INFO] connection open
+2026-06-06 16:23:36 [WARNING] No listener for event regen_energy
+2026-06-06 16:23:36 [INFO] connection closed
+2026-06-06 19:00:06 [INFO] Hello world! from Turnbased
+2026-06-06 19:00:06 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:00:06 [INFO] server listening on [::1]:55716
+2026-06-06 19:00:09 [INFO] connection open
+2026-06-06 19:00:17 [WARNING] No listener for event regen_energy
+2026-06-06 19:00:17 [INFO] connection closed
+2026-06-06 19:03:32 [INFO] Hello world! from Turnbased
+2026-06-06 19:03:32 [INFO] server listening on [::1]:55716
+2026-06-06 19:03:32 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:03:35 [INFO] connection open
+2026-06-06 19:03:35 [ERROR] module 'enums' has no attribute 'Debuff'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 134, in __init__
+    super().__init__("herta", "Herta", enums.Element.ICE, enums.Path.ERUDITION)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 203, in __init__
+    super().__init__(nameid, name, None)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 63, in __init__
+    for e in enums.Debuff.ALL:
+             ^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'Debuff'
+2026-06-06 19:03:35 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 19:03:35 [INFO] server closing
+2026-06-06 19:06:12 [INFO] Hello world! from Turnbased
+2026-06-06 19:06:12 [INFO] server listening on [::1]:55716
+2026-06-06 19:06:12 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:06:13 [INFO] connection open
+2026-06-06 19:06:15 [ERROR] module 'enums' has no attribute 'DmgType'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 46, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, enums.DmgType.NORMAL, enums.DmgSource.SKILL)
+                                                                                       ^^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'DmgType'
+2026-06-06 19:06:15 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-06-06 19:06:15 [INFO] server closing
+2026-06-06 19:06:55 [INFO] Hello world! from Turnbased
+2026-06-06 19:06:55 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:06:55 [INFO] server listening on [::1]:55716
+2026-06-06 19:06:57 [INFO] connection open
+2026-06-06 19:06:58 [ERROR] module 'enums' has no attribute 'DmgType'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 46, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 97, in __init__
+    if self.has_types(enums.DmgType.NORMAL, enums.DmgType.ADDITIONAL):
+                      ^^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'DmgType'
+2026-06-06 19:06:58 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-06-06 19:06:58 [INFO] server closing
+2026-06-06 19:07:18 [INFO] Hello world! from Turnbased
+2026-06-06 19:07:18 [INFO] server listening on [::1]:55716
+2026-06-06 19:07:18 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:07:20 [INFO] connection open
+2026-06-06 19:07:21 [ERROR] module 'enums' has no attribute 'DmgType'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 46, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 108, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 131, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 30, in multiplier_base_func
+    if dmg.has_types(enums.DmgType.BREAK):
+                     ^^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'DmgType'
+2026-06-06 19:07:21 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-06-06 19:07:21 [INFO] server closing
+2026-06-06 19:07:51 [INFO] Hello world! from Turnbased
+2026-06-06 19:07:51 [INFO] server listening on [::1]:55716
+2026-06-06 19:07:51 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:07:53 [INFO] connection open
+2026-06-06 19:07:54 [ERROR] module 'enums' has no attribute 'DmgSource'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 55, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 120, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 160, in on_attack
+    await battle.current.event_bus.dispatch("hit", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 126, in hit
+    await damage.on_hit()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 167, in on_hit
+    await battle.current.event_bus.dispatch("deal_damage", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\lightcones\the_birth_of_the_self.py", line 25, in deal_damage
+    if self.target is not dmg.dealer or dmg.source is not enums.DmgSource.FOLLOW_UP:
+                                                          ^^^^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'DmgSource'
+2026-06-06 19:07:54 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  hit -> Baryon (baryon)
+  deal_damage -> Herta (herta)
+2026-06-06 19:07:54 [INFO] server closing
+2026-06-06 19:08:17 [INFO] Hello world! from Turnbased
+2026-06-06 19:08:17 [INFO] server listening on [::1]:55716
+2026-06-06 19:08:17 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:08:20 [INFO] connection open
+2026-06-06 19:08:21 [ERROR] module 'enums' has no attribute 'DmgType'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 286, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 55, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 120, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 160, in on_attack
+    await battle.current.event_bus.dispatch("hit", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 126, in hit
+    await damage.on_hit()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 169, in on_hit
+    await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 389, in check_weakness_break
+    await battle.current.event_bus.dispatch("weakness_break", tr)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 292, in break_weakness
+    dmg = damage.Damage(self, tr.target, self.stats["base_break_dmg"], self.element, enums.DmgType.BREAK, enums.DmgSource.WEAKNESS_BREAK)
+                                                                                     ^^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'DmgType'
+2026-06-06 19:08:21 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+  attack -> Herta (herta)
+  hit -> Baryon (baryon)
+  reduce_toughness -> Baryon (baryon)
+  weakness_break -> Herta (herta)
+2026-06-06 19:08:21 [INFO] server closing
+2026-06-06 19:08:59 [INFO] Hello world! from Turnbased
+2026-06-06 19:08:59 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:08:59 [INFO] server listening on [::1]:55716
+2026-06-06 19:09:01 [INFO] connection open
+2026-06-06 19:09:04 [ERROR] module 'enums' has no attribute 'DmgType'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 107, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 374, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 44, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\monsters\baryon.py", line 19, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], enums.Element.QUANTUM, enums.DmgType.NORMAL, enums.DmgSource.MONSTER)
+                                                                                         ^^^^^^^^^^^^^
+AttributeError: module 'enums' has no attribute 'DmgType'
+2026-06-06 19:09:04 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Baryon (baryon)
+  normal_turn -> Baryon (baryon)
+  skill_group_trigger -> Baryon (baryon)
+  skill_trigger -> Baryon (baryon)
+2026-06-06 19:09:04 [INFO] server closing
+2026-06-06 19:09:24 [INFO] Hello world! from Turnbased
+2026-06-06 19:09:24 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 19:09:24 [INFO] server listening on [::1]:55716
+2026-06-06 19:09:25 [INFO] connection open
+2026-06-06 19:09:29 [WARNING] No listener for event regen_energy
+2026-06-06 19:09:29 [INFO] connection closed
+2026-06-06 20:46:01 [INFO] Hello world! from Turnbased
+2026-06-06 20:46:02 [INFO] server listening on [::1]:55716
+2026-06-06 20:46:02 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 20:46:05 [INFO] connection open
+2026-06-06 20:46:05 [ERROR] LightCone.set_record() missing 1 required positional argument: 'record'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 240, in set_record
+    self.lightcone.set_record(record["lightcone"])
+TypeError: LightCone.set_record() missing 1 required positional argument: 'record'
+2026-06-06 20:46:05 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 20:46:05 [INFO] server closing
+2026-06-06 20:46:31 [INFO] Hello world! from Turnbased
+2026-06-06 20:46:31 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 20:46:31 [INFO] server listening on [::1]:55716
+2026-06-06 20:46:33 [INFO] connection open
+2026-06-06 20:46:33 [ERROR] TheBirthOfTheSelf.apply() missing 1 required positional argument: 'tar'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 160, in set_record
+    self.lightcone.apply()
+TypeError: TheBirthOfTheSelf.apply() missing 1 required positional argument: 'tar'
+2026-06-06 20:46:33 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 20:46:33 [INFO] server closing
+2026-06-06 20:48:36 [INFO] Hello world! from Turnbased
+2026-06-06 20:48:36 [INFO] server listening on [::1]:55716
+2026-06-06 20:48:36 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 20:48:38 [INFO] connection open
+2026-06-06 20:48:43 [WARNING] No listener for event regen_energy
+2026-06-06 20:48:43 [INFO] connection closed
+2026-06-06 21:05:47 [INFO] Hello world! from Turnbased
+2026-06-06 21:05:47 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:05:47 [INFO] server listening on [::1]:55716
+2026-06-06 21:05:50 [INFO] connection open
+2026-06-06 21:05:54 [WARNING] No listener for event regen_energy
+2026-06-06 21:05:54 [INFO] connection closed
+2026-06-06 21:08:26 [INFO] Hello world! from Turnbased
+2026-06-06 21:08:26 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:08:26 [INFO] server listening on [::1]:55716
+2026-06-06 21:08:28 [INFO] connection open
+2026-06-06 21:08:28 [ERROR] type object 'RelicType' has no attribute 'dict_nameid'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 250, in set_record
+    r_inst = r_class(r_set, relic.RelicType.dict_nameid[type])
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'RelicType' has no attribute 'dict_nameid'
+2026-06-06 21:08:28 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:08:28 [INFO] server closing
+2026-06-06 21:08:48 [INFO] Hello world! from Turnbased
+2026-06-06 21:08:48 [INFO] server listening on [::1]:55716
+2026-06-06 21:08:48 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:08:50 [INFO] connection open
+2026-06-06 21:08:50 [ERROR] HunterOfGlacialForest.__init__() takes 1 positional argument but 3 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 250, in set_record
+    r_inst = r_class(r_set, relic.RelicType.dict_nameid[type])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: HunterOfGlacialForest.__init__() takes 1 positional argument but 3 were given
+2026-06-06 21:08:50 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:08:50 [INFO] server closing
+2026-06-06 21:09:20 [INFO] Hello world! from Turnbased
+2026-06-06 21:09:20 [INFO] server listening on [::1]:55716
+2026-06-06 21:09:20 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:09:21 [INFO] connection open
+2026-06-06 21:09:21 [ERROR] 'crt_rate'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 252, in set_record
+    r_inst.set_record(r)
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 184, in set_record
+    self.sub_stat_types = [RelicSubStatType.dict[s] for s in record["sub_stat_types"]]
+                           ~~~~~~~~~~~~~~~~~~~~~^^^
+KeyError: 'crt_rate'
+2026-06-06 21:09:21 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:09:21 [INFO] server closing
+2026-06-06 21:10:08 [INFO] Hello world! from Turnbased
+2026-06-06 21:10:08 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:10:08 [INFO] server listening on [::1]:55716
+2026-06-06 21:10:10 [INFO] connection open
+2026-06-06 21:10:10 [ERROR] 'crt_rate'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 252, in set_record
+    r_inst.set_record(r)
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 184, in set_record
+    self.sub_stat_types = [RelicSubStatType.dict[s] for s in record["sub_stat_types"]]
+                           ~~~~~~~~~~~~~~~~~~~~~^^^
+KeyError: 'crt_rate'
+2026-06-06 21:10:10 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:10:10 [INFO] server closing
+2026-06-06 21:10:39 [INFO] Hello world! from Turnbased
+2026-06-06 21:10:39 [INFO] server listening on [::1]:55716
+2026-06-06 21:10:39 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:10:41 [INFO] connection open
+2026-06-06 21:10:41 [ERROR] 'crt_rate'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 252, in set_record
+    r_inst.set_record(r)
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 185, in set_record
+    self.sub_stat_types = [RelicSubStatType.dict[s] for s in record["sub_stat_types"]]
+                           ~~~~~~~~~~~~~~~~~~~~~^^^
+KeyError: 'crt_rate'
+2026-06-06 21:10:41 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:10:41 [INFO] server closing
+2026-06-06 21:11:13 [INFO] Hello world! from Turnbased
+2026-06-06 21:11:13 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:11:13 [INFO] server listening on [::1]:55716
+2026-06-06 21:11:14 [INFO] connection open
+2026-06-06 21:11:55 [WARNING] No listener for event regen_energy
+2026-06-06 21:11:55 [INFO] connection closed
+2026-06-06 21:11:59 [INFO] connection open
+2026-06-06 21:12:19 [INFO] connection closed
+2026-06-06 21:14:10 [INFO] Hello world! from Turnbased
+2026-06-06 21:14:10 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:14:10 [INFO] server listening on [::1]:55716
+2026-06-06 21:14:12 [INFO] connection open
+2026-06-06 21:14:43 [WARNING] No listener for event reduce_toughness
+2026-06-06 21:14:43 [INFO] connection closed
+2026-06-06 21:19:05 [INFO] Hello world! from Turnbased
+2026-06-06 21:19:05 [INFO] server listening on [::1]:55716
+2026-06-06 21:19:05 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:19:06 [INFO] connection open
+2026-06-06 21:19:09 [INFO] connection closed
+2026-06-06 21:19:11 [INFO] connection open
+2026-06-06 21:19:15 [INFO] connection closed
+2026-06-06 21:29:32 [INFO] Hello world! from Turnbased
+2026-06-06 21:29:33 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:29:33 [INFO] server listening on [::1]:55716
+2026-06-06 21:29:34 [INFO] connection open
+2026-06-06 21:29:34 [ERROR] HunterOfGlacialForest.get_pieces_effect() missing 1 required positional argument: 'pieces'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 289, in update_lightcone_and_relics
+    self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(pieces))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: HunterOfGlacialForest.get_pieces_effect() missing 1 required positional argument: 'pieces'
+2026-06-06 21:29:34 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:29:34 [INFO] server closing
+2026-06-06 21:29:48 [INFO] Hello world! from Turnbased
+2026-06-06 21:29:48 [INFO] server listening on [::1]:55716
+2026-06-06 21:29:48 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:29:49 [INFO] connection open
+2026-06-06 21:29:49 [ERROR] name 'PiecesEffect' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 289, in update_lightcone_and_relics
+    self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(self, pieces))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\hunter_of_glacial_forest.py", line 17, in get_pieces_effect
+    return PiecesEffect(t, self, pieces)
+           ^^^^^^^^^^^^
+NameError: name 'PiecesEffect' is not defined. Did you mean: 'self.PiecesEffect'?
+2026-06-06 21:29:49 [ERROR] Event stack (most recent dispatch last):
+2026-06-06 21:29:49 [INFO] server closing
+2026-06-06 21:30:58 [INFO] Hello world! from Turnbased
+2026-06-06 21:30:58 [INFO] server listening on [::1]:55716
+2026-06-06 21:30:58 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:31:00 [INFO] connection open
+2026-06-06 21:31:11 [INFO] connection closed
+2026-06-06 21:31:49 [INFO] Hello world! from Turnbased
+2026-06-06 21:31:49 [INFO] server listening on [::1]:55716
+2026-06-06 21:31:49 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:31:51 [INFO] connection open
+2026-06-06 21:32:15 [WARNING] No listener for event reduce_toughness
+2026-06-06 21:32:15 [INFO] connection closed
+2026-06-06 21:39:31 [INFO] Hello world! from Turnbased
+2026-06-06 21:39:31 [INFO] server listening on [::1]:55716
+2026-06-06 21:39:31 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:39:35 [INFO] connection open
+2026-06-06 21:39:46 [WARNING] No listener for event reduce_toughness
+2026-06-06 21:39:46 [INFO] connection closed
+2026-06-06 21:49:53 [INFO] Hello world! from Turnbased
+2026-06-06 21:49:53 [INFO] server listening on [::1]:55716
+2026-06-06 21:49:53 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:50:16 [INFO] Hello world! from Turnbased
+2026-06-06 21:50:16 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:50:16 [INFO] server listening on [::1]:55716
+2026-06-06 21:50:23 [INFO] connection open
+2026-06-06 21:51:31 [INFO] connection closed
+2026-06-06 21:51:50 [INFO] Hello world! from Turnbased
+2026-06-06 21:51:50 [INFO] server listening on [::1]:55716
+2026-06-06 21:51:50 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:51:56 [INFO] connection open
+2026-06-06 21:52:14 [INFO] connection closed
+2026-06-06 21:52:23 [INFO] connection open
+2026-06-06 21:53:09 [INFO] Hello world! from Turnbased
+2026-06-06 21:53:09 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:53:09 [INFO] server listening on [::1]:55716
+2026-06-06 21:53:12 [INFO] connection open
+2026-06-06 21:54:06 [INFO] Hello world! from Turnbased
+2026-06-06 21:54:06 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:54:06 [INFO] server listening on [::1]:55716
+2026-06-06 21:54:18 [INFO] connection open
+2026-06-06 21:54:53 [INFO] connection closed
+2026-06-06 21:55:21 [INFO] Hello world! from Turnbased
+2026-06-06 21:55:21 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:55:21 [INFO] server listening on [::1]:55716
+2026-06-06 21:55:23 [INFO] connection open
+2026-06-06 21:55:28 [INFO] connection closed
+2026-06-06 21:55:29 [INFO] connection open
+2026-06-06 21:56:06 [INFO] Hello world! from Turnbased
+2026-06-06 21:56:06 [INFO] server listening on [::1]:55716
+2026-06-06 21:56:06 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 21:56:10 [INFO] connection open
+2026-06-06 21:57:50 [INFO] connection closed
+2026-06-06 22:05:52 [INFO] Hello world! from Turnbased
+2026-06-06 22:05:52 [INFO] server listening on [::1]:55716
+2026-06-06 22:05:52 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 22:05:54 [INFO] connection open
+2026-06-06 22:05:57 [INFO] connection closed
+2026-06-06 22:06:14 [INFO] Hello world! from Turnbased
+2026-06-06 22:06:14 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 22:06:14 [INFO] server listening on [::1]:55716
+2026-06-06 22:06:16 [INFO] connection open
+2026-06-06 22:06:22 [INFO] connection closed
+2026-06-06 22:06:33 [INFO] Hello world! from Turnbased
+2026-06-06 22:06:33 [INFO] server listening on [::1]:55716
+2026-06-06 22:06:33 [INFO] server listening on 127.0.0.1:55716
+2026-06-06 22:06:34 [INFO] connection open
+2026-06-06 22:06:56 [WARNING] No listener for event reduce_toughness
+2026-06-06 22:06:56 [INFO] connection closed
+2026-06-07 08:39:03 [INFO] Hello world! from Turnbased
+2026-06-07 08:39:03 [INFO] server listening on [::1]:55716
+2026-06-07 08:39:03 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:39:03 [INFO] connection open
+2026-06-07 08:39:27 [WARNING] No listener for event reduce_toughness
+2026-06-07 08:39:27 [INFO] connection closed
+2026-06-07 08:39:47 [INFO] Hello world! from Turnbased
+2026-06-07 08:39:47 [INFO] server listening on [::1]:55716
+2026-06-07 08:39:47 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:39:49 [INFO] connection open
+2026-06-07 08:40:11 [INFO] connection closed
+2026-06-07 08:40:13 [INFO] connection open
+2026-06-07 08:40:53 [INFO] connection closed
+2026-06-07 08:43:55 [INFO] Hello world! from Turnbased
+2026-06-07 08:43:55 [INFO] server listening on [::1]:55716
+2026-06-07 08:43:55 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:43:56 [INFO] connection open
+2026-06-07 08:43:56 [ERROR] Stat.__init__() missing 1 required positional argument: 'target'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 15, in handle_message
+    battle.current = battle.Battle()
+                     ^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 35, in __init__
+    self.skillpoints = Skillpoints()
+                       ^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 13, in __init__
+    self.max = modifier.Stat("skillpoints")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Stat.__init__() missing 1 required positional argument: 'target'
+2026-06-07 08:43:56 [ERROR] connection handler failed
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 15, in handle_message
+    battle.current = battle.Battle()
+                     ^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 35, in __init__
+    self.skillpoints = Skillpoints()
+                       ^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 13, in __init__
+    self.max = modifier.Stat("skillpoints")
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Stat.__init__() missing 1 required positional argument: 'target'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\Cosmi\AppData\Local\Packages\PythonSoftwareFoundation.Python.3.12_qbz5n2kfra8p0\LocalCache\local-packages\Python312\site-packages\websockets\asyncio\server.py", line 376, in conn_handler
+    await self.handler(connection)
+  File "d:\Cosmicland\Turnbased\core\server.py", line 38, in handle
+    for event_name, listener in battle.current.event_bus.stack:
+                                ^^^^^^^^^^^^^^^^^^^^^^^^
+AttributeError: 'NoneType' object has no attribute 'event_bus'
+2026-06-07 08:44:17 [INFO] Hello world! from Turnbased
+2026-06-07 08:44:17 [INFO] server listening on [::1]:55716
+2026-06-07 08:44:17 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:44:18 [INFO] connection open
+2026-06-07 08:44:27 [INFO] connection closed
+2026-06-07 08:52:44 [INFO] Hello world! from Turnbased
+2026-06-07 08:52:44 [INFO] server listening on [::1]:55716
+2026-06-07 08:52:44 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:52:45 [INFO] connection open
+2026-06-07 08:52:58 [INFO] connection closed
+2026-06-07 08:53:30 [INFO] Hello world! from Turnbased
+2026-06-07 08:53:31 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:53:31 [INFO] server listening on [::1]:55716
+2026-06-07 08:53:33 [INFO] connection open
+2026-06-07 08:53:40 [INFO] connection closed
+2026-06-07 08:53:54 [INFO] Hello world! from Turnbased
+2026-06-07 08:53:54 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:53:54 [INFO] server listening on [::1]:55716
+2026-06-07 08:53:55 [INFO] connection open
+2026-06-07 08:53:57 [ERROR] 'subtype'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 59, in start
+    await self.prepare_next_action_unit()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 49, in prepare_next_action_unit
+    message = await server.send_and_recv({"type": "prepare_next_action_unit", "verbose": verbose})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\server.py", line 68, in send_and_recv
+    if not await handle_command(response):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\server.py", line 46, in handle_command
+    subtype = message["subtype"]
+              ~~~~~~~^^^^^^^^^^^
+KeyError: 'subtype'
+2026-06-07 08:53:57 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 08:53:57 [INFO] server closing
+2026-06-07 08:54:15 [INFO] Hello world! from Turnbased
+2026-06-07 08:54:15 [INFO] server listening on [::1]:55716
+2026-06-07 08:54:15 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:54:18 [INFO] connection open
+2026-06-07 08:54:46 [INFO] connection closed
+2026-06-07 08:57:24 [INFO] Hello world! from Turnbased
+2026-06-07 08:57:24 [INFO] server listening on [::1]:55716
+2026-06-07 08:57:24 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:57:26 [INFO] connection open
+2026-06-07 08:58:37 [INFO] Hello world! from Turnbased
+2026-06-07 08:58:37 [INFO] server listening on [::1]:55716
+2026-06-07 08:58:37 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:58:39 [INFO] connection open
+2026-06-07 08:58:47 [INFO] connection closed
+2026-06-07 08:59:23 [INFO] Hello world! from Turnbased
+2026-06-07 08:59:23 [INFO] server listening on [::1]:55716
+2026-06-07 08:59:23 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 08:59:24 [INFO] connection open
+2026-06-07 08:59:47 [INFO] connection closed
+2026-06-07 09:01:36 [INFO] Hello world! from Turnbased
+2026-06-07 09:01:37 [INFO] server listening on [::1]:55716
+2026-06-07 09:01:37 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 09:01:38 [INFO] connection open
+2026-06-07 09:02:01 [INFO] connection closed
+2026-06-07 09:02:21 [INFO] connection open
+2026-06-07 09:03:40 [INFO] connection closed
+2026-06-07 11:00:20 [INFO] Hello world! from Turnbased
+2026-06-07 11:00:20 [INFO] server listening on [::1]:55716
+2026-06-07 11:00:20 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:00:24 [INFO] connection open
+2026-06-07 11:00:27 [INFO] connection closed
+2026-06-07 11:00:42 [INFO] Hello world! from Turnbased
+2026-06-07 11:00:42 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:00:42 [INFO] server listening on [::1]:55716
+2026-06-07 11:00:43 [INFO] connection open
+2026-06-07 11:00:43 [ERROR] 'body222'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 264, in set_record
+    r_inst = relic.Relic(r_set, relic.RelicType.dict_nameid[type])
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'body222'
+2026-06-07 11:00:43 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 11:00:43 [INFO] server closing
+2026-06-07 11:02:55 [INFO] Hello world! from Turnbased
+2026-06-07 11:02:55 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:02:55 [INFO] server listening on [::1]:55716
+2026-06-07 11:02:56 [INFO] connection open
+2026-06-07 11:02:56 [ERROR] 'body222'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 264, in set_record
+    r_inst = relic.Relic(r_set, relic.RelicType.dict_nameid[type])
+                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'body222'
+2026-06-07 11:02:56 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 11:02:56 [INFO] server closing
+2026-06-07 11:03:06 [INFO] Hello world! from Turnbased
+2026-06-07 11:03:06 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:03:06 [INFO] server listening on [::1]:55716
+2026-06-07 11:03:08 [INFO] connection open
+2026-06-07 11:03:23 [INFO] connection closed
+2026-06-07 11:04:53 [INFO] Hello world! from Turnbased
+2026-06-07 11:04:53 [INFO] server listening on [::1]:55716
+2026-06-07 11:04:53 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:04:55 [INFO] connection open
+2026-06-07 11:06:20 [INFO] connection closed
+2026-06-07 11:09:01 [INFO] Hello world! from Turnbased
+2026-06-07 11:09:01 [INFO] server listening on [::1]:55716
+2026-06-07 11:09:01 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:09:03 [INFO] connection open
+2026-06-07 11:09:03 [ERROR] Item.__init__() missing 2 required positional arguments: 'nameid' and 'name'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 147, in set_record
+    super().set_record(record)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 262, in set_record
+    r_class = load_class("relics", r["name"])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\target.py", line 463, in load_class
+    module = importlib.import_module(category + "." + nameid)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\importlib\__init__.py", line 90, in import_module
+    return _bootstrap._gcd_import(name[level:], package, level)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen importlib._bootstrap>", line 1387, in _gcd_import
+  File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
+  File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
+  File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
+  File "<frozen importlib._bootstrap_external>", line 999, in exec_module
+  File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
+  File "d:\Cosmicland\Turnbased\core\relics\inert_salsotto.py", line 6, in <module>
+    base.register_relic_set(InertSalsotto)
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 165, in register_relic_set
+    relic_sets.append(relic_set_class())
+                      ^^^^^^^^^^^^^^^^^
+TypeError: Item.__init__() missing 2 required positional arguments: 'nameid' and 'name'
+2026-06-07 11:09:03 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 11:09:03 [INFO] server closing
+2026-06-07 11:09:41 [INFO] Hello world! from Turnbased
+2026-06-07 11:09:41 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:09:41 [INFO] server listening on [::1]:55716
+2026-06-07 11:09:43 [INFO] connection open
+2026-06-07 11:11:54 [INFO] connection closed
+2026-06-07 11:13:49 [INFO] Hello world! from Turnbased
+2026-06-07 11:13:49 [INFO] server listening on [::1]:55716
+2026-06-07 11:13:49 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:13:51 [INFO] connection open
+2026-06-07 11:13:51 [ERROR] name 'modifier' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 301, in update_lightcone_and_relics
+    self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(self, pieces))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 158, in get_pieces_effect
+    return self.PiecesEffect(t, self, pieces)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\inert_salsotto.py", line 8, in __init__
+    mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name, None, None, 0, 0.08, None, t)
+          ^^^^^^^^
+NameError: name 'modifier' is not defined
+2026-06-07 11:13:51 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 11:13:51 [INFO] server closing
+2026-06-07 11:14:04 [INFO] Hello world! from Turnbased
+2026-06-07 11:14:04 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:14:04 [INFO] server listening on [::1]:55716
+2026-06-07 11:14:05 [INFO] connection open
+2026-06-07 11:14:26 [WARNING] No listener for event reduce_toughness
+2026-06-07 11:14:26 [INFO] connection closed
+2026-06-07 11:15:18 [INFO] Hello world! from Turnbased
+2026-06-07 11:15:18 [INFO] server listening on [::1]:55716
+2026-06-07 11:15:18 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:15:19 [INFO] connection open
+2026-06-07 11:15:32 [INFO] connection closed
+2026-06-07 11:18:37 [INFO] Hello world! from Turnbased
+2026-06-07 11:18:37 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:18:37 [INFO] server listening on [::1]:55716
+2026-06-07 11:18:39 [INFO] connection open
+2026-06-07 11:18:41 [WARNING] No listener for event reduce_toughness
+2026-06-07 11:18:41 [INFO] connection closed
+2026-06-07 11:25:11 [INFO] Hello world! from Turnbased
+2026-06-07 11:25:11 [INFO] server listening on [::1]:55716
+2026-06-07 11:25:11 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:25:12 [INFO] connection open
+2026-06-07 11:25:14 [WARNING] No listener for event reduce_toughness
+2026-06-07 11:25:14 [INFO] connection closed
+2026-06-07 11:27:04 [INFO] Hello world! from Turnbased
+2026-06-07 11:27:04 [INFO] server listening on [::1]:55716
+2026-06-07 11:27:04 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:27:05 [INFO] connection open
+2026-06-07 11:27:45 [INFO] connection closed
+2026-06-07 11:28:27 [INFO] Hello world! from Turnbased
+2026-06-07 11:28:27 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:28:27 [INFO] server listening on [::1]:55716
+2026-06-07 11:28:29 [INFO] connection open
+2026-06-07 11:29:41 [INFO] connection closed
+2026-06-07 11:30:23 [INFO] Hello world! from Turnbased
+2026-06-07 11:30:23 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:30:23 [INFO] server listening on [::1]:55716
+2026-06-07 11:30:24 [INFO] connection open
+2026-06-07 11:31:18 [WARNING] No listener for event regen_energy
+2026-06-07 11:31:18 [INFO] connection closed
+2026-06-07 11:34:30 [INFO] Hello world! from Turnbased
+2026-06-07 11:34:30 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:34:30 [INFO] server listening on [::1]:55716
+2026-06-07 11:34:31 [INFO] connection open
+2026-06-07 11:34:50 [INFO] connection closed
+2026-06-07 11:35:12 [INFO] Hello world! from Turnbased
+2026-06-07 11:35:12 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:35:12 [INFO] server listening on [::1]:55716
+2026-06-07 11:35:13 [INFO] connection open
+2026-06-07 11:52:10 [INFO] connection closed
+2026-06-07 11:54:19 [INFO] Hello world! from Turnbased
+2026-06-07 11:54:19 [INFO] server listening on [::1]:55716
+2026-06-07 11:54:19 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:54:20 [INFO] connection open
+2026-06-07 11:54:39 [INFO] connection closed
+2026-06-07 11:56:18 [INFO] Hello world! from Turnbased
+2026-06-07 11:56:18 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:56:18 [INFO] server listening on [::1]:55716
+2026-06-07 11:56:20 [INFO] connection open
+2026-06-07 11:56:27 [INFO] connection closed
+2026-06-07 11:59:59 [INFO] Hello world! from Turnbased
+2026-06-07 11:59:59 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 11:59:59 [INFO] server listening on [::1]:55716
+2026-06-07 12:00:01 [INFO] connection open
+2026-06-07 12:00:14 [INFO] connection closed
+2026-06-07 12:08:30 [INFO] Hello world! from Turnbased
+2026-06-07 12:08:30 [INFO] server listening on [::1]:55716
+2026-06-07 12:08:30 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 12:08:31 [INFO] connection open
+2026-06-07 12:08:42 [ERROR] 'subtype'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 59, in start
+    await self.prepare_next_action_unit()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 49, in prepare_next_action_unit
+    message = await server.send_and_recv({"type": "prepare_next_action_unit", "verbose": verbose})
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\server.py", line 73, in send_and_recv
+    if not await handle_command(response):
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\server.py", line 58, in handle_command
+    subtype = message["subtype"]
+              ~~~~~~~^^^^^^^^^^^
+KeyError: 'subtype'
+2026-06-07 12:08:42 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 12:08:42 [INFO] server closing
+2026-06-07 12:09:09 [INFO] Hello world! from Turnbased
+2026-06-07 12:09:09 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 12:09:09 [INFO] server listening on [::1]:55716
+2026-06-07 12:09:11 [INFO] connection open
+2026-06-07 12:09:39 [INFO] connection closed
+2026-06-07 16:33:01 [INFO] Hello world! from Turnbased
+2026-06-07 16:33:01 [INFO] server listening on [::1]:55716
+2026-06-07 16:33:01 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 16:33:02 [INFO] connection open
+2026-06-07 16:33:04 [WARNING] No listener for event reduce_toughness
+2026-06-07 16:33:04 [INFO] connection closed
+2026-06-07 16:33:18 [INFO] Hello world! from Turnbased
+2026-06-07 16:33:18 [INFO] server listening on [::1]:55716
+2026-06-07 16:33:18 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 16:33:19 [INFO] connection open
+2026-06-07 16:33:34 [WARNING] No listener for event reduce_toughness
+2026-06-07 16:33:34 [INFO] connection closed
+2026-06-07 16:33:59 [INFO] connection open
+2026-06-07 16:34:05 [INFO] connection closed
+2026-06-07 16:34:16 [INFO] Hello world! from Turnbased
+2026-06-07 16:34:16 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 16:34:16 [INFO] server listening on [::1]:55716
+2026-06-07 16:34:18 [INFO] connection open
+2026-06-07 16:34:22 [WARNING] No listener for event regen_energy
+2026-06-07 16:34:22 [INFO] connection closed
+2026-06-07 16:34:27 [INFO] connection open
+2026-06-07 16:35:21 [WARNING] No listener for event reduce_toughness
+2026-06-07 16:35:21 [INFO] connection closed
+2026-06-07 16:35:30 [INFO] connection open
+2026-06-07 16:39:29 [INFO] Hello world! from Turnbased
+2026-06-07 16:39:29 [INFO] server listening on [::1]:55716
+2026-06-07 16:39:29 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 16:39:35 [INFO] connection open
+2026-06-07 16:39:40 [WARNING] No listener for event reduce_toughness
+2026-06-07 16:39:40 [INFO] connection closed
+2026-06-07 16:42:29 [INFO] Hello world! from Turnbased
+2026-06-07 16:42:29 [INFO] server listening on [::1]:55716
+2026-06-07 16:42:29 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 16:42:31 [INFO] connection open
+2026-06-07 16:43:12 [WARNING] No listener for event regen_energy
+2026-06-07 16:43:12 [INFO] connection closed
+2026-06-07 16:55:50 [INFO] Hello world! from Turnbased
+2026-06-07 16:55:50 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 16:55:50 [INFO] server listening on [::1]:55716
+2026-06-07 16:55:52 [INFO] connection open
+2026-06-07 16:55:52 [ERROR] 'Huohuo' object has no attribute 'BasicAtk'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\huohuo.py", line 13, in __init__
+    self.skills["basic_atk"].add(self.BasicAtk(self))
+                                 ^^^^^^^^^^^^^
+AttributeError: 'Huohuo' object has no attribute 'BasicAtk'
+2026-06-07 16:55:52 [ERROR] Event stack (most recent dispatch last):
+2026-06-07 16:55:52 [INFO] server closing
+2026-06-07 17:01:19 [INFO] Hello world! from Turnbased
+2026-06-07 17:01:19 [INFO] server listening on [::1]:55716
+2026-06-07 17:01:19 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:01:20 [INFO] connection open
+2026-06-07 17:01:28 [INFO] connection closed
+2026-06-07 17:01:29 [INFO] connection open
+2026-06-07 17:01:54 [WARNING] No listener for event regen_energy
+2026-06-07 17:01:54 [INFO] connection closed
+2026-06-07 17:02:01 [INFO] connection open
+2026-06-07 17:02:32 [INFO] connection closed
+2026-06-07 17:04:53 [INFO] Hello world! from Turnbased
+2026-06-07 17:04:53 [INFO] server listening on [::1]:55716
+2026-06-07 17:04:53 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:04:58 [INFO] connection open
+2026-06-07 17:05:11 [WARNING] No listener for event regen_energy
+2026-06-07 17:05:11 [INFO] connection closed
+2026-06-07 17:10:23 [INFO] Hello world! from Turnbased
+2026-06-07 17:10:23 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:10:23 [INFO] server listening on [::1]:55716
+2026-06-07 17:10:24 [INFO] connection open
+2026-06-07 17:10:26 [ERROR] Character.CharacterSkill.get_target() missing 2 required positional arguments: 'list' and 'idx'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 121, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 330, in normal_turn
+    info = self.skills[option].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 35, in available
+    return self.skills[self.current].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\target.py", line 211, in available
+    self.get_target()
+TypeError: Character.CharacterSkill.get_target() missing 2 required positional arguments: 'list' and 'idx'
+2026-06-07 17:10:26 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+2026-06-07 17:10:26 [INFO] server closing
+2026-06-07 17:10:58 [INFO] Hello world! from Turnbased
+2026-06-07 17:10:58 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:10:58 [INFO] server listening on [::1]:55716
+2026-06-07 17:11:00 [INFO] connection open
+2026-06-07 17:11:03 [ERROR] type object 'Character' has no attribute 'get_target'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 121, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 330, in normal_turn
+    info = self.skills[option].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 35, in available
+    return self.skills[self.current].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\target.py", line 211, in available
+    self.get_main_target()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 205, in get_main_target
+    return Character.get_target(battle.current.monsters, battle.current.target_index)
+           ^^^^^^^^^^^^^^^^^^^^
+AttributeError: type object 'Character' has no attribute 'get_target'
+2026-06-07 17:11:03 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+2026-06-07 17:11:03 [INFO] server closing
+2026-06-07 17:11:15 [INFO] Hello world! from Turnbased
+2026-06-07 17:11:15 [INFO] server listening on [::1]:55716
+2026-06-07 17:11:15 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:11:16 [INFO] connection open
+2026-06-07 17:11:18 [ERROR] name 'CharacterSkill' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 121, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 330, in normal_turn
+    info = self.skills[option].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 35, in available
+    return self.skills[self.current].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\target.py", line 211, in available
+    self.get_main_target()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 205, in get_main_target
+    return CharacterSkill.get_target(battle.current.monsters, battle.current.target_index)
+           ^^^^^^^^^^^^^^
+NameError: name 'CharacterSkill' is not defined
+2026-06-07 17:11:18 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+2026-06-07 17:11:18 [INFO] server closing
+2026-06-07 17:11:31 [INFO] Hello world! from Turnbased
+2026-06-07 17:11:31 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:11:31 [INFO] server listening on [::1]:55716
+2026-06-07 17:11:32 [INFO] connection open
+2026-06-07 17:12:14 [WARNING] No listener for event regen_energy
+2026-06-07 17:12:14 [INFO] connection closed
+2026-06-07 17:35:04 [INFO] Hello world! from Turnbased
+2026-06-07 17:35:04 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:35:04 [INFO] server listening on [::1]:55716
+2026-06-07 17:35:05 [INFO] connection open
+2026-06-07 17:35:06 [ERROR] name 'bettle' is not defined
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 123, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 350, in normal_turn
+    info = self.skills[option].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 35, in available
+    return self.skills[self.current].available()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\target.py", line 231, in available
+    self.get_main_target()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 214, in get_main_target
+    return self.get_target(list, bettle.current.target_index)
+                                 ^^^^^^
+NameError: name 'bettle' is not defined. Did you mean: 'battle'?
+2026-06-07 17:35:06 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+2026-06-07 17:35:06 [INFO] server closing
+2026-06-07 17:35:16 [INFO] Hello world! from Turnbased
+2026-06-07 17:35:16 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:35:16 [INFO] server listening on [::1]:55716
+2026-06-07 17:35:18 [INFO] connection open
+2026-06-07 17:35:40 [WARNING] No listener for event regen_energy
+2026-06-07 17:35:54 [INFO] connection closed
+2026-06-07 17:38:01 [INFO] Hello world! from Turnbased
+2026-06-07 17:38:01 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:38:01 [INFO] server listening on [::1]:55716
+2026-06-07 17:38:03 [INFO] connection open
+2026-06-07 17:38:15 [INFO] connection closed
+2026-06-07 17:39:03 [INFO] Hello world! from Turnbased
+2026-06-07 17:39:03 [INFO] server listening on [::1]:55716
+2026-06-07 17:39:03 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:39:04 [INFO] connection open
+2026-06-07 17:39:07 [ERROR] 'float' object has no attribute 'target'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 121, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 446, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 52, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\monsters\baryon.py", line 22, in skill_trigger
+    await battle.current.event_bus.dispatch("attack", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 134, in attack
+    await damage.on_attack()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 156, in on_attack
+    await battle.current.event_bus.dispatch("hit", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 140, in hit
+    await damage.on_hit()
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 176, in on_hit
+    await battle.current.event_bus.dispatch("deal_damage", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 154, in receive_damage
+    await battle.current.event_bus.dispatch("die", dmg)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 171, in die
+    if self is not dmg.target:
+                   ^^^^^^^^^^
+AttributeError: 'float' object has no attribute 'target'
+2026-06-07 17:39:07 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Baryon (baryon)
+  normal_turn -> Baryon (baryon)
+  skill_group_trigger -> Baryon (baryon)
+  skill_trigger -> Baryon (baryon)
+  attack -> Baryon (baryon)
+  hit -> Huohuo (huohuo)
+  deal_damage -> Huohuo (huohuo)
+  die -> Herta (herta)
+2026-06-07 17:39:07 [INFO] server closing
+2026-06-07 17:39:22 [INFO] Hello world! from Turnbased
+2026-06-07 17:39:22 [INFO] server listening on [::1]:55716
+2026-06-07 17:39:22 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:39:23 [INFO] connection open
+2026-06-07 17:39:57 [WARNING] No listener for event regen_energy
+2026-06-07 17:40:00 [INFO] connection closed
+2026-06-07 17:41:08 [INFO] Hello world! from Turnbased
+2026-06-07 17:41:08 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 17:41:08 [INFO] server listening on [::1]:55716
+2026-06-07 17:41:10 [INFO] connection open
+2026-06-07 17:41:23 [INFO] connection closed
+2026-06-07 17:42:11 [INFO] Hello world! from Turnbased
+2026-06-07 17:42:11 [INFO] server listening on [::1]:55716
+2026-06-07 17:42:11 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 18:04:26 [INFO] Hello world! from Turnbased
+2026-06-07 18:04:26 [INFO] server listening on [::1]:55716
+2026-06-07 18:04:26 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 18:04:28 [INFO] connection open
+2026-06-07 18:04:33 [WARNING] No listener for event regen_energy
+2026-06-07 18:04:33 [INFO] connection closed
+2026-06-07 18:14:06 [INFO] Hello world! from Turnbased
+2026-06-07 18:14:06 [INFO] server listening on 127.0.0.1:55716
+2026-06-07 18:14:06 [INFO] server listening on [::1]:55716
+2026-06-07 18:14:07 [INFO] connection open
+2026-06-07 18:14:15 [INFO] connection closed
+2026-06-07 18:14:16 [INFO] connection open
+2026-06-07 18:15:31 [WARNING] No listener for event regen_energy
+2026-06-07 18:15:31 [INFO] connection closed
+2026-06-10 21:28:09 [INFO] Hello world! from Turnbased
+2026-06-10 21:28:09 [INFO] server listening on [::1]:55716
+2026-06-10 21:28:09 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:28:40 [INFO] connection open
+2026-06-10 21:28:40 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 323, in update_lightcone_and_relics
+    self.lightcone.apply(self)
+  File "d:\Cosmicland\Turnbased\core\lightcones\the_birth_of_the_self.py", line 22, in apply
+    mod1 = modifier.Modifier(self.nameid, self.name, None, None, 0, dmg_boost, self.validator_mod1, self.target)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:28:40 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:28:40 [INFO] server closing
+2026-06-10 21:29:38 [INFO] Hello world! from Turnbased
+2026-06-10 21:29:38 [INFO] server listening on [::1]:55716
+2026-06-10 21:29:38 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:29:40 [INFO] connection open
+2026-06-10 21:29:40 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 326, in update_lightcone_and_relics
+    r.apply(self)
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 196, in apply
+    modifiers.append((self.main_stat_type.get_stat(t), self.main_stat_type.get_modifier(t, self.level)))
+                                                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 40, in get_modifier
+    mod = modifier.Modifier(self.stat_name, self.stat_name, None, None, 0, value, None, t)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:29:40 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:29:40 [INFO] server closing
+2026-06-10 21:30:26 [INFO] Hello world! from Turnbased
+2026-06-10 21:30:26 [INFO] server listening on [::1]:55716
+2026-06-10 21:30:26 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:30:28 [INFO] connection open
+2026-06-10 21:30:28 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 326, in update_lightcone_and_relics
+    r.apply(self)
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 198, in apply
+    modifiers.append((sub_stat_type.get_stat(t), sub_stat_type.get_modifier(t, self.enhancements[i])))
+                                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 127, in get_modifier
+    mod = modifier.Modifier(self.stat_name, self.stat_name, None, None, 0, value, None, t)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:30:28 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:30:28 [INFO] server closing
+2026-06-10 21:30:50 [INFO] Hello world! from Turnbased
+2026-06-10 21:30:50 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:30:50 [INFO] server listening on [::1]:55716
+2026-06-10 21:30:52 [INFO] connection open
+2026-06-10 21:30:52 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 332, in update_lightcone_and_relics
+    self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(self, pieces))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 157, in get_pieces_effect
+    return self.PiecesEffect(t, self, pieces)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\hunter_of_glacial_forest.py", line 13, in __init__
+    mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name, None, None, 0, 0.1, None, t)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:30:52 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:30:52 [INFO] server closing
+2026-06-10 21:31:14 [INFO] Hello world! from Turnbased
+2026-06-10 21:31:14 [INFO] server listening on [::1]:55716
+2026-06-10 21:31:14 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:31:15 [INFO] connection open
+2026-06-10 21:31:15 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 162, in set_record
+    self.update_lightcone_and_relics()
+  File "d:\Cosmicland\Turnbased\core\target.py", line 332, in update_lightcone_and_relics
+    self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(self, pieces))
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\base.py", line 157, in get_pieces_effect
+    return self.PiecesEffect(t, self, pieces)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\inert_salsotto.py", line 11, in __init__
+    mod1 = modifier.Modifier(self.relic_set.nameid, self.relic_set.name, None, None, 0, 0.08, None, t)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:31:15 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:31:15 [INFO] server closing
+2026-06-10 21:32:10 [INFO] Hello world! from Turnbased
+2026-06-10 21:32:10 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:32:10 [INFO] server listening on [::1]:55716
+2026-06-10 21:32:12 [INFO] connection open
+2026-06-10 21:32:12 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 139, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 165, in set_record
+    self.stats["def"].modifiers.append(modifier.Modifier(
+                                       ^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:32:12 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:32:12 [INFO] server closing
+2026-06-10 21:33:53 [INFO] Hello world! from Turnbased
+2026-06-10 21:33:53 [INFO] server listening on [::1]:55716
+2026-06-10 21:33:53 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:33:54 [INFO] connection open
+2026-06-10 21:33:54 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 19, in handle_message
+    character = target.load_class("characters", message["name"])(message["record"])
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\characters\huohuo.py", line 55, in __init__
+    self.set_record(record)
+  File "d:\Cosmicland\Turnbased\core\characters\huohuo.py", line 76, in set_record
+    self.stats["eff_res"].modifiers.append(modifier.Modifier(
+                                           ^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:33:54 [ERROR] Event stack (most recent dispatch last):
+2026-06-10 21:33:54 [INFO] server closing
+2026-06-10 21:35:35 [INFO] Hello world! from Turnbased
+2026-06-10 21:35:35 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:35:35 [INFO] server listening on [::1]:55716
+2026-06-10 21:35:37 [INFO] connection open
+2026-06-10 21:35:40 [ERROR] '>=' not supported between instances of 'Stat' and 'float'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 125, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 359, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 52, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 46, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 117, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 140, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 52, in dmg_boost_base_func
+    value = dmg.dealer.stats["dmg_boost"].calculate(damage=dmg)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\modifier.py", line 23, in calculate
+    modifier.modify(self, filter, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\modifier.py", line 70, in modify
+    if self.validator is not None and not self.validator(stat, **kwargs):
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\inert_salsotto.py", line 20, in validator_mod2
+    return stat.target.stats["crt_rate"] >= 0.5 and dmg.source in (damage.DamageSource.ULTIMATE, damage.DmgSource.FOLLOW_UP)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: '>=' not supported between instances of 'Stat' and 'float'
+2026-06-10 21:35:40 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-06-10 21:35:40 [INFO] server closing
+2026-06-10 21:35:56 [INFO] Hello world! from Turnbased
+2026-06-10 21:35:56 [INFO] server listening on [::1]:55716
+2026-06-10 21:35:56 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:35:57 [INFO] connection open
+2026-06-10 21:35:59 [ERROR] module 'damage' has no attribute 'DamageSource'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 125, in action_unit_trigger
+    await battle.current.event_bus.dispatch("normal_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 359, in normal_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 52, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 46, in skill_trigger
+    dmg = damage.Damage(self.target, t, self.target.stats["atk"], self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 117, in __init__
+    self.new_factor(factor)
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 140, in new_factor
+    self.factors[factor] = factor.base_func(self)
+                           ^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\damage.py", line 52, in dmg_boost_base_func
+    value = dmg.dealer.stats["dmg_boost"].calculate(damage=dmg)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\modifier.py", line 23, in calculate
+    modifier.modify(self, filter, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\modifier.py", line 70, in modify
+    if self.validator is not None and not self.validator(stat, **kwargs):
+                                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\relics\inert_salsotto.py", line 20, in validator_mod2
+    return stat.target.stats["crt_rate"].calculate() >= 0.5 and dmg.source in (damage.DamageSource.ULTIMATE, damage.DmgSource.FOLLOW_UP)
+                                                                               ^^^^^^^^^^^^^^^^^^^
+AttributeError: module 'damage' has no attribute 'DamageSource'. Did you mean: 'DmgSource'?
+2026-06-10 21:35:59 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  normal_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-06-10 21:35:59 [INFO] server closing
+2026-06-10 21:36:29 [INFO] Hello world! from Turnbased
+2026-06-10 21:36:29 [INFO] server listening on [::1]:55716
+2026-06-10 21:36:29 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:36:30 [INFO] connection open
+2026-06-10 21:36:45 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 401, in ultimate_action_unit_trigger
+    await battle.current.event_bus.dispatch("ultimate_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 409, in ultimate_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\relics\hunter_of_glacial_forest.py", line 23, in skill_group_trigger
+    mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name, None, None, 0, 0.25, None, self.target)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:36:45 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  ultimate_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+2026-06-10 21:36:45 [INFO] server closing
+2026-06-10 21:37:21 [INFO] Hello world! from Turnbased
+2026-06-10 21:37:21 [INFO] server listening on [::1]:55716
+2026-06-10 21:37:21 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:37:22 [INFO] connection open
+2026-06-10 21:37:31 [ERROR] 'Modifier' object has no attribute 'scale'
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 401, in ultimate_action_unit_trigger
+    await battle.current.event_bus.dispatch("ultimate_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 409, in ultimate_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\relics\hunter_of_glacial_forest.py", line 24, in skill_group_trigger
+    eff = effect.ModifierEffect(self.relic_set.nameid, self.relic_set.name,
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "d:\Cosmicland\Turnbased\core\effect.py", line 140, in __init__
+    self.scale = modifier.scale
+                 ^^^^^^^^^^^^^^
+AttributeError: 'Modifier' object has no attribute 'scale'
+2026-06-10 21:37:31 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  ultimate_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+2026-06-10 21:37:31 [INFO] server closing
+2026-06-10 21:39:22 [INFO] Hello world! from Turnbased
+2026-06-10 21:39:22 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:39:22 [INFO] server listening on [::1]:55716
+2026-06-10 21:39:23 [INFO] connection open
+2026-06-10 21:39:33 [ERROR] Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+Traceback (most recent call last):
+  File "d:\Cosmicland\Turnbased\core\server.py", line 31, in handle
+    await handle_message(json.loads(message))
+  File "d:\Cosmicland\Turnbased\core\server.py", line 17, in handle_message
+    await battle.current.start()
+  File "d:\Cosmicland\Turnbased\core\battle.py", line 62, in start
+    await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 401, in ultimate_action_unit_trigger
+    await battle.current.event_bus.dispatch("ultimate_turn", self)
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\target.py", line 409, in ultimate_turn
+    await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\skill.py", line 52, in skill_group_trigger
+    await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+  File "d:\Cosmicland\Turnbased\core\event.py", line 40, in dispatch
+    await listener.callback(*args, **kwargs)
+  File "d:\Cosmicland\Turnbased\core\characters\herta.py", line 81, in skill_trigger
+    mod = modifier.Modifier(nameid, name, self.target.stats["atk"], modifier.ModifierFilter.BASE, 0.25, 0, None, self)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: Modifier.__init__() takes from 4 to 6 positional arguments but 9 were given
+2026-06-10 21:39:33 [ERROR] Event stack (most recent dispatch last):
+  action_unit_trigger -> Herta (herta)
+  ultimate_turn -> Herta (herta)
+  skill_group_trigger -> Herta (herta)
+  skill_trigger -> Herta (herta)
+2026-06-10 21:39:33 [INFO] server closing
+2026-06-10 21:40:31 [INFO] Hello world! from Turnbased
+2026-06-10 21:40:31 [INFO] server listening on [::1]:55716
+2026-06-10 21:40:31 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:40:32 [INFO] connection open
+2026-06-10 21:40:57 [WARNING] No listener for event regen_energy
+2026-06-10 21:40:57 [INFO] connection closed
+2026-06-10 21:41:11 [INFO] Hello world! from Turnbased
+2026-06-10 21:41:11 [INFO] server listening on [::1]:55716
+2026-06-10 21:41:11 [INFO] server listening on 127.0.0.1:55716
+2026-06-10 21:41:12 [INFO] connection open
+2026-06-10 21:41:22 [WARNING] No listener for event reduce_toughness
+2026-06-10 21:41:22 [INFO] connection closed
