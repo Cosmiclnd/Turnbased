@@ -94,6 +94,7 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.receive_damage, self)
         battle.current.event_bus.add_member_listener(self.cur_hp_modify, self)
         battle.current.event_bus.add_member_listener(self.die, self)
+        battle.current.event_bus.add_member_listener(self.receive_heal, self)
         battle.current.event_bus.add_member_listener(self.add_effect, self)
     
     def dead(self):
@@ -165,16 +166,31 @@ class Target(item.Item):
         self.cur_hp += amount
         if self.cur_hp <= 0:
             self.dying_stage = DyingStage.DIEABLE
+            return
+        self.dying_stage = DyingStage.ALIVE
+        hp = self.stats["hp"].calculate()
+        if self.cur_hp > hp:
+            self.cur_hp = hp
         
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def die(self, dmg):
         if self is not dmg.target:
             return
+        # 真正清除死亡的target
         # TODO
         #message = {"type": "die"} | self.get_info()
         #await server.send_and_recv(message)
         self.dying_stage = DyingStage.DEAD
         battle.current.refresh()
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE, "heal")
+    async def receive_heal(self, heal):
+        if self is not heal.target:
+            return
+        amount = heal.calculate()
+        message = {"type": "heal", "healer": heal.healer.get_info(), "target": self.get_info(), "amount": amount}
+        await server.send_and_recv(message)
+        await battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def add_effect(self, t, effect):
@@ -248,7 +264,8 @@ class Character(Target):
         self.element = element
         self.path = path
         self.stats.new_stats(
-            ["crt_rate", "crt_dmg", "taunt", "energy", "max_energy", "energy_regen_rate", "break_eff", "base_break_dmg", "healing_boost"], self)
+            ["crt_rate", "crt_dmg", "taunt", "energy", "max_energy", "energy_regen_rate", "break_eff", "base_break_dmg",
+            "outgoing_healing_boost", "incoming_healing_boost"], self)
         self.eidolons = None
         self.traces_stats_unlocked = None
         self.traces_unlocked = None

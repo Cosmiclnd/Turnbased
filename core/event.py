@@ -2,6 +2,8 @@ import logging
 
 import item
 
+MAX_STACKS = 32
+
 class Listener(item.Item):
     def __init__(self, nameid, name, callback, master=None, priority=0):
         super().__init__(nameid, name, master)
@@ -37,10 +39,21 @@ class EventBus:
             self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
             for listener in self.listeners[event_name]:
                 self.stack.append((event_name, listener))
+                if len(self.stack) > MAX_STACKS:
+                    logging.warning(f"Max event stack depth exceeded: {len(self.stack)}")
+                    logging.warning(self.format_stack())
+                    self.stack.pop()
+                    return
                 await listener.callback(*args, **kwargs)
                 self.stack.pop()
         if event_name not in self.listeners or not self.listeners[event_name]:
             logging.warning(f"No listener for event {event_name}")
+    
+    def format_stack(self):
+        msg = "Event stack (most recent dispatch last):"
+        for event_name, listener in self.stack:
+            msg += f"\n  {event_name} -> {listener.name} ({listener.nameid})"
+        return msg
 
 def member_listener(priority=0, name=None):
     def decorator(func):

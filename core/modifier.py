@@ -46,10 +46,7 @@ class StatDesc:
                 result += stat.calculate(filter, **kwargs) * value
         return result
     
-    def scale(self, scale):
-        return StatDesc(tuple((stat, filter, value * scale) for stat, filter, value in self.desc))
-    
-    def calcutale_self_conversion(self, target_stat):
+    def calculate_self_conversion(self, target_stat):
         # 只计算自身转化得到的值
         result = 0
         for stat, filter, value in self.desc:
@@ -58,6 +55,9 @@ class StatDesc:
             elif stat is target_stat:
                 result += stat.calculate(filter) * value
         return result
+    
+    def scale(self, scale):
+        return StatDesc(tuple((stat, filter, value * scale) for stat, filter, value in self.desc))
 
 class StatDict(dict[str, Stat]):
     def new_stats(self, names, target=None):
@@ -79,7 +79,7 @@ class Modifier(item.Item):
         # 属性不同时filter只能为ModifierFilter.BASE或ModifierFilter.SELF_CONVERSION
         # 防止循环转化
         if filter is ModifierFilter.SELF_CONVERSION:
-            stat.calculated_value += self.stat_desc.calcutale_self_conversion(stat)
+            stat.calculated_value += self.stat_desc.calculate_self_conversion(stat)
         else:
             # 理论上几乎不会用到
             stat.calculated_value += self.stat_desc.calculate()

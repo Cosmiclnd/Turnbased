@@ -34,10 +34,7 @@ async def handle(w):
             break
         except Exception as e:
             logging.exception(e)
-            msg = "Event stack (most recent dispatch last):"
-            for event_name, listener in battle.current.event_bus.stack:
-                msg += f"\n  {event_name} -> {listener.name} ({listener.nameid})"
-            logging.error(msg)
+            logging.error(battle.current.event_bus.format_stack())
             logging.info("server closing")
             os._exit(1)
 

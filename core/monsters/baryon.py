@@ -4,6 +4,7 @@ import skill
 import battle
 import damage
 import enums
+import modifier
 
 class Baryon(target.Monster):
     class Skill(target.Monster.MonsterSkill):

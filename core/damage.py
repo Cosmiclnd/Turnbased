@@ -90,13 +90,12 @@ DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, brea
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
 
 class Damage:
+    __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split", "energy_regen", "damage")
+
     def __init__(self, dealer, t, stat_desc, element, types, source):
         self.dealer = dealer
         self.target = t
         self.stat_desc = stat_desc
-        # temp
-        if type(stat_desc) is not modifier.StatDesc:
-            raise TypeError
         self.element = element
         self.types = types if isinstance(types, tuple) else (types,)
         self.source = source
@@ -147,11 +146,6 @@ class Damage:
             damage *= factor.func(self, value)
         self.damage = damage
         return damage
-
-    def damage(self):
-        if self.damage is None:
-            raise ValueError("damage not calculated")
-        return self.damage
     
     async def on_attack(self):
         if self.hit_split is None:

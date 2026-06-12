@@ -3,6 +3,7 @@ import skill
 import battle
 import event
 import damage
+import healing
 import modifier
 import enums
 import effect
@@ -36,8 +37,25 @@ class Huohuo(target.Character):
             if self is not skill:
                 return
             level = self.level + self.bonus_level
+            main_mult = (0.16, 0.17, 0.18, 0.19, 0.2, 0.208, 0.216, 0.224, 0.232, 0.24, 0.25, 0.26, 0.27, 0.28)[level - 1]
+            main_offset = (160, 256, 328, 400, 448, 496, 532, 568, 604, 640, 676, 712, 748, 784, 820)[level - 1]
+            sub_mult = (0.128, 0.136, 0.144, 0.152, 0.16, 0.168, 0.176, 0.184, 0.192, 0.1984, 0.2048, 0.2112, 0.2176, 0.224)[level - 1]
+            sub_offset = (128, 204.8, 262.4, 320, 358.4, 396.8, 425.6, 454.4, 483.2, 512, 540.8, 569.6, 598.4, 627.2, 656)[level - 1]
             t = self.get_main_target()
-            # TODO
+            main = healing.Healing(self.target, t,
+                modifier.StatDesc((
+                    (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, main_mult),
+                    (None, None, main_offset)
+                )))
+            await battle.current.event_bus.dispatch("heal", main)
+            for t in self.get_blast_targets():
+                sub = healing.Healing(self.target, t,
+                    modifier.StatDesc((
+                        (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, sub_mult),
+                        (None, None, sub_offset)
+                    )))
+                await battle.current.event_bus.dispatch("heal", sub)
+            await battle.current.event_bus.dispatch("regen_energy", self.target, 30)
     
     class Ultimate(target.Character.CharacterSkill):
         def __init__(self, t):
@@ -62,6 +80,7 @@ class Huohuo(target.Character):
         self.stats["hp"].base_value = target.lerp(185, 1358, t)
         self.stats["atk"].base_value = target.lerp(81.84, 601.52, t)
         self.stats["def"].base_value = target.lerp(69.3, 509.36, t)
+        self.stats["quantum_res"].base_value = 1  # temp
         self.stats["base_break_dmg"].base_value = target.lerp(54, 3767.5533, t)
         self.stats["spd"].base_value = 98
         self.stats["crt_rate"].base_value = 0.05

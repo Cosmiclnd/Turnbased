@@ -148,6 +148,10 @@ async def respond_deal_damage(websocket, message):
     cprint(f"{message['dealer']['name']} deals {round(message['amount'])} {message['dmg_type']['name']} DMG to {message['target']['name']}.", "light_blue")
     return {"type": "empty"}
 
+async def respond_heal(websocket, message):
+    cprint(f"{message['healer']['name']} heals {round(message['amount'])} HP to {message['target']['name']}.", "light_blue")
+    return {"type": "empty"}
+
 async def respond_battle_win(websocket, message):
     cprint(f"Battle completed.", "green")
     raise SystemExit
@@ -168,6 +172,8 @@ async def handle_message(websocket, message):
         return await respond_start_ultimate_turn(websocket, message)
     elif type == "deal_damage":
         return await respond_deal_damage(websocket, message)
+    elif type == "heal":
+        return await respond_heal(websocket, message)
     elif type == "battle_win":
         return await respond_battle_win(websocket, message)
     elif type == "battle_lose":
@@ -250,7 +256,7 @@ async def main():
         await send_message(websocket, {"type": "add_character", "name": "herta", "record": record_herta})
         await send_message(websocket, {"type": "add_character", "name": "huohuo", "record": record_huohuo})
         for i in range(5):
-            await send_message(websocket, {"type": "add_monster", "name": "baryon", "level": 100, "moc": True})
+            await send_message(websocket, {"type": "add_monster", "name": "baryon", "level": 120, "moc": True})
             #await send_message(websocket, {"type": "add_monster", "name": "dummy", "level": 120, "moc": True})
         await send_message(websocket, {"type": "start_battle"})
         while True:
