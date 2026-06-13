@@ -1,0 +1,201 @@
+{
+    "nameid": "huohuo",
+    "name": "Huohuo",
+    "element": "wind",
+    "path": "abundance",
+    "base_stats": {
+        "hp": [185, 1358],
+        "atk": [81.84, 601.52],
+        "def": [69.3, 509.36],
+        "spd": [98, 98],
+        "taunt": [1, 1],
+        "energy": [140, 140],
+        "max_energy": [140, 140]
+    },
+    "traces_stats": [
+        {
+            "nameid": "huohuo_trace1",
+            "name": "Eff RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": false,
+            "value": 0.04
+        },
+        {
+            "nameid": "huohuo_trace2",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.04
+        },
+        {
+            "nameid": "huohuo_trace3",
+            "name": "SPD Boost",
+            "stat_name": "spd",
+            "is_percentage": false,
+            "value": 2
+        },
+        {
+            "nameid": "huohuo_trace4",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.06
+        },
+        {
+            "nameid": "huohuo_trace5",
+            "name": "Effect RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": true,
+            "value": 0.06
+        },
+        {
+            "nameid": "huohuo_trace6",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.06
+        },
+        {
+            "nameid": "huohuo_trace7",
+            "name": "SPD Boost",
+            "stat_name": "spd",
+            "is_percentage": false,
+            "value": 3
+        },
+        {
+            "nameid": "huohuo_trace8",
+            "name": "Effect RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": true,
+            "value": 0.08
+        },
+        {
+            "nameid": "huohuo_trace9",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.04
+        },
+        {
+            "nameid": "huohuo_trace10",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.08
+        }
+    ],
+    "skills": {
+        "basic_atk": {
+            "nameid": "banner_stormcaller",
+            "name": "Banner: Stormcaller",
+            "type": "single",
+            "delta_skillpoints": 1,
+            "desc": "Deals Wind DMG equal to {percentage:.2%} of Huohuo's Max HP to one designated enemy.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.25, 0.3, 0.35, 0.4, 0.45, 0.5, 0.55, 0.6, 0.65, 0.7]
+                },
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "skill": {
+            "nameid": "tailsman_protection",
+            "name": "Tailsman: Protection",
+            "type": "restore",
+            "delta_skillpoints": -1,
+            "desc": "Dispels 1 debuff(s) from one designated ally and immediately restores this ally's HP by an amount equal to {main_percentage:.2%} of Huohuo's Max HP plus {main_flat}. At the same time, restores HP for allies that are adjacent to this target ally by an amount equal to {sub_percentage:.2%} of Huohuo's Max HP plus {sub_flat}.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
+                "main_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.16, 0.17, 0.18, 0.19, 0.2, 0.208, 0.216, 0.224, 0.232, 0.24, 0.25, 0.26, 0.27, 0.28]
+                },
+                "main_flat": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [160, 256, 328, 400, 448, 496, 532, 568, 604, 640, 676, 712, 748, 784, 820]
+                },
+                "sub_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.128, 0.136, 0.144, 0.152, 0.16, 0.168, 0.176, 0.184, 0.192, 0.1984, 0.2048, 0.2112, 0.2176, 0.224]
+                },
+                "sub_flat": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [128, 204.8, 262.4, 320, 358.4, 396.8, 425.6, 454.4, 483.2, 512, 540.8, 569.6, 598.4, 627.2, 656]
+                }
+            }
+        },
+        "ultimate": {
+            "nameid": "tail_spiritual_domination",
+            "name": "Tail: Spiritual Domination",
+            "type": "support",
+            "delta_skillpoints": 0
+        },
+        "talent": {
+            "nameid": "possession_ethereal_metaflow",
+            "name": "Posession: Ethereal Metaflow",
+            "type": "restore",
+            "delta_skillpoints": 0
+        },
+        "bonus_trace1": {
+            "nameid": "fearful_to_act",
+            "name": "Fearful to Act",
+            "desc": "When battle starts, Huohuo gains {energy} Energy and \"Divine Provision\", lasting for {duration} turn(s).",
+            "values": {
+                "energy": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "bonus_trace2": {
+            "nameid": "the_cursed_one",
+            "name": "The Cursed One",
+            "desc": "Increases the chance to resist Crowd Control debuffs by {control_res:.2%}. When using Ultimate, if an ally target's Max Energy is {energy_threshold} or higher, additionally increases their ATK by {atk_boost:.2%}.",
+            "values": {
+                "control_res": {
+                    "is_dynamic": false,
+                    "value": 0.35
+                },
+                "energy_threshold": {
+                    "is_dynamic": false,
+                    "value": 160
+                },
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 0.24
+                }
+            }
+        },
+        "bonus_trace3": {
+            "nameid": "stress_reaction_to_horror",
+            "name": "Stress Reaction to Horror",
+            "desc": "When her Talent is triggered to heal ally targets, Huohuo regenerates {energy} Energy.",
+            "values": {
+                "energy": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        }
+    }
+}

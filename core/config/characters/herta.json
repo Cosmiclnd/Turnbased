@@ -1,0 +1,290 @@
+{
+    "nameid": "herta",
+    "name": "Herta",
+    "element": "ice",
+    "path": "erudition",
+    "base_stats": {
+        "hp": [130, 953],
+        "atk": [79.2, 582.12],
+        "def": [54, 396.9],
+        "spd": [100, 100],
+        "taunt": [0.75, 0.75],
+        "energy": [110, 110],
+        "max_energy": [110, 110]
+    },
+    "traces_stats": [
+        {
+            "nameid": "herta_trace1",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.05
+        },
+        {
+            "nameid": "herta_trace2",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.032
+        },
+        {
+            "nameid": "herta_trace3",
+            "name": "CRT Rate Boost",
+            "stat_name": "crt_rate",
+            "is_percentage": false,
+            "value": 0.027
+        },
+        {
+            "nameid": "herta_trace4",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.048
+        },
+        {
+            "nameid": "herta_trace5",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.075
+        },
+        {
+            "nameid": "herta_trace6",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.048
+        },
+        {
+            "nameid": "herta_trace7",
+            "name": "CRT Rate Boost",
+            "stat_name": "crt_rate",
+            "is_percentage": false,
+            "value": 0.04
+        },
+        {
+            "nameid": "herta_trace8",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.1
+        },
+        {
+            "nameid": "herta_trace9",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.032
+        },
+        {
+            "nameid": "herta_trace10",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.064
+        }
+    ],
+    "skills": {
+        "basic_atk": {
+            "nameid": "what_are_you_looking_at",
+            "name": "What Are You Looking At?",
+            "type": "single",
+            "delta_skillpoints": 1,
+            "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to one designated enemy.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
+                },
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "skill": {
+            "nameid": "one_time_offer",
+            "name": "One-Time Offer",
+            "type": "aoe",
+            "delta_skillpoints": -1,
+            "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies. If the enemy's HP percentage is {hp_threshold:.2%} or higher, DMG dealt to this target increases by {dmg_boost:.2%}.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8125, 0.875, 0.9375, 1.0, 1.05, 1.1, 1.15, 1.2, 1.25]
+                },
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "dmg_boost": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                }
+            }
+        },
+        "ultimate": {
+            "nameid": "its_magic_i_added_some_magic",
+            "name": "It's Magic, I Added Some Magic",
+            "type": "aoe",
+            "delta_skillpoints": 0,
+            "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [1.2, 1.28, 1.36, 1.44, 1.52, 1.6, 1.7, 1.8, 1.9, 2, 2.08, 2.16, 2.24, 2.32, 2.4]
+                }
+            }
+        },
+        "talent": {
+            "nameid": "fine_i_ll_do_it_myself",
+            "name": "Fine, I'll Do It Myself",
+            "type": "aoe",
+            "delta_skillpoints": 0,
+            "desc": "When an ally target's attack causes an enemy target's HP percentage to fall to {hp_threshold:.2%} or lower, Herta will launch a Follow-Up ATK, dealing Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.25, 0.265, 0.28, 0.295, 0.31, 0.325, 0.34375, 0.3625, 0.38125, 0.4, 0.415, 0.43, 0.445, 0.46, 0.475]
+                }
+            }
+        },
+        "bonus_trace1": {
+            "nameid": "efficiency",
+            "name": "Efficiency",
+            "desc": "When Skill is used, the DMG Boost effect on target enemies increases by an extra {dmg_boost:.2%}.",
+            "values": {
+                "dmg_boost": {
+                    "is_dynamic": false,
+                    "value": 0.25
+                }
+            }
+        },
+        "bonus_trace2": {
+            "nameid": "puppet",
+            "name": "Puppet",
+            "desc": "Increases the chance to resist Crowd Control debuffs by {control_res:.2%}.",
+            "values": {
+                "control_res": {
+                    "is_dynamic": false,
+                    "value": 0.35
+                }
+            }
+        },
+        "bonus_trace3": {
+            "nameid": "icing",
+            "name": "Icing",
+            "desc": "When Ultimate is used, deals {dmg_boost:.2%} more DMG to Frozen enemies.",
+            "values": {
+                "dmg_boost": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                }
+            }
+        },
+        "eidolon1": {
+            "nameid": "kick_you_when_youre_down",
+            "name": "Kick You When You're Down",
+            "desc": "When using Basic ATK, if the designated enemy's HP percentage is at {hp_threshold:.2%} or less, additionally deals Ice Additional DMG equal to {percentage:.2%} of Herta's ATK.",
+            "values": {
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 0.4
+                }
+            }
+        },
+        "eidolon2": {
+            "nameid": "keep_the_ball_rolling",
+            "name": "Keep the Ball Rolling",
+            "desc": "Every time Talent is triggered, this character's CRIT Rate increases by {crt_rate_boost:.2%}. This effect can stack up to {max_stacks} time(s).",
+            "values": {
+                "crt_rate_boost": {
+                    "is_dynamic": false,
+                    "value": 0.03
+                },
+                "max_stacks": {
+                    "is_dynamic": false,
+                    "value": 5
+                }
+            }
+        },
+        "eidolon3": {
+            "nameid": "thats_the_kind_of_girl_i_am",
+            "name": "That's the Kind of Girl I Am",
+            "desc": "Skill Lv. +2, up to a maximum of Lv. 15.\nBasic ATK Lv. +1, up to a maximum of Lv. 10.",
+            "values": {}
+        },
+        "eidolon4": {
+            "nameid": "hit_where_it_hurts",
+            "name": "Hit Where It Hurts",
+            "desc": "When Talent is triggered, DMG increases by {dmg_boost:.2%}.",
+            "values": {
+                "dmg_boost": {
+                    "is_dynamic": false,
+                    "value": 0.1
+                }
+            }
+        },
+        "eidolon5": {
+            "nameid": "cuss_big_or_cuss_nothing",
+            "name": "Cuss Big or Cuss Nothing",
+            "desc": "Ultimate Lv. +2, up to a maximum of Lv. 15.\nTalent Lv. +2, up to a maximum of Lv. 15.",
+            "values": {}
+        },
+        "eidolon6": {
+            "nameid": "no_one_can_betray_me",
+            "name": "No One Can Betray Me",
+            "desc": "After using Ultimate, this character's ATK increases by {atk_boost:.2%} for {duration} turn(s).",
+            "values": {
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 0.25
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        }
+    }
+}

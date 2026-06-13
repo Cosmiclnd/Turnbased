@@ -1,6 +1,7 @@
 import json
 import importlib
 import collections
+import logging
 
 import item
 import event
@@ -12,6 +13,7 @@ import server
 import enums
 import damage
 import effect
+import config
 from relics import base as relic
 
 class DyingStage(enums.Enum):
@@ -212,11 +214,19 @@ class Character(Target):
                 return True
 
     class CharacterSkill(skill.Skill):
-        def __init__(self, nameid, name, type, t, delta_skillpoints):
+        def __init__(self, t, skill_name):
+            self.skill_name = skill_name
+            config_data = t.config.data["skills"][skill_name]
+            nameid, name = t.config.get_skill_name(skill_name)
+            type = skill.SkillType.dict_nameid[config_data["type"]]
             super().__init__(nameid, name, type, t)
-            self.delta_skillpoints = delta_skillpoints
+            self.delta_skillpoints = config_data["delta_skillpoints"]
             self.bonus_level = 0
             battle.current.event_bus.add_member_listener(self.skill_trigger_pre, t)
+        
+        def get_value(self, name):
+            level = self.level + self.bonus_level
+            return self.target.config.get_skill_value(self.skill_name, name, level=level)
         
         @classmethod
         def get_target(cls, list, idx):
@@ -259,10 +269,13 @@ class Character(Target):
                 return
             battle.current.skillpoints.modify(self.delta_skillpoints)
 
-    def __init__(self, nameid, name, element, path):
-        super().__init__(nameid, name, None)
-        self.element = element
-        self.path = path
+    def __init__(self, nameid, record):
+        self.config = config.CharacterConfig(config.load_config_data("characters", nameid), self)
+        if nameid != self.config.nameid:
+            logging.warning(f"Character nameid mismatch: {nameid} != {self.config['nameid']}")
+        
+        super().__init__(nameid, self.config.name, None)
+        self.config.init()
         self.stats.new_stats(
             ["crt_rate", "crt_dmg", "taunt", "energy", "max_energy", "energy_regen_rate", "break_eff", "base_break_dmg",
             "outgoing_healing_boost", "incoming_healing_boost"], self)
@@ -290,8 +303,15 @@ class Character(Target):
         battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
         battle.current.event_bus.add_member_listener(self.ultimate_action_unit_trigger, self)
         battle.current.event_bus.add_member_listener(self.ultimate_turn, self)
+
+        self.skills["basic_atk"].add(self.BasicAtk(self, "basic_atk"))
+        self.skills["skill"].add(self.Skill(self, "skill"))
+        self.skills["ultimate"].add(self.Ultimate(self, "ultimate"))
+        self.skills["talent"].add(self.Talent(self, "talent"))
+        self.set_record(record)
     
     def set_record(self, record):
+        # 读取record
         self.level = record["level"]
         self.eidolons = record["eidolons"]
         self.skills["basic_atk"].set_level(record["basic_atk_level"])
@@ -312,7 +332,10 @@ class Character(Target):
                     r_inst = relic.Relic(r_set, relic.RelicType.dict_nameid[type])
                     self.relics[type] = r_inst
                     r_inst.set_record(r)
-        # 光锥和遗器的apply在各子类的set_record中调用（位于基础属性设置完成之后）
+        
+        self.config.set_base_stats()
+        self.config.set_traces_stats()
+        self.update_lightcone_and_relics()
     
     def get_record(self):
         record =  {
