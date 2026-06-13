@@ -220,6 +220,7 @@ class Character(Target):
             nameid, name = t.config.get_skill_name(skill_name)
             type = skill.SkillType.dict_nameid[config_data["type"]]
             super().__init__(nameid, name, type, t)
+            self.category = config_data["category"]
             self.delta_skillpoints = config_data["delta_skillpoints"]
             self.bonus_level = 0
             battle.current.event_bus.add_member_listener(self.skill_trigger_pre, t)
@@ -370,6 +371,21 @@ class Character(Target):
                 relics[r.relic_set.id] += 1
         for id, pieces in relics.items():
             self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(self, pieces))
+    
+    def get_skills_info(self):
+        result = {"basic_atk": [], "skill": [], "ultimate": [], "talent": [], "trace": [], "eidolon": []}
+        for skill_name in self.config.skills:
+            nameid, name = self.config.get_skill_name(skill_name)
+            category = self.config.skills[skill_name]["category"]
+            info = {
+                "nameid": nameid,
+                "name": name,
+                "desc": self.config.get_skill_desc(skill_name)
+            }
+            if "type" in self.config.skills[skill_name]:
+                info["type"] = self.config.skills[skill_name]["type"]
+            result[category].append(info)
+        return result
 
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
@@ -454,18 +470,29 @@ class Character(Target):
 
 class Monster(Target):
     class MonsterSkill(skill.Skill):
+        def __init__(self, t, skill_name):
+            self.skill_name = skill_name
+            config_data = t.config.data["skills"][skill_name]
+            nameid, name = t.config.get_skill_name(skill_name)
+            type = skill.SkillType.dict_nameid[config_data["type"]]
+            super().__init__(nameid, name, type, t)
+
         def get_target(self):
             taunts = [c.stats["taunt"].calculate() for c in battle.current.characters]
             return battle.current.random.choices(battle.current.characters, weights=taunts)[0]
+        
+        def get_value(self, name):
+            return self.target.config.get_skill_value(self.skill_name, name)
 
-    def __init__(self, nameid, name, level, moc, tier, base_weakness):
-        super().__init__(nameid, name, level)
+    def __init__(self, nameid, level, moc):
+        self.config = config.MonsterConfig(config.load_config_data("monsters", nameid), self)
+        if nameid != self.config.nameid:
+            logging.warning(f"Monster nameid mismatch: {nameid} != {self.config['nameid']}")
+
+        super().__init__(nameid, self.config.name, level)
+        self.config.init()
         self.moc = moc
-        self.tier = tier
-        self.base_weakness = base_weakness
         self.additional_weakness = []
-        self.hp_layers = 1
-        self.toughness_layers = 1
         self.stats.new_stats(["toughness"], self)
         self.skills = skill.SkillGroup(self)
         self.cur_toughness = 0
@@ -476,6 +503,12 @@ class Monster(Target):
         battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
         battle.current.event_bus.add_member_listener(self.restore_toughness, self)
+
+        self.config.set_base_stats()
+
+    def init_skills(self, skill_classes):
+        for i, skill in enumerate(skill_classes):
+            self.skills.add(skill(self, f"skill{i + 1}"))
     
     def has_weakness(self, elem):
         return elem in self.base_weakness or elem in self.additional_weakness
@@ -526,7 +559,7 @@ class Monster(Target):
         if name == "def":
             return 200 + min(level, 100) * 10
         if not hasattr(cls, "level_curve"):
-            with open("core/monsters/level_curve.json", "r") as f:
+            with open("core/config/monsters/level_curve.json", "r") as f:
                 cls.level_curve = json.load(f)
         curve = cls.level_curve["3" if moc else "1"]
         return curve[name][level - 1]

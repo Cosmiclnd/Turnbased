@@ -19,7 +19,7 @@ async def handle_message(message):
         character = target.load_class("characters", message["name"])(message["name"], message["record"])
         battle.current.characters.append(character)
     elif type == "add_monster":
-        monster = target.load_class("monsters", message["name"])(message["level"], message["moc"])
+        monster = target.load_class("monsters", message["name"])(message["name"], message["level"], message["moc"])
         battle.current.monsters.append(monster)
 
 async def handle(w):
@@ -50,6 +50,9 @@ async def handle_command(message):
         elif subtype == "stats":
             c = battle.current.characters[message["character"]]
             message["character"] = c.get_info() | {"stats": c.get_stats_info()}
+        elif subtype == "skills":
+            c = battle.current.characters[message["character"]]
+            message["character"] = c.get_info() | {"skills": c.get_skills_info()}
         await websocket.send(json.dumps(message))
     elif type == "query_monsters":
         subtype = message["subtype"]

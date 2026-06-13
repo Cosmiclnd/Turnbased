@@ -88,6 +88,7 @@
         "basic_atk": {
             "nameid": "what_are_you_looking_at",
             "name": "What Are You Looking At?",
+            "category": "basic_atk",
             "type": "single",
             "delta_skillpoints": 1,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to one designated enemy.",
@@ -110,6 +111,7 @@
         "skill": {
             "nameid": "one_time_offer",
             "name": "One-Time Offer",
+            "category": "skill",
             "type": "aoe",
             "delta_skillpoints": -1,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies. If the enemy's HP percentage is {hp_threshold:.2%} or higher, DMG dealt to this target increases by {dmg_boost:.2%}.",
@@ -140,6 +142,7 @@
         "ultimate": {
             "nameid": "its_magic_i_added_some_magic",
             "name": "It's Magic, I Added Some Magic",
+            "category": "ultimate",
             "type": "aoe",
             "delta_skillpoints": 0,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies.",
@@ -162,6 +165,7 @@
         "talent": {
             "nameid": "fine_i_ll_do_it_myself",
             "name": "Fine, I'll Do It Myself",
+            "category": "talent",
             "type": "aoe",
             "delta_skillpoints": 0,
             "desc": "When an ally target's attack causes an enemy target's HP percentage to fall to {hp_threshold:.2%} or lower, Herta will launch a Follow-Up ATK, dealing Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies.",
@@ -188,6 +192,7 @@
         "bonus_trace1": {
             "nameid": "efficiency",
             "name": "Efficiency",
+            "category": "trace",
             "desc": "When Skill is used, the DMG Boost effect on target enemies increases by an extra {dmg_boost:.2%}.",
             "values": {
                 "dmg_boost": {
@@ -199,6 +204,7 @@
         "bonus_trace2": {
             "nameid": "puppet",
             "name": "Puppet",
+            "category": "trace",
             "desc": "Increases the chance to resist Crowd Control debuffs by {control_res:.2%}.",
             "values": {
                 "control_res": {
@@ -210,6 +216,7 @@
         "bonus_trace3": {
             "nameid": "icing",
             "name": "Icing",
+            "category": "trace",
             "desc": "When Ultimate is used, deals {dmg_boost:.2%} more DMG to Frozen enemies.",
             "values": {
                 "dmg_boost": {
@@ -221,6 +228,7 @@
         "eidolon1": {
             "nameid": "kick_you_when_youre_down",
             "name": "Kick You When You're Down",
+            "category": "eidolon",
             "desc": "When using Basic ATK, if the designated enemy's HP percentage is at {hp_threshold:.2%} or less, additionally deals Ice Additional DMG equal to {percentage:.2%} of Herta's ATK.",
             "values": {
                 "hp_threshold": {
@@ -236,6 +244,7 @@
         "eidolon2": {
             "nameid": "keep_the_ball_rolling",
             "name": "Keep the Ball Rolling",
+            "category": "eidolon",
             "desc": "Every time Talent is triggered, this character's CRIT Rate increases by {crt_rate_boost:.2%}. This effect can stack up to {max_stacks} time(s).",
             "values": {
                 "crt_rate_boost": {
@@ -251,12 +260,14 @@
         "eidolon3": {
             "nameid": "thats_the_kind_of_girl_i_am",
             "name": "That's the Kind of Girl I Am",
+            "category": "eidolon",
             "desc": "Skill Lv. +2, up to a maximum of Lv. 15.\nBasic ATK Lv. +1, up to a maximum of Lv. 10.",
             "values": {}
         },
         "eidolon4": {
             "nameid": "hit_where_it_hurts",
             "name": "Hit Where It Hurts",
+            "category": "eidolon",
             "desc": "When Talent is triggered, DMG increases by {dmg_boost:.2%}.",
             "values": {
                 "dmg_boost": {
@@ -268,12 +279,14 @@
         "eidolon5": {
             "nameid": "cuss_big_or_cuss_nothing",
             "name": "Cuss Big or Cuss Nothing",
+            "category": "eidolon",
             "desc": "Ultimate Lv. +2, up to a maximum of Lv. 15.\nTalent Lv. +2, up to a maximum of Lv. 15.",
             "values": {}
         },
         "eidolon6": {
             "nameid": "no_one_can_betray_me",
             "name": "No One Can Betray Me",
+            "category": "eidolon",
             "desc": "After using Ultimate, this character's ATK increases by {atk_boost:.2%} for {duration} turn(s).",
             "values": {
                 "atk_boost": {

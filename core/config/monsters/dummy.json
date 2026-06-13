@@ -1,0 +1,44 @@
+{
+    "nameid": "dummy",
+    "name": "Dummy",
+    "tier": "normal",
+    "weakness": [],
+    "toughness": 100,
+    "base_stat_scales": {
+        "hp": 5000,
+        "atk": 18,
+        "def": 1,
+        "spd": 100
+    },
+    "base_stat_flats": {
+        "eff_hr": 0,
+        "eff_res": 0
+    },
+    "base_dmg_res": {
+        "physical": 0.2,
+        "fire": 0.2,
+        "ice": 0.2,
+        "lightning": 0.2,
+        "wind": 0.2,
+        "quantum": 0.2,
+        "imaginary": 0.2
+    },
+    "skills": {
+        "skill1": {
+            "nameid": "dummy",
+            "name": "Dummy",
+            "type": "single",
+            "desc": "Deals DMG equal to {percentage:.2%} of Dummy's ATK to one designated enemy.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 0
+                }
+            }
+        }
+    }
+}

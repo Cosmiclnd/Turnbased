@@ -21,6 +21,25 @@ def print_stats(stats):
             cprint(f"{round(values[1] * 100, 2)}%", "green", end="")
             print(f" ({round(values[0] * 100, 2)}%)")
 
+def print_skills(skills):
+    translate_category = {"basic_atk": "Basic ATK", "skill": "Skill", "ultimate": "Ultimate", "talent": "Talent", "trace": "Trace", "eidolon": "Eidolon"}
+    translate_type = {"single": "Single Target", "blast": "Blast", "bounce": "Bounce", "aoe": "AoE", "restore": "Restore", "support": "Support", "others": "Others"}
+    for category in skills:
+        for skill in skills[category]:
+            title = skill["name"] + " - " + translate_category[category]
+            if "type" in skill:
+                title += " | " + translate_type[skill["type"]]
+            cprint(title, "light_blue")
+            colored = False
+            for char in skill["desc"]:
+                if char == "*":
+                    colored = not colored
+                elif colored:
+                    cprint(char, "light_yellow", end="")
+                else:
+                    print(char, end="")
+            print()
+
 async def handle_query(websocket, words):
     if len(words) < 2:
         cprint("Unknown query type.", "red")
@@ -58,7 +77,9 @@ async def handle_query(websocket, words):
                 if subtype == "stats":
                     cprint(f"Stats of [{idx}] {response['character']['name']} ({response['character']['nameid']})", "cyan")
                     print_stats(response["character"]["stats"])
-                
+                elif subtype == "skills":
+                    cprint(f"Skills of [{idx}] {response['character']['name']} ({response['character']['nameid']})", "cyan")
+                    print_skills(response["character"]["skills"])
             else:
                 cprint("Unknown query type.", "red")
 

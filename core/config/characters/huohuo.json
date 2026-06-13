@@ -88,6 +88,7 @@
         "basic_atk": {
             "nameid": "banner_stormcaller",
             "name": "Banner: Stormcaller",
+            "category": "basic_atk",
             "type": "single",
             "delta_skillpoints": 1,
             "desc": "Deals Wind DMG equal to {percentage:.2%} of Huohuo's Max HP to one designated enemy.",
@@ -110,6 +111,7 @@
         "skill": {
             "nameid": "tailsman_protection",
             "name": "Tailsman: Protection",
+            "category": "skill",
             "type": "restore",
             "delta_skillpoints": -1,
             "desc": "Dispels 1 debuff(s) from one designated ally and immediately restores this ally's HP by an amount equal to {main_percentage:.2%} of Huohuo's Max HP plus {main_flat}. At the same time, restores HP for allies that are adjacent to this target ally by an amount equal to {sub_percentage:.2%} of Huohuo's Max HP plus {sub_flat}.",
@@ -143,19 +145,68 @@
         "ultimate": {
             "nameid": "tail_spiritual_domination",
             "name": "Tail: Spiritual Domination",
+            "category": "ultimate",
             "type": "support",
-            "delta_skillpoints": 0
+            "delta_skillpoints": 0,
+            "desc": "Regenerates Energy for all teammates (i.e., excluding this unit) by an amount equal to {energy_regen_rate:.2%} of their respective Max Energy. At the same time, increases their ATK by {atk_boost:.2%} for {duration} turn(s).",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "energy_regen_rate": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.15, 0.155, 0.16, 0.165, 0.17, 0.175, 0.18135, 0.1875, 0.19375, 0.2, 0.205, 0.21, 0.215, 0.22, 0.225]
+                },
+                "atk_boost": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.24, 0.256, 0.272, 0.288, 0.304, 0.32, 0.34, 0.36, 0.38, 0.4, 0.416, 0.432, 0.448, 0.464, 0.48]
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
         },
         "talent": {
             "nameid": "possession_ethereal_metaflow",
             "name": "Posession: Ethereal Metaflow",
+            "category": "talent",
             "type": "restore",
-            "delta_skillpoints": 0
+            "delta_skillpoints": 0,
+            "desc": "After using her Skill or Ultimate, Huohuo gains \"Divine Provision,\" lasting for {duration} turn(s). This duration decreases by 1 turn at the start of Huohuo's every turn. When Huohuo has \"Divine Provision\" at the start of an ally target's turn or when they use their Ultimate, restores HP for that ally target and the ally target with the lowest HP percentage by an amount equal to {percentage:.2%} of Huohuo's Max HP plus {flat}. Then, restores HP for every ally with a current HP percentage at or below {hp_threshold:.2%} by an amount equal to {percentage:.2%} of Huohuo's Max HP plus {flat}.\nWhen \"Divine Provision\" is triggered to heal an ally target, dispels 1 debuff(s) from that target. This effect can be triggered {trigger_count} time(s). Gaining \"Divine Provision\" again resets the effect's trigger count.",
+            "values": {
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 3
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.03, 0.031875, 0.03375, 0.035625, 0.0375, 0.039, 0.0405, 0.042, 0.0435, 0.045, 0.0465, 0.048, 0.0495, 0.051, 0.0525]
+                },
+                "flat": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [30, 48, 61.5, 75, 84, 93, 99.75, 106.5, 113.25, 120, 126.75, 133.5, 140.25, 147, 153.75]
+                },
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "trigger_count": {
+                    "is_dynamic": false,
+                    "value": 6
+                }
+            }
         },
         "bonus_trace1": {
             "nameid": "fearful_to_act",
             "name": "Fearful to Act",
-            "desc": "When battle starts, Huohuo gains {energy} Energy and \"Divine Provision\", lasting for {duration} turn(s).",
+            "category": "trace",
+            "desc": "When battle starts, Huohuo gains {energy} Energy and \"Divine Provision,\" lasting for {duration} turn(s).",
             "values": {
                 "energy": {
                     "is_dynamic": false,
@@ -170,6 +221,7 @@
         "bonus_trace2": {
             "nameid": "the_cursed_one",
             "name": "The Cursed One",
+            "category": "trace",
             "desc": "Increases the chance to resist Crowd Control debuffs by {control_res:.2%}. When using Ultimate, if an ally target's Max Energy is {energy_threshold} or higher, additionally increases their ATK by {atk_boost:.2%}.",
             "values": {
                 "control_res": {
@@ -189,11 +241,90 @@
         "bonus_trace3": {
             "nameid": "stress_reaction_to_horror",
             "name": "Stress Reaction to Horror",
+            "category": "trace",
             "desc": "When her Talent is triggered to heal ally targets, Huohuo regenerates {energy} Energy.",
             "values": {
                 "energy": {
                     "is_dynamic": false,
                     "value": 1
+                }
+            }
+        },
+        "eidolon1": {
+            "nameid": "anchored_to_vessel_specters_nestled",
+            "name": "Anchored to Vessel, Specters Nestled",
+            "category": "eidolon",
+            "desc": "The duration of \"Divine Provision\" produced by the Talent is extended by {duration} turn(s). When Huohuo possesses \"Divine Provision,\" her Outgoing Healing increases by {outgoing_healing_boost:.2%}, all allies' SPD increases by {spd_boost:.2%}.",
+            "values": {
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "outgoing_healing_boost": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                },
+                "spd_boost": {
+                    "is_dynamic": false,
+                    "value": 0.12
+                }
+            }
+        },
+        "eidolon2": {
+            "nameid": "sealed_in_tail_wraith_subdued",
+            "name": "Sealed in Tail, Wraith Subdued",
+            "category": "eidolon",
+            "desc": "If Huohuo possesses \"Divine Provision\" when an ally target is struck by a killing blow, the ally will not be knocked down and their HP will immediately be restored by an amount equal to {percentage:.2%} of their Max HP. This reduces the duration of \"Divine Provision\" by 1 turn. This effect can only be triggered {trigger_count} time(s) per battle.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "trigger_count": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "eidolon3": {
+            "nameid": "cursed_by_fate_moths_to_flame",
+            "name": "Cursed by Fate, Moths to Flame",
+            "category": "eidolon",
+            "desc": "Ultimate Lv. +2 up to a maximum of Lv. 15.\nTalent Lv. +2 up to a maximum of Lv. 15.",
+            "values": {}
+        },
+        "eidolon4": {
+            "nameid": "tied_in_life_bound_to_strife",
+            "name": "Tied in Life, Bound to Strife",
+            "category": "eidolon",
+            "desc": "When healing an ally target via Skill or Talent, the less HP the target ally currently has, the higher the amount of healing they will receive. The maximum increase in healing provided by Huohuo is {max_healing_boost:.2%}.",
+            "values": {
+                "max_healing_boost": {
+                    "is_dynamic": false,
+                    "value": 0.8
+                }
+            }
+        },
+        "eidolon5": {
+            "nameid": "mandated_by_edict_evils_evicted",
+            "name": "Mandated by Edict, Evils Evicted",
+            "category": "eidolon",
+            "desc": "Skill Lv. +2 up to a maximum of Lv. 15.\nBasic ATK Lv. +1 up to a maximum of Lv. 10.",
+            "values": {}
+        },
+        "eidolon6": {
+            "nameid": "woven_together_cohere_forever",
+            "name": "Woven Together, Cohere Forever",
+            "category": "eidolon",
+            "desc": "When healing an ally target, increases the ally target's DMG dealt by {percentage:.2%} for {duration} turn(s).",
+            "values": {
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
                 }
             }
         }

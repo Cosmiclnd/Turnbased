@@ -8,8 +8,8 @@ import modifier
 
 class Dummy(target.Monster):
     class Skill(target.Monster.MonsterSkill):
-        def __init__(self, t):
-            super().__init__("dummy", "Dummy", skill.SkillType.SINGLE, t)
+        def __init__(self, t, skill_name):
+            super().__init__(t, skill_name)
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -18,18 +18,11 @@ class Dummy(target.Monster):
                 return
             t = self.get_target()
             dmg = damage.Damage(self.target, t,
-                modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, 0)),
+                modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 None, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
-            dmg.energy_regen = 10
+            dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("attack", dmg)
 
-    def __init__(self, level, moc):
-        super().__init__("dummy", "Dummy", level, moc, enums.MonsterTier.NORMAL, [])
-        self.skills.add(self.Skill(self))
-        self.stats["hp"].base_value = target.Monster.get_base_stat("hp", level, moc) * 600
-        self.stats["atk"].base_value = target.Monster.get_base_stat("atk", level, moc) * 18
-        self.stats["def"].base_value = target.Monster.get_base_stat("def", level, moc)
-        self.stats["spd"].base_value = target.Monster.get_base_stat("spd", level, moc) * 80
-        self.stats["eff_hr"].base_value = target.Monster.get_base_stat("eff_hr", level, moc)
-        self.stats["eff_res"].base_value = target.Monster.get_base_stat("eff_res", level, moc)
-        self.stats["toughness"].base_value = 100
+    def __init__(self, nameid, level, moc):
+        super().__init__(nameid, level, moc)
+        self.init_skills((self.Skill,))
