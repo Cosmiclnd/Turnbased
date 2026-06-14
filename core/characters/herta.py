@@ -6,9 +6,12 @@ import damage
 import modifier
 import enums
 import effect
+from monsters import base as monster
 
-class Herta(target.Character):
-    class BasicAtk(target.Character.CharacterSkill):
+from characters import base
+
+class Herta(base.Character):
+    class BasicAtk(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
@@ -33,7 +36,7 @@ class Herta(target.Character):
                         self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATTACK)
                     await battle.current.event_bus.dispatch("deal_damage", dmg)
 
-    class Skill(target.Character.CharacterSkill):
+    class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
@@ -56,7 +59,7 @@ class Herta(target.Character):
                         dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace1", "dmg_boost")
                 await battle.current.event_bus.dispatch("attack", dmg)
     
-    class Ultimate(target.Character.CharacterSkill):
+    class Ultimate(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
@@ -85,7 +88,7 @@ class Herta(target.Character):
                 eff = effect.ModifierEffect(*name, self.target.effect_ids[name[0]], effect.Effect.Type.BUFF, self.target.config.get_skill_value("eidolon6", "duration"), effect.CommonEffect.DurationType.TURN_END, 1, mod, self.target.stats["atk"])
                 await battle.current.event_bus.dispatch("add_effect", self.target, eff)
     
-    class Talent(target.Character.CharacterSkill):
+    class Talent(base.Character.CharacterSkill):
         class FollowUp(target.Target.FollowUpTurn):
             pass
 
@@ -99,7 +102,7 @@ class Herta(target.Character):
         
         @event.member_listener(event.ListenerPriority.EXECUTE - 1)
         async def cur_hp_modify(self, t, amount):
-            if not isinstance(t, target.Monster):
+            if not isinstance(t, monster.Monster):
                 return
             hp_threshold = t.stats["hp"].calculate() * self.get_value("hp_threshold")
             if t.cur_hp <= hp_threshold and t.cur_hp - amount > hp_threshold:

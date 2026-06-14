@@ -1,10 +1,11 @@
 import copy
 
-import target
 import battle
 import enums
 import modifier
 import item
+from characters import base as character
+from monsters import base as monster
 
 class DmgType(enums.Enum):
     NORMAL = item.Item("normal", "Normal")
@@ -70,7 +71,7 @@ def resistance_base_func(dmg):
     return value
 
 def mitigation_factor_base_func(dmg):
-    if isinstance(dmg.target, target.Monster) and not dmg.target.weakness_broken:
+    if isinstance(dmg.target, monster.Monster) and not dmg.target.weakness_broken:
         return 0.9
     return 1
 
@@ -116,7 +117,7 @@ class Damage:
                 DamageFactorType.MITIGATION
             ):
                 self.new_factor(factor)
-            if isinstance(self.dealer, target.Character):
+            if isinstance(self.dealer, character.Character):
                 self.new_factor(DamageFactorType.CRIT)
         if self.has_types(DmgType.BREAK):
             for factor in (
@@ -171,7 +172,7 @@ class Damage:
         if self.toughness_reduction is not None:
             await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction)
         if self.energy_regen is not None:
-            t = self.target if isinstance(self.target, target.Character) else self.dealer
+            t = self.target if isinstance(self.target, character.Character) else self.dealer
             await battle.current.event_bus.dispatch("regen_energy", t, self.energy_regen)
 
 class ToughnessReduction:

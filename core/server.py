@@ -5,6 +5,7 @@ import os
 
 import battle
 import target
+import config
 
 port = 55716
 websocket = None
@@ -16,13 +17,14 @@ async def handle_message(message):
     elif type == "start_battle":
         await battle.current.start()
     elif type == "add_character":
-        character = target.load_class("characters", message["name"])(message["name"], message["record"])
+        character = config.load_class("characters", message["name"])(message["name"], message["record"])
         battle.current.characters.append(character)
     elif type == "add_monster":
-        monster = target.load_class("monsters", message["name"])(message["name"], message["level"], message["moc"])
+        monster = config.load_class("monsters", message["name"])(message["name"], message["level"], message["moc"])
         battle.current.monsters.append(monster)
 
 async def handle(w):
+    
     global websocket
     websocket = w
     while True:

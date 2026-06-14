@@ -114,11 +114,15 @@
             "category": "skill",
             "type": "restore",
             "delta_skillpoints": -1,
-            "desc": "Dispels 1 debuff(s) from one designated ally and immediately restores this ally's HP by an amount equal to {main_percentage:.2%} of Huohuo's Max HP plus {main_flat}. At the same time, restores HP for allies that are adjacent to this target ally by an amount equal to {sub_percentage:.2%} of Huohuo's Max HP plus {sub_flat}.",
+            "desc": "Dispels {num_debuffs} debuff(s) from one designated ally and immediately restores this ally's HP by an amount equal to {main_percentage:.2%} of Huohuo's Max HP plus {main_flat}. At the same time, restores HP for allies that are adjacent to this target ally by an amount equal to {sub_percentage:.2%} of Huohuo's Max HP plus {sub_flat}.",
             "values": {
                 "energy_regen": {
                     "is_dynamic": false,
                     "value": 30
+                },
+                "num_debuffs": {
+                    "is_dynamic": false,
+                    "value": 1
                 },
                 "main_percentage": {
                     "is_dynamic": true,
@@ -176,7 +180,7 @@
             "category": "talent",
             "type": "restore",
             "delta_skillpoints": 0,
-            "desc": "After using her Skill or Ultimate, Huohuo gains \"Divine Provision,\" lasting for {duration} turn(s). This duration decreases by 1 turn at the start of Huohuo's every turn. When Huohuo has \"Divine Provision\" at the start of an ally target's turn or when they use their Ultimate, restores HP for that ally target and the ally target with the lowest HP percentage by an amount equal to {percentage:.2%} of Huohuo's Max HP plus {flat}. Then, restores HP for every ally with a current HP percentage at or below {hp_threshold:.2%} by an amount equal to {percentage:.2%} of Huohuo's Max HP plus {flat}.\nWhen \"Divine Provision\" is triggered to heal an ally target, dispels 1 debuff(s) from that target. This effect can be triggered {trigger_count} time(s). Gaining \"Divine Provision\" again resets the effect's trigger count.",
+            "desc": "After using her Skill or Ultimate, Huohuo gains \"Divine Provision,\" lasting for {duration} turn(s). This duration decreases by 1 turn at the start of Huohuo's every turn. When Huohuo has \"Divine Provision\" at the start of an ally target's turn or when they use their Ultimate, restores HP for that ally target and the ally target with the lowest HP percentage by an amount equal to {percentage:.2%} of Huohuo's Max HP plus {flat}. Then, restores HP for every ally with a current HP percentage at or below {hp_threshold:.2%} by an amount equal to {percentage:.2%} of Huohuo's Max HP plus {flat}.\nWhen \"Divine Provision\" is triggered to heal an ally target, dispels {num_debuffs} debuff(s) from that target. This effect can be triggered {trigger_count} time(s). Gaining \"Divine Provision\" again resets the effect's trigger count.",
             "values": {
                 "duration": {
                     "is_dynamic": false,
@@ -195,6 +199,10 @@
                 "hp_threshold": {
                     "is_dynamic": false,
                     "value": 0.5
+                },
+                "num_debuffs": {
+                    "is_dynamic": false,
+                    "value": 1
                 },
                 "trigger_count": {
                     "is_dynamic": false,

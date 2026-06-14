@@ -8,8 +8,10 @@ import modifier
 import enums
 import effect
 
-class Huohuo(target.Character):
-    class BasicAtk(target.Character.CharacterSkill):
+from characters import base
+
+class Huohuo(base.Character):
+    class BasicAtk(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
@@ -28,7 +30,7 @@ class Huohuo(target.Character):
             dmg.hit_split = (0.2, 0.2, 0.2, 0.4)
             await battle.current.event_bus.dispatch("attack", dmg)
     
-    class Skill(target.Character.CharacterSkill):
+    class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
@@ -54,11 +56,11 @@ class Huohuo(target.Character):
                 await battle.current.event_bus.dispatch("heal", sub)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
-    class Ultimate(target.Character.CharacterSkill):
+    class Ultimate(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
     
-    class Talent(target.Character.CharacterSkill):
+    class Talent(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
     

@@ -6,8 +6,10 @@ import damage
 import enums
 import modifier
 
-class Baryon(target.Monster):
-    class Skill(target.Monster.MonsterSkill):
+from monsters import base
+
+class Baryon(base.Monster):
+    class Skill(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)

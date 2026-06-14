@@ -1,4 +1,4 @@
-import target
+from characters import base as character
 
 class Healing:
     def __init__(self, healer, t, stat_desc):
@@ -8,6 +8,6 @@ class Healing:
     
     def calculate(self):
         mult = 1
-        if isinstance(self.healer, target.Character):
+        if isinstance(self.healer, character.Character):
             mult += self.healer.stats["outgoing_healing_boost"].calculate(healing=self) + self.target.stats["incoming_healing_boost"].calculate(healing=self)
         return self.stat_desc.calculate(healing=self) * mult
