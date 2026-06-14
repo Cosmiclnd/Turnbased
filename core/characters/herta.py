@@ -136,6 +136,9 @@ class Herta(base.Character):
                     i += 1
                 self.attacks = 0
                 self.follow_up_launched = False
+        
+    def __init__(self, record):
+        super().__init__("herta", record)
     
     def set_record(self, record):
         super().set_record(record)

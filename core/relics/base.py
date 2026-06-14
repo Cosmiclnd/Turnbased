@@ -1,6 +1,7 @@
 import item
 import enums
 import modifier
+import config
 
 class RelicType(enums.Enum):
     HEAD = item.Item("head", "Head")
@@ -49,7 +50,7 @@ RelicMainStatType.DEF_PERCENT = RelicMainStatType("def", 0.0864, 0.03024, True)
 RelicMainStatType.BREAK_EFFECT = RelicMainStatType("break_effect", 0.10368, 0.036288)
 RelicMainStatType.EFF_HR = RelicMainStatType("eff_hr", 0.06912, 0.024192)
 RelicMainStatType.ENERGY_REGEN_RATE = RelicMainStatType("energy_regen_rate", 0.031104, 0.010886)
-RelicMainStatType.HEALING_BOOST = RelicMainStatType("healing_boost", 0.055296, 0.019354)
+RelicMainStatType.HEALING_BOOST = RelicMainStatType("outgoing_healing_boost", 0.055296, 0.019354)
 RelicMainStatType.PHYSICAL_DMG_BOOST = RelicMainStatType("physical_dmg_boost", 0.062208, 0.021773)
 RelicMainStatType.FIRE_DMG_BOOST = RelicMainStatType("fire_dmg_boost", 0.062208, 0.021773)
 RelicMainStatType.ICE_DMG_BOOST = RelicMainStatType("ice_dmg_boost", 0.062208, 0.021773)
@@ -147,11 +148,25 @@ RelicSubStatType.ALL = (RelicSubStatType.SPD,
 RelicSubStatType.init()
 
 class RelicSet(item.Item):
+    class RelicSetConfig(config.SkillsConfig):
+        def __init__(self, data, relic_set):
+            super().__init__(data)
+            self.relic_set = relic_set
+            self.nameid = data["nameid"]
+            self.name = data["name"]
+
     class PiecesEffect:
         def __init__(self, t, relic_set, pieces):
             self.target = t
             self.relic_set = relic_set
             self.pieces = pieces
+    
+    def __init__(self, nameid):
+        self.config = self.RelicSetConfig(config.load_config_data("relics", nameid), self)
+        if nameid != self.config.nameid:
+            logging.warning(f"Relic Set nameid mismatch: {nameid} != {self.config['nameid']}")
+        
+        super().__init__(nameid, self.config.name, None)
     
     def get_pieces_effect(self, t, pieces):
         return self.PiecesEffect(t, self, pieces)

@@ -25,3 +25,24 @@ class Config:
 
     def __init__(self, data):
         self.data = data
+
+class SkillsConfig(Config):
+    __slots__ = ("skills",)
+
+    def __init__(self, data):
+        super().__init__(data)
+        self.skills = data["skills"]
+        
+    @classmethod
+    def get_value(self, value, **kwargs):
+        if value["is_dynamic"]:
+            return value["values"][kwargs[value["key"]] - 1]
+        else:
+            return value["value"]
+    
+    def get_skill_value(self, skill_name, name, **kwargs):
+        return self.get_value(self.skills[skill_name]["values"][name], **kwargs)
+    
+    def get_skill_name(self, skill_name):
+        skill = self.skills[skill_name]
+        return skill["nameid"], skill["name"]

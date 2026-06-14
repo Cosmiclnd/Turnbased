@@ -23,6 +23,6 @@ class Antibaryon(target.Monster):
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("attack", dmg)
 
-    def __init__(self, nameid, level, moc):
-        super().__init__(nameid, level, moc)
+    def __init__(self, level, moc):
+        super().__init__("antibaryon", level, moc)
         self.init_skills((self.Skill,))

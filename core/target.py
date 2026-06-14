@@ -17,8 +17,8 @@ class DyingStage(enums.Enum):
 DyingStage.init()
 
 class Target(item.Item):
-    class TargetConfig(config.Config):
-        __slots__ = ("target", "nameid", "name", "skills")
+    class TargetConfig(config.SkillsConfig):
+        __slots__ = ("target", "nameid", "name")
 
         def __init__(self, data, t):
             super().__init__(data)
@@ -26,20 +26,6 @@ class Target(item.Item):
             self.nameid = data["nameid"]
             self.name = data["name"]
             self.skills = data["skills"]
-        
-        @classmethod
-        def get_value(self, value, **kwargs):
-            if value["is_dynamic"]:
-                return value["values"][kwargs[value["key"]] - 1]
-            else:
-                return value["value"]
-        
-        def get_skill_value(self, skill_name, name, **kwargs):
-            return self.get_value(self.skills[skill_name]["values"][name], **kwargs)
-        
-        def get_skill_name(self, skill_name):
-            skill = self.skills[skill_name]
-            return skill["nameid"], skill["name"]
         
         def get_skill_desc(self, skill_name):
             skill = self.skills[skill_name]

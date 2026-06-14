@@ -10,7 +10,9 @@ class HunterOfGlacialForest(base.RelicSet):
         def __init__(self, t, relic_set, pieces):
             super().__init__(t, relic_set, pieces)
             if self.pieces >= 2:
-                mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name, modifier.StatDesc((None, None, 0.1)), None, t)
+                mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
+                    modifier.StatDesc((None, None, relic_set.config.get_skill_value("2pc", "dmg_boost"))),
+                    None, t)
                 t.stats["ice_dmg_boost"].modifiers.append(mod)
             if self.pieces >= 4:
                 battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
@@ -20,12 +22,15 @@ class HunterOfGlacialForest(base.RelicSet):
         async def skill_group_trigger(self, skill_group):
             if self.target.skills["ultimate"] is not skill_group:
                 return
-            mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name, modifier.StatDesc((None, None, 0.25)), None, self.target)
+            mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
+                modifier.StatDesc((None, None, self.relic_set.config.get_skill_value("4pc", "crt_dmg_boost"))),
+                None, self.target)
             eff = effect.ModifierEffect(self.relic_set.nameid, self.relic_set.name,
-                self.effect_id, effect.Effect.Type.BUFF, 2, effect.CommonEffect.DurationType.TURN_END, 1, mod, self.target.stats["crt_dmg"])
+                self.effect_id, effect.Effect.Type.BUFF, self.relic_set.config.get_skill_value("4pc", "duration"),
+                effect.CommonEffect.DurationType.TURN_END, 1, mod, self.target.stats["crt_dmg"])
             await battle.current.event_bus.dispatch("add_effect", self.target, eff)
 
     def __init__(self):
-        super().__init__("hunter_of_glacial_forest", "Hunter of Glacial Forest")
+        super().__init__("hunter_of_glacial_forest")
 
 base.register_relic_set(HunterOfGlacialForest)

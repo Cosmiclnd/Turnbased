@@ -119,7 +119,7 @@ class CommonEffect(Effect):
         if self.get_stacks() == 0 and self.id in self.target.effects:
             del self.target.effects[self.id]
             self.target = None
-            self.refresh(target)
+        self.refresh(target)
     
     @event.member_listener(event.ListenerPriority.START, "normal_turn")
     async def turn_start(self, t):

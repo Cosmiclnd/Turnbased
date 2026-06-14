@@ -1,15 +1,46 @@
 import item
+import config
+import enums
+import target
 
 class LightCone(item.Item):
-    def __init__(self, nameid, name, path):
-        super().__init__(nameid, name)
-        self.path = path
+    class LightConeConfig(config.SkillsConfig):
+        __slots__ = ("lightcone", "nameid", "name", "base_stats")
+
+        def __init__(self, data, lightcone):
+            super().__init__(data)
+            self.lightcone = lightcone
+            self.nameid = data["nameid"]
+            self.name = data["name"]
+            self.base_stats = data["base_stats"]
+        
+        def init(self):
+            self.lightcone.path = enums.Path.dict_nameid[self.data["path"]]
+        
+        def set_base_stats(self):
+            for name, stats in self.base_stats.items():
+                self.lightcone.base_stats[name] = target.lerp(stats[0], stats[1], (self.lightcone.level - 1) / 79)
+
+    def __init__(self, nameid, record):
+        self.config = self.LightConeConfig(config.load_config_data("lightcones", nameid), self)
+        if nameid != self.config.nameid:
+            logging.warning(f"Light Cone nameid mismatch: {nameid} != {self.config['nameid']}")
+        
+        super().__init__(nameid, self.config.name, None)
+        self.config.init()
+        self.base_stats = {}
         self.target = None
+        self.valid = None
         self.level = None
         self.stacks = None
+
+        self.set_record(record)
     
     def apply(self, t):
         self.target = t
+        self.valid = self.target.path is self.path
+        for stat_name, value in self.base_stats.items():
+            self.target.stats[stat_name].base_value += value
     
     def get_record(self):
         return {
@@ -19,6 +50,9 @@ class LightCone(item.Item):
         }
     
     def set_record(self, record):
-        # `name`在target中被处理
         self.level = record["level"]
         self.stacks = record["stacks"]
+        self.config.set_base_stats()
+    
+    def get_value(self, name):
+        return self.config.get_skill_value("skill", name, stacks=self.stacks)

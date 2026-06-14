@@ -1,0 +1,28 @@
+{
+    "nameid": "the_birth_of_the_self",
+    "name": "The Birth of the Self",
+    "path": "erudition",
+    "base_stats": {
+        "hp": [43, 953],
+        "atk": [21.6, 476.28],
+        "def": [15, 330.75]
+    },
+    "skills": {
+        "skill": {
+            "nameid": "the_maiden_in_the_painting",
+            "name": "The Maiden in the Painting",
+            "desc": "Increases DMG dealt by the wearer's Follow-Up ATKs by {dmg_boost:.2%}. If the current HP percentage of the enemy target is below or equal to {hp_threshold:.2%}, increases DMG dealt by Follow-Up ATKs by an extra {dmg_boost:.2%}.",
+            "values": {
+                "dmg_boost": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.24, 0.3, 0.36, 0.42, 0.48]
+                },
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                }
+            }
+        }
+    }
+}

@@ -64,6 +64,9 @@ class Huohuo(base.Character):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
     
+    def __init__(self, record):
+        super().__init__("huohuo", record)
+    
     def set_record(self, record):
         super().set_record(record)
         

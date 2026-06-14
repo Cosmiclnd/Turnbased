@@ -166,8 +166,7 @@ class Character(target.Target):
         self.traces_stats_unlocked = record["traces_stats_unlocked"]
         self.traces_unlocked = record["traces_unlocked"]
         if "lightcone" in record:
-            self.lightcone = config.load_class("lightcones", record["lightcone"]["name"])()
-            self.lightcone.set_record(record["lightcone"])
+            self.lightcone = config.load_class("lightcones", record["lightcone"]["name"])(record["lightcone"])
         if "relics" in record:
             for type, r in record["relics"].items():
                 if r is not None:
