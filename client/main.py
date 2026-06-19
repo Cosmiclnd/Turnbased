@@ -277,6 +277,50 @@ async def main():
                 "name": "night_of_fright",
                 "level": 80,
                 "stacks": 5
+            },
+            "relics": {
+                "head": {
+                    "name": "passerby_of_wandering_cloud",
+                    "level": 15,
+                    "main_stat_type": "hp",
+                    "sub_stat_types": ["def", "spd", "hp%", "crt_rate"],
+                    "enhancements": [(1, 2), (1, 2, 1), (1, 2, 2), (0,)]
+                },
+                "hands": {
+                    "name": "passerby_of_wandering_cloud",
+                    "level": 15,
+                    "main_stat_type": "atk",
+                    "sub_stat_types": ["hp%", "spd", "eff_res", "atk%"],
+                    "enhancements": [(1, 1, 0, 1), (2, 2), (2,), (2,)]
+                },
+                "body": {
+                    "name": "passerby_of_wandering_cloud",
+                    "level": 15,
+                    "main_stat_type": "outgoing_healing_boost",
+                    "sub_stat_types": ["hp%", "def%", "spd", "break_eff"],
+                    "enhancements": [(1, 2, 1, 1), (1, 0), (2, 2), (1,)]
+                },
+                "feet": {
+                    "name": "passerby_of_wandering_cloud",
+                    "level": 15,
+                    "main_stat_type": "spd",
+                    "sub_stat_types": ["spd", "eff_res", "hp", "hp%"],
+                    "enhancements": [(1, 2, 1, 1), (1, 2, 1), (1,), (2,)]
+                },
+                "planar_sphere": {
+                    "name": "fleet_of_the_ageless",
+                    "level": 15,
+                    "main_stat_type": "hp%",
+                    "sub_stat_types": ["eff_res", "spd", "atk%", "def%"],
+                    "enhancements": [(1, 2, 1, 1), (1, 0), (2, 2), (0,)]
+                },
+                "link_rope": {
+                    "name": "fleet_of_the_ageless",
+                    "level": 15,
+                    "main_stat_type": "energy_regen_rate",
+                    "sub_stat_types": ["hp", "eff_res", "hp%", "def%"],
+                    "enhancements": [(1, 2), (1, 2, 2), (2, 1, 2), (0,)]
+                }
             }
         }
         await send_message(websocket, {"type": "add_character", "name": "herta", "record": record_herta})

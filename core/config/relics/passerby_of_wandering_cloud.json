@@ -1,0 +1,23 @@
+{
+    "nameid": "passerby_of_wandering_cloud",
+    "name": "Passerby of Wandering Cloud",
+    "skills": {
+        "2pc": {
+            "nameid": "2pc_effect",
+            "name": "2-Pc Effect",
+            "desc": "Increases Outgoing Healing by {healing_boost:.2%}.",
+            "values": {
+                "healing_boost": {
+                    "is_dynamic": false,
+                    "value": 0.1
+                }
+            }
+        },
+        "4pc": {
+            "nameid": "4pc_effect",
+            "name": "4-Pc Effect",
+            "desc": " At the start of the battle, immediately regenerates 1 Skill Point.",
+            "values": {}
+        }
+    }
+}
