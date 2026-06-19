@@ -6,6 +6,7 @@ import event
 import battle
 import config
 import enums
+import effect
 
 class Monster(target.Target):
     class MonsterConfig(target.Target.TargetConfig):
@@ -62,7 +63,6 @@ class Monster(target.Target):
         battle.current.event_bus.add_member_listener(self.reduce_toughness, self)
         battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
-        battle.current.event_bus.add_member_listener(self.restore_toughness, self)
 
         self.config.set_base_stats()
 
@@ -81,8 +81,15 @@ class Monster(target.Target):
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def normal_turn(self, t):
-        if self is not t or self.frozen:
+        if self is not t:
             return
+        self.frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
+        if self.frozen:
+            target.Target.NormalTurn.advance_target(self, 0.5)
+            return
+        if self.weakness_broken:
+            self.cur_toughness = self.stats["toughness"].calculate()
+            self.weakness_broken = False
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -105,14 +112,6 @@ class Monster(target.Target):
         if self is not tr.target:
             return
         self.weakness_broken = True
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
-    async def restore_toughness(self, t):
-        if self is not t:
-            return
-        if self.weakness_broken:
-            self.cur_toughness = self.stats["toughness"].calculate()
-            self.weakness_broken = False
     
     @classmethod
     def get_base_stat(cls, name, level, moc):

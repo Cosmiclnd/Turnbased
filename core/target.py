@@ -69,14 +69,8 @@ class Target(item.Item):
     
     class ExtraTurn(action.ActionUnit):
         def __init__(self, target, priority):
-            super().__init__("extra_turn", "Extra Turn", priority, target)
+            super().__init__("extra_turn", "Extra Turn", priority, item.DeadToggle(target))
             self.target = target
-            self.died = False
-        
-        def dead(self):
-            if super().dead():
-                return True
-            return self.died
         
         def action_value(self):
             return 0
@@ -101,7 +95,7 @@ class Target(item.Item):
         self.cur_hp = 0
         self.frozen = False
         self.dying_stage = None
-        self.effects = {}
+        self.effects = effect.EffectList(self)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
         battle.current.event_bus.add_member_listener(self.action_unit_trigger, self)
@@ -120,13 +114,16 @@ class Target(item.Item):
     def get_stats_info(self):
         return {name: (stat.calculate(modifier.ModifierFilter.BASE), stat.calculate()) for name, stat in self.stats.items()}
     
-    async def try_apply_debuff(self, t, debuff, base_chance):
+    async def try_apply_debuff(self, eff_add, base_chance):
         chance = base_chance
-        chance *= 1 + self.stats["eff_hr"].calculate(effect=debuff)
-        chance *= 1 - t.stats["eff_res"].calculate(effect=debuff)
-        chance *= 1 - debuff.get_debuff_res(t)
+        chance *= 1 + self.stats["eff_hr"].calculate(effect=eff_add.effect)
+        chance *= max(1 - eff_add.target.stats["eff_res"].calculate(effect=eff_add.effect), 0)
+        debuff_res = 0
+        for debuff in effect.Debuff.ALL:
+            debuff_res += eff_add.target.stats[f"{debuff.nameid}_res"].calculate(effect=eff_add.effect)
+        chance *= max(1 - debuff_res, 0)
         if battle.current.random.random() < chance:
-            await battle.current.event_bus.dispatch("add_effect", t, debuff)
+            await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
@@ -210,10 +207,10 @@ class Target(item.Item):
         await battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def add_effect(self, t, effect):
-        if self is not t:
+    async def add_effect(self, eff_add):
+        if self is not eff_add.target:
             return
-        effect.apply(self)
+        self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
 
 def lerp(a, b, t):
     return a + (b - a) * t

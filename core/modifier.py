@@ -37,23 +37,28 @@ class StatDesc:
         # stat为None时value作为offset，此时filter也为None
         # stat不为None时value作为scale
     
-    def calculate(self, **kwargs):
+    def calculate(self, target=None, **kwargs):
         result = 0
         for stat, filter, value in self.desc:
             if stat is None:
                 result += value
-            else:
+            elif isinstance(stat, Stat):
                 result += stat.calculate(filter, **kwargs) * value
+            elif isinstance(stat, str):
+                result += target.stats[stat].calculate(filter, **kwargs) * value
         return result
     
-    def calculate_self_conversion(self, target_stat):
+    def calculate_self_conversion(self, target_stat, target=None, **kwargs):
         # 只计算自身转化得到的值
+        # target_stat必须是Stat的实例
         result = 0
         for stat, filter, value in self.desc:
             if stat is None:
                 result += value
             elif stat is target_stat:
-                result += stat.calculate(filter) * value
+                result += stat.calculate(filter, **kwargs) * value
+            elif isinstance(stat, str) and stat == target_stat.name:
+                result += target.stats[stat].calculate(filter, **kwargs) * value
         return result
     
     def scale(self, scale):
@@ -79,7 +84,7 @@ class Modifier(item.Item):
         # 属性不同时filter只能为ModifierFilter.BASE或ModifierFilter.SELF_CONVERSION
         # 防止循环转化
         if filter is ModifierFilter.SELF_CONVERSION:
-            stat.calculated_value += self.stat_desc.calculate_self_conversion(stat)
+            stat.calculated_value += self.stat_desc.calculate_self_conversion(stat, target=stat.target, **kwargs)
         else:
             # 理论上几乎不会用到
-            stat.calculated_value += self.stat_desc.calculate()
+            stat.calculated_value += self.stat_desc.calculate(target=stat.target, **kwargs)

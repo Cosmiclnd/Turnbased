@@ -81,12 +81,9 @@ class Herta(base.Character):
                     dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace3", "dmg_boost")
                 await battle.current.event_bus.dispatch("attack", dmg)
             if self.target.eidolons >= 6:
-                name = self.target.config.get_skill_name("eidolon6")
-                mod = modifier.Modifier(*name,
-                    modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.BASE, self.target.config.get_skill_value("eidolon6", "atk_boost"))),
-                    None, self)
-                eff = effect.ModifierEffect(*name, self.target.effect_ids[name[0]], effect.Effect.Type.BUFF, self.target.config.get_skill_value("eidolon6", "duration"), effect.CommonEffect.DurationType.TURN_END, 1, mod, self.target.stats["atk"])
-                await battle.current.event_bus.dispatch("add_effect", self.target, eff)
+                eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["eidolon6"],
+                    self.target.config.get_skill_value("eidolon6", "duration"))
+                await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Talent(base.Character.CharacterSkill):
         class FollowUp(target.Target.FollowUpTurn):
@@ -114,7 +111,7 @@ class Herta(base.Character):
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def action_unit_trigger(self, action_unit):
             if isinstance(action_unit, Herta.Talent.FollowUp) and action_unit.target is self.target:
-                action_unit.died = True
+                action_unit.master.dead_toggle = True
                 i = 0
                 while i < self.attacks:
                     for t in battle.current.monsters[:]:
@@ -127,12 +124,8 @@ class Herta(base.Character):
                             dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("eidolon4", "dmg_boost")
                         await battle.current.event_bus.dispatch("attack", dmg)
                     if self.target.eidolons >= 2:
-                        name = self.target.config.get_skill_name("eidolon2")
-                        mod = modifier.Modifier(*name,
-                            modifier.StatDesc((None, None, self.target.config.get_skill_value("eidolon2", "crt_rate_boost"))), None, self)
-                        eff = effect.ModifierEffect(*name, self.target.effect_ids[name[0]], effect.Effect.Type.BUFF,
-                            -1, effect.CommonEffect.DurationType.PERMANENT, self.target.config.get_skill_value("eidolon2", "max_stacks"), mod, self.target.stats["crt_rate"])
-                        await battle.current.event_bus.dispatch("add_effect", self.target, eff)
+                        eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["eidolon2"], -1)
+                        await battle.current.event_bus.dispatch("add_effect", eff_add)
                     i += 1
                 self.attacks = 0
                 self.follow_up_launched = False
@@ -155,8 +148,19 @@ class Herta(base.Character):
         if self.eidolons >= 5:
             self.skills["ultimate"].set_bonus_level(2)
             self.skills["talent"].set_bonus_level(2)
+        
+        self.set_effect_types()
+    
+    def set_effect_types(self):
+        self.effect_types = {}
 
-        self.effect_ids = {
-            self.config.get_skill_name("eidolon2")[0]: effect.Effect.next_id(),
-            self.config.get_skill_name("eidolon6")[0]: effect.Effect.next_id()
-        }
+        names = self.config.get_skill_name("eidolon2")
+        mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon2", "crt_rate_boost"))), None, self)
+        self.effect_types["eidolon2"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT,
+            self.config.get_skill_value("eidolon2", "max_stacks"), "crt_rate", mod)
+        
+        names = self.config.get_skill_name("eidolon6")
+        mod = modifier.Modifier(*names,
+            modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon6", "atk_boost"))), None, self)
+        self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
+            1, "atk", mod)

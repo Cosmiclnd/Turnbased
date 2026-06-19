@@ -20,7 +20,6 @@ class Huohuo(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            level = self.level + self.bonus_level
             t = self.get_main_target()
             dmg = damage.Damage(self.target, t,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
@@ -39,7 +38,6 @@ class Huohuo(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            level = self.level + self.bonus_level
             t = self.get_main_target()
             main = healing.Healing(self.target, t,
                 modifier.StatDesc((
@@ -59,6 +57,21 @@ class Huohuo(base.Character):
     class Ultimate(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
+            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def skill_trigger(self, skill):
+            if self is not skill:
+                return
+            self.target.cur_energy -= self.target.stats["energy"].calculate()
+            self.target.ultimate_activated = False
+            for t in battle.current.characters[:]:
+                if t is self.target:
+                    continue
+                await battle.current.event_bus.dispatch("regen_energy", t, t.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"), True)
+                eff_add = effect.EffectAddition(self.target, t, self.target.effect_types["ultimate"], self.get_value("duration"))
+                await battle.current.event_bus.dispatch("add_effect", eff_add)
+            await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
     class Talent(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
@@ -82,3 +95,19 @@ class Huohuo(base.Character):
         if self.eidolons >= 5:
             self.skills["skill"].set_bonus_level(2)
             self.skills["basic_atk"].set_bonus_level(1)
+        
+        self.set_effect_types()
+    
+    def set_effect_types(self):
+        self.effect_types = {}
+
+        names = self.config.get_skill_name("ultimate")
+        mod = modifier.Modifier(*names,
+            modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.skills["ultimate"].skills[0].get_value("atk_boost"))), None, self)
+        self.effect_types["ultimate"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "atk", mod)
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def battle_start(self):
+        await super().battle_start()
+        if self.traces_unlocked[0]:
+            await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))

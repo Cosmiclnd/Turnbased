@@ -1,3 +1,5 @@
+import copy
+
 import item
 import event
 import battle
@@ -17,155 +19,173 @@ class Debuff(enums.Enum):
     ALL = (BLEED, BURN, FROZEN, SHOCK, WIND_SHEER, ENTANGLEMENT, IMPRISONMENT, CONTROL)
 Debuff.init()
 
+# 表示一种状态效果类型
+# 不同的Effect实例是不同的状态效果类型
 class Effect(item.Item):
-    id = 0
-
     class Type:
         BUFF = 0
         DEBUFF = 1
         OTHER = 2
-
-    def __init__(self, nameid, name, id, type):
-        super().__init__(nameid, name)
-        self.id = id
-        self.type = type
-        self.target = None
     
-    def dead(self):
-        return self.target is None or self.target.dead()
-    
-    def apply(self, target):
-        target.effects[self.id] = self
-        self.target = target
-    
-    def remove(self, target):
-        if self.id in target.effects:
-            del target.effects[self.id]
-        self.target = None
-    
-    def get_debuff_res(self, target):
-        # 仅对Debuff有效
-        return 0
-
-    @classmethod
-    def next_id(cls):
-        cls.id += 1
-        return cls.id
-
-class CommonEffect(Effect):
     class DurationType:
         PERMANENT = 0
         TURN_START = 1
         TURN_END = 2
+    
+    # 表示已经应用到某个target的状态效果
+    class Instance:
+        def __init__(self, eff, t):
+            self.effect = eff
+            self.target = t
+            self.old_stacks = 0
+        
+        # 有关状态效果的信息改变后调用
+        # 要求多次调用无副作用
+        # 不要通过super()调用父类的refresh
+        def refresh(self):
+            self.old_stacks = self.target.effects.get_stacks(self.effect)
 
-    def __init__(self, nameid, name, id, type, duration, duration_type, max_stacks):
-        # duration=-1表示永久持续
-        super().__init__(nameid, name, id, type)
-        self.durations = {duration: 1}
+    def __init__(self, nameid, name, type, duration_type, max_stacks, dispellable=True):
+        super().__init__(nameid, name)
+        self.type = type
         self.duration_type = duration_type
         self.max_stacks = max_stacks
+        self.dispellable = dispellable
     
-    def refresh(self, target):
-        pass
+    def new_instance(self, t):
+        return self.Instance(self, t)
     
-    def apply(self, target):
-        if self.id in target.effects:
-            target.effects[self.id].add_stacks(self.durations)
-            target.effects[self.id].refresh(target)
-        else:
-            super().apply(target)
-            self.refresh(target)
-            if self.duration_type == self.DurationType.TURN_START:
-                battle.current.event_bus.add_member_listener(self.turn_start, self)
-            elif self.duration_type == self.DurationType.TURN_END:
-                battle.current.event_bus.add_member_listener(self.turn_end, self)
+    def is_debuff_type(self, type):
+        return False
+
+class ModifierEffect(Effect):
+    class Instance(Effect.Instance):
+        def __init__(self, eff, t):
+            super().__init__(eff, t)
+            self.mod = copy.copy(eff.mod)
+
+        def refresh(self):
+            stacks = self.target.effects.get_stacks(self.effect)
+            stat = self.target.stats[self.effect.stat_name]
+            if stacks != 0 and self.mod not in stat.modifiers:
+                stat.modifiers.append(self.mod)
+            elif stacks == 0 and self.mod in stat.modifiers:
+                stat.modifiers.remove(self.mod)
+            self.mod.stat_desc = self.effect.mod.stat_desc.scale(stacks)
+            self.old_stacks = stacks
+
+    def __init__(self, nameid, name, type, duration_type, max_stacks, stat_name, mod, dispellable=True):
+        super().__init__(nameid, name, type, duration_type, max_stacks, dispellable)
+        self.stat_name = stat_name
+        self.mod = mod
+
+class FrozenEffect(Effect):
+    class Instance(Effect.Instance):
+        def refresh(self):
+            stacks = self.target.effects.get_stacks(self.effect)
+            if self.old_stacks == 0 and stacks != 0:
+                self.listener = battle.current.event_bus.add_member_listener(self.turn_end, item.DeadToggle(self.target))
+            elif self.old_stacks != 0 and stacks == 0:
+                self.listener.master.dead_toggle = True
+            self.old_stacks = stacks
+        
+        @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
+        async def turn_end(self, t):
+            if self.target is not t:
+                return
+            if self.effect.additional_dmg is not None:
+                await battle.current.event_bus.dispatch("deal_damage", self.effect.additional_dmg)
+
+    def __init__(self, additional_dmg=None, dispellable=True):
+        super().__init__("frozen", "Frozen", Effect.Type.DEBUFF, Effect.DurationType.TURN_END, 1, dispellable)
+        self.additional_dmg = additional_dmg
+
+    def is_debuff_type(self, type):
+        return type in (Debuff.FROZEN, Debuff.CONTROL)
+
+class EffectList:
+    def __init__(self, t):
+        self.target = t
+        self.effects = {}
+        # effects格式为{effect: {duration: stacks}}
+        # duration=-1表示永久持续
+        self.instances = {}
+
+        battle.current.event_bus.add_member_listener(self.turn_start, t)
+        battle.current.event_bus.add_member_listener(self.turn_end, t)
     
-    def remove(self, target):
-        duration = min(filter(lambda x: x >= 0, self.durations.keys()))
-        self.durations[duration] -= 1
-        if self.durations[duration] == 0:
-            del self.durations[duration]
-        if self.get_stacks() == 0 and self.id in target.effects:
-            del target.effects[self.id]
-            self.target = None
-            self.refresh(target)
+    def add(self, eff, duration, stacks=1):
+        if eff not in self.instances:
+            self.instances[eff] = eff.new_instance(self.target)
+        if eff not in self.effects:
+            self.effects[eff] = {}
+        if duration not in self.effects[eff]:
+            self.effects[eff][duration] = 0
+        self.effects[eff][duration] += stacks
+        current_stacks = self.get_stacks(eff)
+        if current_stacks > eff.max_stacks:
+            self.remove(eff, current_stacks - eff.max_stacks)
+        self.instances[eff].refresh()
     
-    def get_stacks(self):
-        return sum(self.durations.values())
-    
-    def add_stacks(self, durations):
-        for duration, stacks in durations.items():
-            if duration in self.durations:
-                self.durations[duration] += stacks
+    def remove(self, eff, stacks):
+        durations = self.effects[eff]
+        for duration in sorted(durations.keys()):
+            if duration == -1:
+                continue
+            if durations[duration] >= stacks:
+                durations[duration] -= stacks
+                break
             else:
-                self.durations[duration] = stacks
-        excess = self.get_stacks() - self.max_stacks
-        if excess > 0:
-            for duration in sorted(self.durations.keys()):
-                if excess <= 0:
-                    break
-                if duration < 0:
-                    continue
-                stacks = self.durations[duration]
-                remove = min(excess, stacks)
-                self.durations[duration] -= remove
-                excess -= remove
-                if self.durations[duration] == 0:
-                    del self.durations[duration]
+                stacks -= durations[duration]
+                del durations[duration]
+                if not durations:
+                    del self.effects[eff]
+        self.instances[eff].refresh()
     
-    def advance_turn(self):
-        target = self.target
-        self.durations = {k - 1 if k > 0 else -1: v for k, v in self.durations.items() if k != 1}
-        if self.get_stacks() == 0 and self.id in self.target.effects:
-            del self.target.effects[self.id]
-            self.target = None
-        self.refresh(target)
+    def advance_turn(self, eff):
+        durations = self.effects[eff]
+        self.effects[eff] = {}
+        for duration in sorted(durations.keys()):
+            if duration == -1:
+                self.effects[eff][-1] = durations[-1]
+                continue
+            if duration > 1:
+                self.effects[eff][duration - 1] = durations[duration]
+        if not self.effects[eff]:
+            del self.effects[eff]
+        self.instances[eff].refresh()
+    
+    def get_stacks(self, eff):
+        if eff not in self.effects:
+            return 0
+        return sum(self.effects[eff].values())
+    
+    def has_debuff(self, debuff):
+        for eff in self.effects.keys():
+            if eff.is_debuff_type(debuff):
+                return True
+        return False
     
     @event.member_listener(event.ListenerPriority.START, "normal_turn")
     async def turn_start(self, t):
         if self.target is not t:
             return
-        self.advance_turn()
+        for eff in list(self.effects.keys()):
+            if eff.duration_type == Effect.DurationType.TURN_START:
+                self.advance_turn(eff)
     
     @event.member_listener(event.ListenerPriority.END, "normal_turn")
     async def turn_end(self, t):
         if self.target is not t:
             return
-        self.advance_turn()
+        for eff in list(self.effects.keys()):
+            if eff.duration_type == Effect.DurationType.TURN_END:
+                self.advance_turn(eff)
 
-class ModifierEffect(CommonEffect):
-    def __init__(self, nameid, name, id, type, duration, duration_type, max_stacks, modifier, stat):
-        super().__init__(nameid, name, id, type, duration, duration_type, max_stacks)
-        self.modifier = modifier
-        self.stat_desc = modifier.stat_desc.scale(1)
-        self.stat = stat
-    
-    def refresh(self, target):
-        stacks = self.get_stacks()
-        self.modifier.stat_desc = self.stat_desc.scale(stacks)
-        if self.target is not None and  self.modifier not in self.stat.modifiers:
-            self.stat.modifiers.append(self.modifier)
-        if self.target is None and self.modifier in self.stat.modifiers:
-            self.stat.modifiers.remove(self.modifier)
-
-class FrozenEffect(CommonEffect):
-    eff_id = Effect.next_id()
-
-    def __init__(self, duration, additional_dmg=None):
-        super().__init__("frozen", "Frozen", self.eff_id, Effect.Type.DEBUFF, duration, CommonEffect.DurationType.TURN_END, 1)
-        self.additional_dmg = additional_dmg
-    
-    def refresh(self, target):
-        target.frozen = self.get_stacks() > 0
-    
-    def get_debuff_res(self, target):
-        return target.stats["control_res"].calculate(effect=self)
-    
-    @event.member_listener(event.ListenerPriority.END, "normal_turn")
-    async def turn_end(self, t):
-        if self.target is not t:
-            return
-        if self.additional_dmg is not None:
-            await battle.current.event_bus.dispatch("deal_damage", self.additional_dmg)
-        target.Target.NormalTurn.advance_target(t, 0.5)
-        self.advance_turn()
+class EffectAddition:
+    def __init__(self, adder, t, eff, duration, stacks=1):
+        self.adder = adder
+        self.target = t
+        self.effect = eff
+        self.duration = duration
+        self.stacks = stacks

@@ -10,6 +10,7 @@ import modifier
 import server
 import damage
 import effect
+import action
 from relics import base as relic
 
 class Character(target.Target):
@@ -233,11 +234,15 @@ class Character(target.Target):
     async def battle_start(self):
         # 这个listener在Target类中已经被添加
         await super().battle_start()
-        self.cur_energy = 0.5 * self.stats["energy"].calculate()
+        self.cur_energy = 0.5 * self.stats["energy"].calculate() * 2
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def normal_turn(self, t):
-        if self is not t or self.frozen:
+        if self is not t:
+            return
+        self.frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
+        if self.frozen:
+            target.Target.NormalTurn.advance_target(self, 0.5)
             return
         message = {"type": "character_normal_turn_option", "options": list(self.skills.keys()), "info": None} | self.get_info()
         while True:
@@ -271,7 +276,8 @@ class Character(target.Target):
                 self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
             del dmg.factors[damage.DamageFactorType.MULTIPLIER]  # 击破造成的附加伤害没有击破倍率
             dmg.types = (damage.DmgType.ADDITIONAL, damage.DmgType.BREAK)  # 附加伤害类型是副类型，单独设置
-            await self.try_apply_debuff(tr.target, effect.FrozenEffect(1, dmg), 1.5)
+            eff = effect.FrozenEffect(dmg)
+            await self.try_apply_debuff(effect.EffectAddition(self, tr.target, eff, 1), 1.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def regen_energy(self, t, amount, fixed=False):
