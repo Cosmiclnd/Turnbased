@@ -272,7 +272,12 @@ async def main():
             "talent_level": 10,
             "technique_level": 1,
             "traces_stats_unlocked": (True,) * 10,
-            "traces_unlocked": (True, True, True)
+            "traces_unlocked": (True, True, True),
+            "lightcone": {
+                "name": "night_of_fright",
+                "level": 80,
+                "stacks": 5
+            }
         }
         await send_message(websocket, {"type": "add_character", "name": "herta", "record": record_herta})
         await send_message(websocket, {"type": "add_character", "name": "huohuo", "record": record_huohuo})

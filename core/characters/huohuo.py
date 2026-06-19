@@ -50,14 +50,14 @@ class Huohuo(base.Character):
                     (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("main_percentage")),
                     (None, None, self.get_value("main_flat"))
                 )))
-            await battle.current.event_bus.dispatch("heal", main)
+            await self.target.heal_by_skill(main)
             for t in self.get_blast_targets():
                 sub = healing.Healing(self.target, t,
                     modifier.StatDesc((
                         (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("sub_percentage")),
                         (None, None, self.get_value("sub_flat"))
                     )))
-                await battle.current.event_bus.dispatch("heal", sub)
+                await self.target.heal_by_skill(sub)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
     class Ultimate(base.Character.CharacterSkill):
@@ -97,7 +97,7 @@ class Huohuo(base.Character):
                     (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage")),
                     (None, None, self.get_value("flat"))
                 )))
-            await battle.current.event_bus.dispatch("heal", heal)
+            await self.target.heal_by_skill(heal)
             if self.target.dispel_count > 0:
                 self.target.dispel_count -= await t.effects.dispel(min(self.get_value("num_debuffs"), self.target.dispel_count),
                     lambda eff: eff.type is effect.Effect.Type.DEBUFF)
@@ -153,8 +153,6 @@ class Huohuo(base.Character):
     def __init__(self, record):
         super().__init__("huohuo", record)
 
-        battle.current.event_bus.add_member_listener(self.heal, self)
-    
     def set_record(self, record):
         super().set_record(record)
         
@@ -213,19 +211,17 @@ class Huohuo(base.Character):
     def has_divine_provision(self):
         return self.effects.has_effect(self.effect_types["divine_provision"])
     
+    async def heal_by_skill(self, heal):
+        if self.eidolons >= 4:
+            heal.multiplier += 0.8 * (1 - heal.target.cur_hp / heal.target.stats["hp"].calculate())
+        if self.eidolons >= 6:
+            eff_add = effect.EffectAddition(self, heal.target, self.effect_types["eidolon6"], self.config.get_skill_value("eidolon6", "duration"))
+            await battle.current.event_bus.dispatch("add_effect", eff_add)
+        await battle.current.event_bus.dispatch("heal", heal)
+    
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         await super().battle_start()
         if self.traces_unlocked[0]:
             await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))
             await self.gain_divine_provision(self.config.get_skill_value("bonus_trace1", "duration"))
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE + 1)
-    async def heal(self, heal):
-        if self is not heal.healer:
-            return
-        if self.eidolons >= 4:
-            heal.multiplier += 0.8 * (1 - heal.target.cur_hp / heal.target.stats["hp"].calculate())
-        if self.eidolons >= 6:
-            eff_add = effect.EffectAddition(self, heal.target, self.effect_types["eidolon6"], self.config.get_skill_value("eidolon6", "duration"))
-            await battle.current.event_bus.dispatch("add_effect", eff_add)

@@ -1,0 +1,42 @@
+{
+    "nameid": "night_of_fright",
+    "name": "Night of Fright",
+    "path": "abundance",
+    "base_stats": {
+        "hp": [53, 1164],
+        "atk": [21.6, 476.28],
+        "def": [24, 529.2]
+    },
+    "skills": {
+        "skill": {
+            "nameid": "deep_deep_breaths",
+            "name": "Deep, Deep Breaths",
+            "desc": "Increases the wearer's Energy Regeneration Rate by {energy_regen_boost:.2%}. When any ally uses their Ultimate, the wearer restores HP for the ally currently with the lowest HP percentage by an amount equal to {percentage:.2%} of the healed ally's Max HP. When the wearer provides healing for an ally, increases the healed ally's ATK by {atk_boost:.2%}. This effect can stack up to {max_stacks} times and lasts for {duration} turn(s).",
+            "values": {
+                "energy_regen_boost": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.12, 0.14, 0.16, 0.18, 0.2]
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.1, 0.11, 0.12, 0.13, 0.14]
+                },
+                "atk_boost": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.024, 0.028, 0.032, 0.036, 0.04]
+                },
+                "max_stacks": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        }
+    }
+}
