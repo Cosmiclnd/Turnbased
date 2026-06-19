@@ -31,9 +31,7 @@ class EventBus:
         # member_func必须是被@member_listener装饰的成员函数
         nameid = nameid or master.nameid
         name = name or master.name
-        listener = Listener(nameid, name, member_func, master, member_func.priority)
-        self.add_listener(member_func.name, listener)
-        return listener
+        self.add_listener(member_func.name, Listener(nameid, name, member_func, master, member_func.priority))
     
     async def dispatch(self, event_name, *args, **kwargs):
         if event_name in self.listeners:

@@ -7,6 +7,7 @@ import healing
 import modifier
 import enums
 import effect
+import item
 
 from characters import base
 
@@ -38,7 +39,12 @@ class Huohuo(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
+            duration = self.target.config.get_skill_value("talent", "duration")
+            if self.target.eidolons >= 1:
+                duration += self.target.config.get_skill_value("eidolon1", "duration")
+            await self.target.gain_divine_provision(duration)
             t = self.get_main_target()
+            await t.effects.dispel(self.get_value("num_debuffs"), lambda eff: eff.type is effect.Effect.Type.DEBUFF)
             main = healing.Healing(self.target, t,
                 modifier.StatDesc((
                     (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("main_percentage")),
@@ -65,6 +71,10 @@ class Huohuo(base.Character):
                 return
             self.target.cur_energy -= self.target.stats["energy"].calculate()
             self.target.ultimate_activated = False
+            duration = self.target.config.get_skill_value("talent", "duration")
+            if self.target.eidolons >= 1:
+                duration += self.target.config.get_skill_value("eidolon1", "duration")
+            await self.target.gain_divine_provision(duration)
             for t in battle.current.characters[:]:
                 if t is self.target:
                     continue
@@ -76,9 +86,74 @@ class Huohuo(base.Character):
     class Talent(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
+        
+            battle.current.event_bus.add_member_listener(self.turn_start, t)
+            battle.current.event_bus.add_member_listener(self.ultimate_turn_start, t)
+            battle.current.event_bus.add_member_listener(self.revive, t)
+        
+        async def heal(self, t):
+            heal = healing.Healing(self.target, t,
+                modifier.StatDesc((
+                    (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage")),
+                    (None, None, self.get_value("flat"))
+                )))
+            await battle.current.event_bus.dispatch("heal", heal)
+            if self.target.dispel_count > 0:
+                self.target.dispel_count -= await t.effects.dispel(min(self.get_value("num_debuffs"), self.target.dispel_count),
+                    lambda eff: eff.type is effect.Effect.Type.DEBUFF)
+            if self.target.traces_unlocked[2]:
+                await battle.current.event_bus.dispatch("regen_energy", self.target, self.target.config.get_skill_value("bonus_trace3", "energy"))
+        
+        async def trigger_divine_provision(self, t):
+            await self.heal(t)
+            await self.heal(min(battle.current.characters, key=lambda c: c.cur_hp / c.stats["hp"].calculate()))
+            for c in battle.current.characters:
+                if c.cur_hp <= c.stats["hp"].calculate() * self.get_value("hp_threshold"):
+                    await self.heal(c)
+            
+        @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
+        async def turn_start(self, t):
+            if not isinstance(t, base.Character) or not self.target.has_divine_provision():
+                return
+            await self.trigger_divine_provision(t)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE + 1, "ultimate_turn")
+        async def ultimate_turn_start(self, t):
+            if not isinstance(t, base.Character) or not self.target.has_divine_provision():
+                return
+            await self.trigger_divine_provision(t)
+        
+        @event.member_listener(event.ListenerPriority.POST_PROCESS, "cur_hp_modify")
+        async def revive(self, t, amount):
+            if not isinstance(t, base.Character) or not self.target.has_divine_provision():
+                return
+            if self.target.revive_count > 0 and amount < 0 and t.dying_stage == target.DyingStage.DIEABLE:
+                await battle.current.event_bus.dispatch("cur_hp_modify", t,
+                    t.stats["hp"].calculate() * self.target.config.get_skill_value("eidolon2", "percentage"))
+                self.target.effects.advance_turn(self.target.effect_types["divine_provision"])
+                self.target.revive_count -= 1
+    
+    class DivineProvisionEffect(effect.Effect):
+        class Instance(effect.Effect.Instance):
+            async def refresh(self):
+                stacks = self.target.effects.get_stacks(self.effect)
+                if self.target.eidolons >= 1:
+                    if self.old_stacks == 0 and stacks != 0:
+                        for c in battle.current.characters:
+                            eff_add = effect.EffectAddition(self.target, c, self.target.effect_types["eidolon1"], -1)
+                            await battle.current.event_bus.dispatch("add_effect", eff_add)
+                    elif self.old_stacks != 0 and stacks == 0:
+                        for c in battle.current.characters:
+                            await c.effects.delete(self.target.effect_types["eidolon1"])
+                self.old_stacks = stacks
+
+        def __init__(self):
+            super().__init__("divine_provision", "Divine Provision", effect.Effect.Type.OTHERS, effect.Effect.DurationType.TURN_END, 1)
     
     def __init__(self, record):
         super().__init__("huohuo", record)
+
+        battle.current.event_bus.add_member_listener(self.heal, self)
     
     def set_record(self, record):
         super().set_record(record)
@@ -96,18 +171,61 @@ class Huohuo(base.Character):
             self.skills["skill"].set_bonus_level(2)
             self.skills["basic_atk"].set_bonus_level(1)
         
+        self.dispel_count = 0
+        if self.eidolons >= 2:
+            self.revive_count = self.config.get_skill_value("eidolon2", "trigger_count")
+        
         self.set_effect_types()
     
     def set_effect_types(self):
         self.effect_types = {}
 
+        self.effect_types["divine_provision"] = self.DivineProvisionEffect()
+
         names = self.config.get_skill_name("ultimate")
         mod = modifier.Modifier(*names,
             modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.skills["ultimate"].skills[0].get_value("atk_boost"))), None, self)
         self.effect_types["ultimate"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "atk", mod)
+
+        if self.traces_unlocked[1]:
+            mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
+                modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.config.get_skill_value("bonus_trace2", "atk_boost"))),
+                self.validator_trace2, self)
+            self.effect_types["ultimate"].modifiers.append(mod)
+        
+        names = self.config.get_skill_name("eidolon1")
+        mod = modifier.Modifier(*names,
+            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon1", "spd_boost"))), None, self)
+        self.effect_types["eidolon1"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod)
+        
+        names = self.config.get_skill_name("eidolon6")
+        mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon6", "percentage"))), None, self)
+        self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "dmg_boost", mod)
+    
+    def validator_trace2(self, stat, **kwargs):
+        return stat.target.stats["max_energy"].calculate() >= self.config.get_skill_value("bonus_trace2", "energy_threshold")
+    
+    async def gain_divine_provision(self, duration):
+        eff_add = effect.EffectAddition(self, self, self.effect_types["divine_provision"], duration)
+        await battle.current.event_bus.dispatch("add_effect", eff_add)
+        self.dispel_count = self.config.get_skill_value("talent", "trigger_count")
+        
+    def has_divine_provision(self):
+        return self.effects.has_effect(self.effect_types["divine_provision"])
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         await super().battle_start()
         if self.traces_unlocked[0]:
             await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))
+            await self.gain_divine_provision(self.config.get_skill_value("bonus_trace1", "duration"))
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE + 1)
+    async def heal(self, heal):
+        if self is not heal.healer:
+            return
+        if self.eidolons >= 4:
+            heal.multiplier += 0.8 * (1 - heal.target.cur_hp / heal.target.stats["hp"].calculate())
+        if self.eidolons >= 6:
+            eff_add = effect.EffectAddition(self, heal.target, self.effect_types["eidolon6"], self.config.get_skill_value("eidolon6", "duration"))
+            await battle.current.event_bus.dispatch("add_effect", eff_add)

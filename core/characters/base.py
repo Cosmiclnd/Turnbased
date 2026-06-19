@@ -146,7 +146,6 @@ class Character(target.Target):
         battle.current.event_bus.add_member_listener(self.break_weakness, self)
         battle.current.event_bus.add_member_listener(self.regen_energy, self)
         battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
-        battle.current.event_bus.add_member_listener(self.ultimate_action_unit_trigger, self)
         battle.current.event_bus.add_member_listener(self.ultimate_turn, self)
 
         self.skills["basic_atk"].add(self.BasicAtk(self, "basic_atk"))
@@ -302,10 +301,12 @@ class Character(target.Target):
             self.ultimate_activated = True
             battle.current.action_list.append(Character.UltimateTurn(self))
     
-    @event.member_listener(event.ListenerPriority.EXECUTE, "action_unit_trigger")
-    async def ultimate_action_unit_trigger(self, action_unit):
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def action_unit_trigger(self, action_unit):
+        # 这个listener在Target类中已经被添加
+        await super().action_unit_trigger(action_unit)
         if isinstance(action_unit, Character.UltimateTurn) and action_unit.target is self:
-            action_unit.died = True
+            action_unit.master.dead_toggle = True
             await battle.current.event_bus.dispatch("ultimate_turn", self)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

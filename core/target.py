@@ -179,6 +179,7 @@ class Target(item.Item):
             return
         self.cur_hp += amount
         if self.cur_hp <= 0:
+            self.cur_hp = 0
             self.dying_stage = DyingStage.DIEABLE
             return
         self.dying_stage = DyingStage.ALIVE
@@ -210,7 +211,7 @@ class Target(item.Item):
     async def add_effect(self, eff_add):
         if self is not eff_add.target:
             return
-        self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
+        await self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
 
 def lerp(a, b, t):
     return a + (b - a) * t
