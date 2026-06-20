@@ -102,7 +102,7 @@ class FrozenEffect(Effect):
             if self.target is not t:
                 return
             if self.effect.additional_dmg is not None:
-                await battle.current.event_bus.dispatch("deal_damage", self.effect.additional_dmg)
+                await battle.current.event_bus.dispatch("additional_damage", self.effect.additional_dmg)
 
     def __init__(self, additional_dmg=None, dispellable=True):
         super().__init__("frozen", "Frozen", Effect.Type.DEBUFF, Effect.DurationType.TURN_END, 1, dispellable)

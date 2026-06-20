@@ -34,7 +34,7 @@ class Herta(base.Character):
                     dmg = damage.Damage(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon1", "percentage"))),
                         self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATTACK)
-                    await battle.current.event_bus.dispatch("deal_damage", dmg)
+                    await battle.current.event_bus.dispatch("additional_damage", dmg)
 
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):

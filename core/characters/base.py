@@ -267,7 +267,7 @@ class Character(target.Target):
         dmg = damage.Damage(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
-        await battle.current.event_bus.dispatch("deal_damage", dmg)
+        await battle.current.event_bus.dispatch("additional_damage", dmg)
         target.Target.NormalTurn.delay_target(tr.target, 0.25)
         if self.element is enums.Element.ICE:
             dmg = damage.Damage(self, tr.target,
