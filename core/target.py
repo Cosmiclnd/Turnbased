@@ -8,13 +8,17 @@ import event
 import battle
 import server
 
-class DyingStage(enums.Enum):
-    ALIVE = item.Item("alive", "Alive")
-    DIEABLE = item.Item("dieable", "Dieable")  # 已经受到致命伤害，即将转为濒死状态
-    DYING = item.Item("dying", "Dying")  # 濒死状态，逻辑上已经死亡但是target还没有被清理
-    DEAD = item.Item("dead", "Dead")
-    ALL = (ALIVE, DIEABLE, DYING, DEAD)
-DyingStage.init()
+class DeathState:
+    def __init__(self, t):
+        self.target = t
+        self.clear()
+
+    def clear(self):
+        self.alive = True
+        self.need_clean = False
+        self.killing_dmg = None
+        if self.target.cur_hp < 0:
+            self.target.cur_hp = 0
 
 class Target(item.Item):
     class TargetConfig(config.SkillsConfig):
@@ -94,7 +98,7 @@ class Target(item.Item):
         self.stats.new_stats(stat_names, self)
         self.cur_hp = 0
         self.frozen = False
-        self.dying_stage = None
+        self.death_state = DeathState(self)
         self.effects = effect.EffectList(self)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
@@ -102,6 +106,7 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.normal_turn_message, self)
         battle.current.event_bus.add_member_listener(self.attack, self)
         battle.current.event_bus.add_member_listener(self.hit, self)
+        battle.current.event_bus.add_member_listener(self.additional_damage, self)
         battle.current.event_bus.add_member_listener(self.receive_damage, self)
         battle.current.event_bus.add_member_listener(self.cur_hp_modify, self)
         battle.current.event_bus.add_member_listener(self.die, self)
@@ -109,10 +114,14 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.add_effect, self)
     
     def dead(self):
-        return self.dying_stage is DyingStage.DEAD
+        return self.death_state.need_clean
     
     def get_stats_info(self):
         return {name: (stat.calculate(modifier.ModifierFilter.BASE), stat.calculate()) for name, stat in self.stats.items()}
+    
+    async def check_death(self):
+        if not self.death_state.alive:
+            await battle.current.event_bus.dispatch("die", self)
     
     async def try_apply_debuff(self, eff_add, base_chance):
         chance = base_chance
@@ -128,7 +137,7 @@ class Target(item.Item):
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         self.cur_hp = self.stats["hp"].calculate()
-        self.dying_stage = DyingStage.ALIVE
+        self.death_state.clear()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def action_unit_trigger(self, action_unit):
@@ -151,12 +160,20 @@ class Target(item.Item):
         if self is not damage.dealer:
             return
         await damage.on_attack()
+        await damage.target.check_death()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def hit(self, damage):
         if self is not damage.target:
             return
         await damage.on_hit()
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def additional_damage(self, damage):
+        if self is not damage.dealer:
+            return
+        await battle.current.event_bus.dispatch("deal_damage", damage)
+        await damage.target.check_death()
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "deal_damage")
     async def receive_damage(self, damage):
@@ -165,38 +182,30 @@ class Target(item.Item):
         dmg = damage.calculate()
         message = {"type": "deal_damage", "dealer": damage.dealer.get_info(), "target": self.get_info(), "amount": dmg, "dmg_type": damage.types[0].get_info()}
         await server.send_and_recv(message)
-        # cur_hp_modify不能单独触发
-        # 至少需要deal_damage才能使target死亡
-        last_alive = self.dying_stage is DyingStage.ALIVE
         await battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
-        if last_alive and self.dying_stage is DyingStage.DIEABLE:
-            self.dying_stage = DyingStage.DYING
-            await battle.current.event_bus.dispatch("die", damage)
+        if self.cur_hp <= 0 and self.death_state.alive:
+            self.death_state.alive = False
+            self.death_state.killing_dmg = damage
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def cur_hp_modify(self, t, amount):
         if self is not t:
             return
         self.cur_hp += amount
-        if self.cur_hp <= 0:
-            self.cur_hp = 0
-            self.dying_stage = DyingStage.DIEABLE
-            return
-        self.dying_stage = DyingStage.ALIVE
         hp = self.stats["hp"].calculate()
         if self.cur_hp > hp:
             self.cur_hp = hp
         
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def die(self, dmg):
-        if self is not dmg.target:
+    async def die(self, t):
+        if self is not t:
             return
-        # 真正清除死亡的target
-        # TODO
-        #message = {"type": "die"} | self.get_info()
-        #await server.send_and_recv(message)
-        self.dying_stage = DyingStage.DEAD
-        battle.current.refresh()
+        if not self.death_state.alive:
+            message = {"type": "die"} | self.get_info()
+            await server.send_and_recv(message)
+            self.death_state.need_clean = True
+            await self.effects.die()
+            battle.current.refresh()
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "heal")
     async def receive_heal(self, heal):

@@ -193,6 +193,10 @@ class EffectList:
             await self.remove(eff, 1)
         return count
     
+    async def die(self):
+        for eff in list(self.effects.keys()):
+            await self.delete(eff)
+    
     @event.member_listener(event.ListenerPriority.START, "normal_turn")
     async def turn_start(self, t):
         if self.target is not t:

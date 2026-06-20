@@ -123,14 +123,16 @@ class Huohuo(base.Character):
                 return
             await self.trigger_divine_provision(t)
         
-        @event.member_listener(event.ListenerPriority.POST_PROCESS, "cur_hp_modify")
-        async def revive(self, t, amount):
+        @event.member_listener(event.ListenerPriority.PRE_PROCESS, "die")
+        async def revive(self, t):
             if not isinstance(t, base.Character) or not self.target.has_divine_provision():
                 return
-            if self.target.revive_count > 0 and amount < 0 and t.dying_stage == target.DyingStage.DIEABLE:
-                await battle.current.event_bus.dispatch("cur_hp_modify", t,
-                    t.stats["hp"].calculate() * self.target.config.get_skill_value("eidolon2", "percentage"))
-                self.target.effects.advance_turn(self.target.effect_types["divine_provision"])
+            if self.target.revive_count > 0 and not t.death_state.alive:
+                t.death_state.clear()
+                heal = healing.Healing(self.target, t,
+                    modifier.StatDesc((t.stats["hp"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon2", "percentage"))))
+                await battle.current.event_bus.dispatch("heal", heal)
+                await self.target.effects.advance_turn(self.target.effect_types["divine_provision"])
                 self.target.revive_count -= 1
     
     class DivineProvisionEffect(effect.Effect):
