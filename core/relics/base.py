@@ -36,9 +36,11 @@ class RelicMainStatType(RelicStatType):
     def get_modifier(self, t, level):
         value = self.base + self.step * level
         if self.is_percentage:
-            mod = modifier.Modifier(self.stat_name, self.stat_name, modifier.StatDesc((self.get_stat(t), modifier.ModifierFilter.BASE, value)), None, t)
+            mod = modifier.Modifier("relic_main_" + self.stat_name, "Relic Main Stat",
+                modifier.StatDesc((self.get_stat(t), modifier.ModifierFilter.BASE, value)), None, t)
         else:
-            mod = modifier.Modifier(self.stat_name, self.stat_name, modifier.StatDesc((None, None, value)), None, t)
+            mod = modifier.Modifier("relic_main_" + self.stat_name, "Relic Main Stat",
+                modifier.StatDesc((None, None, value)), None, t)
         return mod
 
 RelicMainStatType.SPD = RelicMainStatType("spd", 4.032, 1.4)
@@ -123,9 +125,9 @@ class RelicSubStatType(RelicStatType):
         for i in enhancements:
             value += self.values[i]
         if self.is_percentage:
-            mod = modifier.Modifier(self.stat_name, self.stat_name, modifier.StatDesc((self.get_stat(t), modifier.ModifierFilter.BASE, value)), None, t)
+            mod = modifier.Modifier("relic_sub_" + self.stat_name, "Relic Sub Stat", modifier.StatDesc((self.get_stat(t), modifier.ModifierFilter.BASE, value)), None, t)
         else:
-            mod = modifier.Modifier(self.stat_name, self.stat_name, modifier.StatDesc((None, None, value)), None, t)
+            mod = modifier.Modifier("relic_sub_" + self.stat_name, "Relic Sub Stat", modifier.StatDesc((None, None, value)), None, t)
         return mod
 
 RelicSubStatType.SPD = RelicSubStatType("spd", 4, (2, 2.3, 2.6))

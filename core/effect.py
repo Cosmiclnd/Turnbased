@@ -47,6 +47,7 @@ class Effect(item.Item):
         # 有关状态效果的信息改变后调用
         # 要求多次调用无副作用
         # 不要通过super()调用父类的refresh
+        # 初始状态的设置也应该在refresh中进行
         async def refresh(self):
             self.old_stacks = self.target.effects.get_stacks(self.effect)
 
@@ -57,26 +58,32 @@ class Effect(item.Item):
         self.max_stacks = max_stacks
         self.dispellable = dispellable
     
+    def print(self, indent=0):
+        print(" " * indent + f"{self.name} ({self.nameid}) "
+            f"<type={self.type.name}, duration_type={self.duration_type.name}, max_stacks={self.max_stacks}, dispellable={self.dispellable}>")
+    
     def new_instance(self, t):
         return self.Instance(self, t)
     
     def is_debuff_type(self, type):
         return False
+    
+    def is_immune(self, t):
+        return False
 
 class ModifierEffect(Effect):
     class Instance(Effect.Instance):
-        def __init__(self, eff, t):
-            super().__init__(eff, t)
-            self.modifiers = [copy.copy(m) for m in self.effect.modifiers]
-
         async def refresh(self):
             stacks = self.target.effects.get_stacks(self.effect)
             stat = self.target.stats[self.effect.stat_name]
             if self.old_stacks == 0 and stacks != 0:
+                self.modifiers = [copy.copy(m) for m in self.effect.modifiers]
                 stat.modifiers.extend(self.modifiers)
+                self.mod_dead = item.DeadToggle(self.target)
+                for mod in self.modifiers:
+                    mod.dead_toggle = self.mod_dead
             elif self.old_stacks != 0 and stacks == 0:
-                for m in self.modifiers:
-                    stat.modifiers.remove(m)
+                self.mod_dead.dead_toggle = True
             for i in range(len(self.modifiers)):
                 self.modifiers[i].stat_desc = self.effect.modifiers[i].stat_desc.scale(stacks)
             self.old_stacks = stacks
@@ -124,7 +131,19 @@ class EffectList:
         battle.current.event_bus.add_member_listener(self.turn_start, t)
         battle.current.event_bus.add_member_listener(self.turn_end, t)
     
+    def print(self, indent=0):
+        print(" " * indent + f"{self.target.nameid}.effects:")
+        for eff in self.effects.keys():
+            eff.print(indent + 2)
+            for duration, stacks in self.effects[eff].items():
+                if duration == -1:
+                    print(" " * (indent + 4) + f"Permanent: {stacks}")
+                else:
+                    print(" " * (indent + 4) + f"{duration} turn(s): {stacks}")
+    
     async def add(self, eff, duration, stacks=1):
+        if eff.is_immune(self.target):
+            return False
         if eff not in self.instances:
             self.instances[eff] = eff.new_instance(self.target)
         if eff not in self.effects:
@@ -136,6 +155,7 @@ class EffectList:
         if current_stacks > eff.max_stacks:
             await self.remove(eff, current_stacks - eff.max_stacks)
         await self.instances[eff].refresh()
+        return True
     
     async def remove(self, eff, stacks):
         durations = self.effects[eff]

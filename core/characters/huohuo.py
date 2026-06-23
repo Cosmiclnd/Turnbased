@@ -127,7 +127,7 @@ class Huohuo(base.Character):
         async def revive(self, t):
             if not isinstance(t, base.Character) or not self.target.has_divine_provision():
                 return
-            if self.target.revive_count > 0 and not t.death_state.alive:
+            if self.target.eidolons >= 2 and self.target.revive_count > 0 and not t.death_state.alive:
                 t.death_state.clear()
                 heal = healing.Healing(self.target, t,
                     modifier.StatDesc((t.stats["hp"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon2", "percentage"))))
@@ -158,22 +158,12 @@ class Huohuo(base.Character):
     def set_record(self, record):
         super().set_record(record)
         
-        if self.traces_unlocked[1]:
-            mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
-                modifier.StatDesc((None, None, self.config.get_skill_value("bonus_trace2", "control_res"))),
-                None, self)
-            self.stats["control_res"].modifiers.append(mod)
-        
         if self.eidolons >= 3:
             self.skills["ultimate"].set_bonus_level(2)
             self.skills["talent"].set_bonus_level(2)
         if self.eidolons >= 5:
             self.skills["skill"].set_bonus_level(2)
             self.skills["basic_atk"].set_bonus_level(1)
-        
-        self.dispel_count = 0
-        if self.eidolons >= 2:
-            self.revive_count = self.config.get_skill_value("eidolon2", "trigger_count")
         
         self.set_effect_types()
     
@@ -224,6 +214,17 @@ class Huohuo(base.Character):
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         await super().battle_start()
+        
+        if self.traces_unlocked[1]:
+            mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
+                modifier.StatDesc((None, None, self.config.get_skill_value("bonus_trace2", "control_res"))),
+                None, self)
+            self.stats["control_res"].modifiers.append(mod)
+        
         if self.traces_unlocked[0]:
             await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))
             await self.gain_divine_provision(self.config.get_skill_value("bonus_trace1", "duration"))
+        
+        self.dispel_count = 0
+        if self.eidolons >= 2:
+            self.revive_count = self.config.get_skill_value("eidolon2", "trigger_count")

@@ -67,7 +67,7 @@ class Battle:
                 await server.send_and_recv({"type": "battle_lose"})
                 break
     
-    @event.member_listener(event.ListenerPriority.END)
+    @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def battle_start(self):
         for t in self.characters + self.monsters:
             self.action_list.append(target.Target.NormalTurn(t))

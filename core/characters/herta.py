@@ -135,12 +135,6 @@ class Herta(base.Character):
     
     def set_record(self, record):
         super().set_record(record)
-
-        if self.traces_unlocked[1]:
-            mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
-                modifier.StatDesc((None, None, self.config.get_skill_value("bonus_trace2", "control_res"))),
-                None, self)
-            self.stats["control_res"].modifiers.append(mod)
         
         if self.eidolons >= 3:
             self.skills["skill"].set_bonus_level(2)
@@ -164,3 +158,13 @@ class Herta(base.Character):
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon6", "atk_boost"))), None, self)
         self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
             1, "atk", mod)
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def battle_start(self):
+        await super().battle_start()
+        
+        if self.traces_unlocked[1]:
+            mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
+                modifier.StatDesc((None, None, self.config.get_skill_value("bonus_trace2", "control_res"))),
+                None, self)
+            self.stats["control_res"].modifiers.append(mod)

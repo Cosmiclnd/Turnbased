@@ -1,3 +1,5 @@
+from collections.abc import Callable
+
 import item
 import enums
 
@@ -22,9 +24,16 @@ class Stat:
         if filter is ModifierFilter.BASE:
             return self.base_value
         self.calculated_value = self.base_value
+        self.modifiers.refresh()
         for modifier in self.modifiers:
             modifier.modify(self, filter, **kwargs)
         return self.calculated_value
+    
+    def print(self, indent=0):
+        print(" " * indent +
+            f"{self.target.nameid}.{self.name}: {self.calculate()} [{self.calculate(ModifierFilter.SELF_CONVERSION)}] ({self.base_value})")
+        for modifier in self.modifiers:
+            modifier.print(self, indent + 2)
 
 class StatDesc:
     __slots__ = ("desc",)
@@ -33,36 +42,61 @@ class StatDesc:
         # desc必须是元组
         self.desc = desc if type(desc[0]) is tuple else (desc,)
         # self.desc是元组的元组
-        # 每个元素的格式是(stat, filter, value)
-        # stat为None时value作为offset，此时filter也为None
-        # stat不为None时value作为scale
+        # 每个元素的格式是(stat, filter, func)
+        # stat为None时func()作为offset，此时filter也为None
+        # stat不为None时func()作为scale
+        # func为数时直接取该值
     
     def calculate(self, target=None, **kwargs):
         result = 0
-        for stat, filter, value in self.desc:
+        for stat, filter, func in self.desc:
             if stat is None:
-                result += value
+                result += func(**kwargs) if isinstance(func, Callable) else func
             elif isinstance(stat, Stat):
-                result += stat.calculate(filter, **kwargs) * value
+                value = stat.calculate(filter, **kwargs)
+                result += func(value, **kwargs) if isinstance(func, Callable) else value * func
             elif isinstance(stat, str):
-                result += target.stats[stat].calculate(filter, **kwargs) * value
+                value = target.stats[stat].calculate(filter, **kwargs)
+                result += func(value, **kwargs) if isinstance(func, Callable) else value * func
         return result
     
     def calculate_self_conversion(self, target_stat, target=None, **kwargs):
         # 只计算自身转化得到的值
         # target_stat必须是Stat的实例
         result = 0
-        for stat, filter, value in self.desc:
+        for stat, filter, func in self.desc:
             if stat is None:
-                result += value
+                result += func(**kwargs) if isinstance(func, Callable) else func
             elif stat is target_stat:
-                result += stat.calculate(filter, **kwargs) * value
+                value = stat.calculate(filter, **kwargs)
+                result += func(value, **kwargs) if isinstance(func, Callable) else value * func
             elif isinstance(stat, str) and stat == target_stat.name:
-                result += target.stats[stat].calculate(filter, **kwargs) * value
+                value = target.stats[stat].calculate(filter, **kwargs)
+                result += func(value, **kwargs) if isinstance(func, Callable) else value * func
         return result
     
     def scale(self, scale):
         return StatDesc(tuple((stat, filter, value * scale) for stat, filter, value in self.desc))
+    
+    def print(self, target, indent=0):
+        for stat, filter, func in self.desc:
+            if stat is None:
+                result = func(**kwargs) if isinstance(func, Callable) else func
+            elif isinstance(stat, Stat):
+                value = stat.calculate(filter)
+                result = func(value) if isinstance(func, Callable) else value * func
+                stat_name = f"{stat.target.nameid}.{stat.name}"
+            elif isinstance(stat, str):
+                value = target.stats[stat].calculate(filter)
+                result = func(value) if isinstance(func, Callable) else value * func
+                stat_name = f"*.{stat}"
+            if stat is not None:
+                if isinstance(func, Callable):
+                    print(" " * indent + f"{result} <stat={stat_name}, filter={filter.name}, func>")
+                else:
+                    print(" " * indent + f"{result} <stat={stat_name}, filter={filter.name}, scale={func}>")
+            else:
+                print(" " * indent + f"{result}")
 
 class StatDict(dict[str, Stat]):
     def new_stats(self, names, target=None):
@@ -88,3 +122,23 @@ class Modifier(item.Item):
         else:
             # 理论上几乎不会用到
             stat.calculated_value += self.stat_desc.calculate(target=stat.target, **kwargs)
+    
+    def print(self, stat, indent=0):
+        if self.validator is not None:
+            print(" " * indent + f"{self.name} ({self.nameid}) <validator={self.validator(stat)}>")
+        else:
+            print(" " * indent + f"{self.name} ({self.nameid})")
+        self.stat_desc.print(stat.target, indent + 2)
+
+class StatConverter:
+    def __init__(self, threshold, step, scale, cap):
+        self.threshold = threshold
+        self.step = step
+        self.scale = scale
+        self.cap = cap
+    
+    def __call__(self, value, **kwargs):
+        if value < self.threshold:
+            return 0
+        times = (value - self.threshold) // self.step
+        return min(times * self.scale, self.cap)

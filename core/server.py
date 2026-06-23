@@ -2,6 +2,8 @@ import websockets
 import logging
 import json
 import os
+import sys
+import io
 
 import battle
 import target
@@ -63,6 +65,18 @@ async def handle_command(message):
         elif subtype == "stats":
             m = battle.current.monsters[message["monster"]]
             message["monster"] = m.get_info() | {"stats": m.get_stats_info()}
+        await websocket.send(json.dumps(message))
+    elif type == "exec":  # 暂时用来调试
+        code = message["code"]
+        logging.info(f"exec: \"{code}\"")
+        stdout = sys.stdout
+        sys.stdout = io.StringIO()
+        try:
+            message["result"] = str(eval(code))
+        except Exception as e:
+            message["result"] = str(e)
+        message["output"] = sys.stdout.getvalue()
+        sys.stdout = stdout
         await websocket.send(json.dumps(message))
     else:
         return False

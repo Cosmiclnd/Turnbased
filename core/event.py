@@ -21,6 +21,7 @@ class EventBus:
     def __init__(self):
         self.listeners = {}
         self.stack = []
+        self.stop_at = None
     
     def add_listener(self, event_name, listener):
         if event_name not in self.listeners:
@@ -38,6 +39,9 @@ class EventBus:
             self.listeners[event_name].refresh()
             self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
             for listener in self.listeners[event_name]:
+                if self.stop_at == event_name:
+                    self.stop_at = None
+                    return
                 self.stack.append((event_name, listener))
                 if len(self.stack) > MAX_STACKS:
                     logging.warning(f"Max event stack depth exceeded: {len(self.stack)}")
@@ -48,6 +52,9 @@ class EventBus:
                 self.stack.pop()
         if event_name not in self.listeners or not self.listeners[event_name]:
             logging.warning(f"No listener for event {event_name}")
+    
+    def stop_current(self):
+        self.stop_at = self.stack[-1][0]
     
     def format_stack(self):
         msg = "Event stack (most recent dispatch last):"

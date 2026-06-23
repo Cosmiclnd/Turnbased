@@ -12,7 +12,10 @@ class Item:
 
 class DeadToggle(Item):
     def __init__(self, master=None):
-        super().__init__("dead_toggle", "Dead Toggle", master)
+        if master is None:
+            super().__init__("dead_toggle", "Dead Toggle")
+        else:
+            super().__init__(master.nameid, master.name, master)
         self.dead_toggle = False
     
     def dead(self):

@@ -90,6 +90,11 @@ async def handle_command(websocket, command):
         raise SystemExit
     elif words[0] in ("query", "q"):
         await handle_query(websocket, words)
+    elif words[0] == "exec":
+        await send_message(websocket, {"type": "exec", "code": command[5:]})
+        response = json.loads(await websocket.recv())
+        print("return = " + response["result"])
+        print(response["output"])
     else:
         cprint("Unknown command.", "red")
 
@@ -329,8 +334,20 @@ async def main():
                 }
             }
         }
+        record_ruan_mei = {
+            "level": 80,
+            "eidolons": 6,
+            "basic_atk_level": 6,
+            "skill_level": 10,
+            "ultimate_level": 10,
+            "talent_level": 10,
+            "technique_level": 1,
+            "traces_stats_unlocked": (True,) * 10,
+            "traces_unlocked": (True, True, True)
+        }
         await send_message(websocket, {"type": "add_character", "name": "herta", "record": record_herta})
         await send_message(websocket, {"type": "add_character", "name": "huohuo", "record": record_huohuo})
+        await send_message(websocket, {"type": "add_character", "name": "ruan_mei", "record": record_ruan_mei})
         for i in range(5):
             await send_message(websocket, {"type": "add_monster", "name": "baryon", "level": 120, "moc": True})
             #await send_message(websocket, {"type": "add_monster", "name": "dummy", "level": 120, "moc": True})

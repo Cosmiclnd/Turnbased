@@ -54,7 +54,7 @@ class Monster(target.Target):
         self.config.init()
         self.moc = moc
         self.additional_weakness = []
-        self.stats.new_stats(["toughness"], self)
+        self.stats.new_stats(["toughness", "toughness_vulnerability"], self)
         self.skills = skill.SkillGroup(self)
         self.cur_toughness = 0
         self.weakness_broken = False
@@ -63,6 +63,7 @@ class Monster(target.Target):
         battle.current.event_bus.add_member_listener(self.reduce_toughness, self)
         battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
+        battle.current.event_bus.add_member_listener(self.weakness_recover, self)
 
         self.config.set_base_stats()
 
@@ -88,8 +89,7 @@ class Monster(target.Target):
             target.Target.NormalTurn.advance_target(self, 0.5)
             return
         if self.weakness_broken:
-            self.cur_toughness = self.stats["toughness"].calculate()
-            self.weakness_broken = False
+            await battle.current.event_bus.dispatch("weakness_recover", self)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -112,6 +112,13 @@ class Monster(target.Target):
         if self is not tr.target:
             return
         self.weakness_broken = True
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def weakness_recover(self, tr):
+        if self is not tr.target:
+            return
+        self.cur_toughness = self.stats["toughness"].calculate()
+        self.weakness_broken = False
     
     @classmethod
     def get_base_stat(cls, name, level, moc):

@@ -169,7 +169,7 @@ class Damage:
     
     async def on_hit(self):
         await battle.current.event_bus.dispatch("deal_damage", self)
-        if self.toughness_reduction is not None:
+        if self.toughness_reduction is not None and self.target.has_weakness(self.toughness_reduction.element):
             await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction)
         if self.energy_regen is not None:
             t = self.target if isinstance(self.target, character.Character) else self.dealer
@@ -181,6 +181,12 @@ class ToughnessReduction:
         self.target = target
         self.base_amount = base_amount
         self.element = element
+        self.reduction_increase = 0
     
     def calculate(self):
-        return self.base_amount if self.element is None or self.target.has_weakness(self.element) else 0
+        value = self.base_amount
+        if self.element is not None:
+            value *= (1 + min(self.dealer.stats["wb_eff"].calculate(toughness_reduction=self), 3) +
+                self.target.stats["toughness_vulnerability"].calculate(toughness_reduction=self))
+        value *= 1 + self.reduction_increase
+        return value

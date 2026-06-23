@@ -24,14 +24,14 @@
             "nameid": "ruan_mei_trace2",
             "name": "Break Boost",
             "stat_name": "break_eff",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.053
         },
         {
             "nameid": "ruan_mei_trace3",
             "name": "Break Boost",
             "stat_name": "break_eff",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.08
         },
         {
@@ -59,14 +59,14 @@
             "nameid": "ruan_mei_trace7",
             "name": "Break Boost",
             "stat_name": "break_eff",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.107
         },
         {
             "nameid": "ruan_mei_trace8",
             "name": "Break Boost",
             "stat_name": "break_eff",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.053
         },
         {
@@ -80,7 +80,7 @@
             "nameid": "ruan_mei_trace10",
             "name": "Break Boost",
             "stat_name": "break_eff",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.08
         }
     ],
@@ -114,8 +114,12 @@
             "category": "skill",
             "type": "support",
             "delta_skillpoints": -1,
-            "desc": "After using her Skill, Ruan Mei gains Overtone, lasting for {duration} turn(s). This duration decreases by 1 at the start of Ruan Mei's every turn. When Ruan Mei has Overtone, all allies' DMG increases by {dmg_boost:.2%} and Weakness Break Efficiency increases by {toughness_reduction_boost:.2%}.",
+            "desc": "After using her Skill, Ruan Mei gains Overtone, lasting for {duration} turn(s). This duration decreases by 1 at the start of Ruan Mei's every turn. When Ruan Mei has Overtone, all allies' DMG increases by {dmg_boost:.2%} and Weakness Break Efficiency increases by {wb_eff_boost:.2%}.",
             "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
                 "duration": {
                     "is_dynamic": false,
                     "value": 3
@@ -125,7 +129,7 @@
                     "key": "level",
                     "values": [0.16, 0.176, 0.192, 0.208, 0.224, 0.24, 0.26, 0.28, 0.3, 0.32, 0.336, 0.352, 0.368, 0.384, 0.4]
                 },
-                "toughness_reduction_boost": {
+                "wb_eff_boost": {
                     "is_dynamic": false,
                     "value": 0.5
                 }
@@ -139,6 +143,10 @@
             "delta_skillpoints": 0,
             "desc": "Ruan Mei deploys a Zone that lasts for 2 turns. The Zone's duration decreases by 1 at the start of her turn. While inside the Zone, all allies' All-Type RES PEN increases by {res_pen_boost:.2%} and their attacks apply Thanatoplum Rebloom to the enemies hit. When these enemies attempt to recover from Weakness Break, Thanatoplum Rebloom is triggered, extending the duration of their Weakness Break, delaying their action by an amount equal to {delay_percentage:.2%} of Ruan Mei's Break Effect plus {delay_flat:.2%}, and dealing Break DMG equal to {percentage:.2%} of Ruan Mei's Ice Break DMG. Enemy targets cannot have Thanatoplum Rebloom re-applied to them until they recover from Weakness Break.",
             "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
                 "duration": {
                     "is_dynamic": false,
                     "value": 2
@@ -211,9 +219,9 @@
             "nameid": "candle_lights_on_still_waters",
             "name": "Candle Lights on Still Waters",
             "category": "trace",
-            "desc": "In battle, for every {break_eff_interval:.2%} of Ruan Mei's Break Effect that exceeds {break_eff_threshold:.2%}, her Skill additionally increases allies' DMG by {dmg_boost:.2%}, up to a maximum of {max_dmg_boost:.2%}.",
+            "desc": "In battle, for every {break_eff_step:.2%} of Ruan Mei's Break Effect that exceeds {break_eff_threshold:.2%}, her Skill additionally increases allies' DMG by {dmg_boost:.2%}, up to a maximum of {dmg_boost_cap:.2%}.",
             "values": {
-                "break_eff_interval": {
+                "break_eff_step": {
                     "is_dynamic": false,
                     "value": 0.1
                 },
@@ -225,7 +233,7 @@
                     "is_dynamic": false,
                     "value": 0.06
                 },
-                "max_dmg_boost": {
+                "dmg_boost_cap": {
                     "is_dynamic": false,
                     "value": 0.36
                 }
@@ -289,13 +297,13 @@
             "nameid": "sash_cascade",
             "name": "Sash Cascade",
             "category": "eidolon",
-            "desc": "Extends the duration of the Ultimate's Zone by {duration} turn(s). The Talent's Break DMG multiplier additionally increases by {dmg_boost:.2%}.",
+            "desc": "Extends the duration of the Ultimate's Zone by {duration} turn(s). The Talent's Break DMG multiplier additionally increases by {percentage:.2%}.",
             "values": {
                 "duration": {
                     "is_dynamic": false,
                     "value": 1
                 },
-                "dmg_boost": {
+                "percentage": {
                     "is_dynamic": false,
                     "value": 2.0
                 }
