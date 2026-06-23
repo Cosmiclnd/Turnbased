@@ -45,7 +45,7 @@ class SkillGroup:
         for skill in self.skills:
             skill.bonus_level += level
     
-    @event.member_listener(priority=event.ListenerPriority.EXECUTE)
+    @event.member_listener(event.ListenerPriority.EXECUTE)
     async def skill_group_trigger(self, skill_group):
         if self is not skill_group:
             return
