@@ -222,6 +222,7 @@ class Huohuo(base.Character):
             self.stats["control_res"].modifiers.append(mod)
         
         if self.traces_unlocked[0]:
+            self.stats["energy_regen_rate"].print()
             await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))
             await self.gain_divine_provision(self.config.get_skill_value("bonus_trace1", "duration"))
         

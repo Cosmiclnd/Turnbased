@@ -1,16 +1,19 @@
 {
     "nameid": "herta",
     "name": "Herta",
+    "rarity": 4,
     "element": "ice",
     "path": "erudition",
+    "base_stat_scales": {
+        "hp": 27,
+        "atk": 33,
+        "def": 18
+    },
     "base_stats": {
-        "hp": [130, 953],
-        "atk": [79.2, 582.12],
-        "def": [54, 396.9],
-        "spd": [100, 100],
-        "taunt": [0.75, 0.75],
-        "energy": [110, 110],
-        "max_energy": [110, 110]
+        "spd": 100,
+        "taunt": 0.75,
+        "energy": 110,
+        "max_energy": 110
     },
     "traces_stats": [
         {

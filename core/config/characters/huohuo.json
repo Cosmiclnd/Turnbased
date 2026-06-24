@@ -1,16 +1,19 @@
 {
     "nameid": "huohuo",
     "name": "Huohuo",
+    "rarity": 5,
     "element": "wind",
     "path": "abundance",
+    "base_stat_scales": {
+        "hp": 35,
+        "atk": 31,
+        "def": 21
+    },
     "base_stats": {
-        "hp": [185, 1358],
-        "atk": [81.84, 601.52],
-        "def": [69.3, 509.36],
-        "spd": [98, 98],
-        "taunt": [1, 1],
-        "energy": [140, 140],
-        "max_energy": [140, 140]
+        "spd": 98,
+        "taunt": 1,
+        "energy": 140,
+        "max_energy": 140
     },
     "traces_stats": [
         {

@@ -349,7 +349,7 @@ async def main():
         await send_message(websocket, {"type": "add_character", "name": "huohuo", "record": record_huohuo})
         await send_message(websocket, {"type": "add_character", "name": "ruan_mei", "record": record_ruan_mei})
         for i in range(5):
-            await send_message(websocket, {"type": "add_monster", "name": "baryon", "level": 120, "moc": True})
+            await send_message(websocket, {"type": "add_monster", "name": "baryon", "level": 100, "moc": False})
             #await send_message(websocket, {"type": "add_monster", "name": "dummy", "level": 120, "moc": True})
         await send_message(websocket, {"type": "start_battle"})
         while True:

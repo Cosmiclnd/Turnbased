@@ -1,16 +1,19 @@
 {
     "nameid": "ruan_mei",
     "name": "Ruan Mei",
+    "rarity": 5,
     "element": "ice",
     "path": "harmony",
+    "base_stat_scales": {
+        "hp": 28,
+        "atk": 34,
+        "def": 20
+    },
     "base_stats": {
-        "hp": [148, 1087],
-        "atk": [89.76, 659.74],
-        "def": [66, 485.1],
-        "spd": [104, 104],
-        "taunt": [1, 1],
-        "energy": [130, 130],
-        "max_energy": [130, 130]
+        "spd": 104,
+        "taunt": 1,
+        "energy": 130,
+        "max_energy": 130
     },
     "traces_stats": [
         {

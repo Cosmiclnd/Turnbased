@@ -1,4 +1,5 @@
 import collections
+import json
 
 import target
 import skill
@@ -15,24 +16,32 @@ from relics import base as relic
 
 class Character(target.Target):
     class CharacterConfig(target.Target.TargetConfig):
-        __slots__ = ("base_stats", "traces_stats")
+        __slots__ = ("base_stat_scales", "base_stats", "traces_stats")
         
         def __init__(self, data, t):
             super().__init__(data, t)
+            self.base_stat_scales = data["base_stat_scales"]
             self.base_stats = data["base_stats"]
-            self.base_stats["base_break_dmg"] = [54, 3767.5533]
-            self.base_stats["crt_rate"] = [0.05, 0.05]
-            self.base_stats["crt_dmg"] = [0.5, 0.5]
-            self.base_stats["energy_regen_rate"] = [1, 1]
+            self.base_stats["crt_rate"] = 0.05
+            self.base_stats["crt_dmg"] = 0.5
+            self.base_stats["energy_regen_rate"] = 1
             self.traces_stats = data["traces_stats"]
         
         def init(self):
+            self.target.rarity = self.data["rarity"]
             self.target.element = enums.Element.dict_nameid[self.data["element"]]
             self.target.path = enums.Path.dict_nameid[self.data["path"]]
         
         def set_base_stats(self):
-            for name, stats in self.base_stats.items():
-                self.target.stats[name].base_value = target.lerp(stats[0], stats[1], (self.target.level - 1) / 79)
+            scale = 6.35 * (self.target.level - 1) / 79 + 1
+            if self.target.rarity == 5:
+                scale *= 1.1
+            self.target.stats["hp"].base_value = self.base_stat_scales["hp"] * scale * 4.8
+            self.target.stats["atk"].base_value = self.base_stat_scales["atk"] * scale * 2.4
+            self.target.stats["def"].base_value = self.base_stat_scales["def"] * scale * 3
+            for name, value in self.base_stats.items():
+                self.target.stats[name].base_value = value
+            self.target.stats["base_break_dmg"].base_value = self.get_base_stat("base_break_dmg", self.target.level)
         
         def set_traces_stats(self):
             for i in range(len(self.traces_stats)):
@@ -44,6 +53,13 @@ class Character(target.Target):
                         stat_desc = modifier.StatDesc((None, None, stat["value"]))
                     mod = modifier.Modifier(stat["nameid"], stat["name"], stat_desc, None, self.target)
                     self.target.stats[stat["stat_name"]].modifiers.append(mod)
+    
+        @classmethod
+        def get_base_stat(cls, name, level):
+            if not hasattr(cls, "level_curve"):
+                with open("core/config/characters/level_curve.json", "r") as f:
+                    cls.level_curve = json.load(f)
+            return cls.level_curve[name][level - 1]
 
     class UltimateTurn(target.Target.ExtraTurn):
         def __init__(self, t):

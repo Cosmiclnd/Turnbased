@@ -1,11 +1,12 @@
 {
     "nameid": "the_birth_of_the_self",
     "name": "The Birth of the Self",
+    "rarity": 4,
     "path": "erudition",
-    "base_stats": {
-        "hp": [43, 953],
-        "atk": [21.6, 476.28],
-        "def": [15, 330.75]
+    "base_stat_scales": {
+        "hp": 9,
+        "atk": 9,
+        "def": 5
     },
     "skills": {
         "skill": {

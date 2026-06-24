@@ -120,7 +120,6 @@ class Modifier(item.Item):
         if filter is ModifierFilter.SELF_CONVERSION:
             stat.calculated_value += self.stat_desc.calculate_self_conversion(stat, target=stat.target, **kwargs)
         else:
-            # 理论上几乎不会用到
             stat.calculated_value += self.stat_desc.calculate(target=stat.target, **kwargs)
     
     def print(self, stat, indent=0):

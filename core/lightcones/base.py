@@ -5,21 +5,24 @@ import target
 
 class LightCone(item.Item):
     class LightConeConfig(config.SkillsConfig):
-        __slots__ = ("lightcone", "nameid", "name", "base_stats")
+        __slots__ = ("lightcone", "nameid", "name", "base_stat_scales")
 
         def __init__(self, data, lightcone):
             super().__init__(data)
             self.lightcone = lightcone
             self.nameid = data["nameid"]
             self.name = data["name"]
-            self.base_stats = data["base_stats"]
+            self.base_stat_scales = data["base_stat_scales"]
         
         def init(self):
+            self.lightcone.rarity = self.data["rarity"]
             self.lightcone.path = enums.Path.dict_nameid[self.data["path"]]
         
         def set_base_stats(self):
-            for name, stats in self.base_stats.items():
-                self.lightcone.base_stats[name] = target.lerp(stats[0], stats[1], (self.lightcone.level - 1) / 79)
+            scale = 21.05 * (self.lightcone.level - 1) / 79 + 1
+            self.lightcone.base_stats["hp"] = self.base_stat_scales["hp"] * scale * 4.8
+            self.lightcone.base_stats["atk"] = self.base_stat_scales["atk"] * scale * 2.4
+            self.lightcone.base_stats["def"] = self.base_stat_scales["def"] * scale * 3
 
     def __init__(self, nameid, record):
         self.config = self.LightConeConfig(config.load_config_data("lightcones", nameid), self)

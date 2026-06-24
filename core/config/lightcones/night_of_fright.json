@@ -1,11 +1,12 @@
 {
     "nameid": "night_of_fright",
     "name": "Night of Fright",
+    "rarity": 5,
     "path": "abundance",
-    "base_stats": {
-        "hp": [53, 1164],
-        "atk": [21.6, 476.28],
-        "def": [24, 529.2]
+    "base_stat_scales": {
+        "hp": 11,
+        "atk": 9,
+        "def": 8
     },
     "skills": {
         "skill": {

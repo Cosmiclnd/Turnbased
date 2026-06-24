@@ -1,0 +1,43 @@
+{
+    "nameid": "past_self_in_mirror",
+    "name": "Past Self in Mirror",
+    "rarity": 5,
+    "path": "harmony",
+    "base_stat_scales": {
+        "hp": 10,
+        "atk": 10,
+        "def": 8
+    },
+    "skills": {
+        "skill": {
+            "nameid": "the_plum_fragrance_in_my_bones",
+            "name": "The Plum Fragrance In My Bones",
+            "desc": "Increases the wearer's Break Effect by {break_eff_boost:.2%}. When the wearer uses their Ultimate, increases all allies' DMG by {dmg_boost:.2%}, lasting for {duration} turn(s). Should the wearer's Break Effect exceed or equal {break_eff_threshold:.2%}, 1 Skill Point will be recovered. At the start of each wave, all allies regenerate {energy_regen} Energy immediately. Effects of the same type cannot stack.",
+            "values": {
+                "break_eff_boost": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.6, 0.7, 0.8, 0.9, 1]
+                },
+                "dmg_boost": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.24, 0.28, 0.32, 0.36, 0.4]
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 3
+                },
+                "break_eff_threshold": {
+                    "is_dynamic": false,
+                    "value": 1.5
+                },
+                "energy_regen": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [10, 12.5, 15, 17.5, 20]
+                }
+            }
+        }
+    }
+}

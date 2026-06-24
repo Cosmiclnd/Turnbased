@@ -21,14 +21,24 @@ class Monster(target.Target):
         
         def set_base_stats(self):
             for stat_name in ("hp", "atk", "def", "spd"):
-                self.target.stats[stat_name].base_value = Monster.get_base_stat(
+                self.target.stats[stat_name].base_value = self.get_base_stat(
                     stat_name, self.target.level, self.target.moc) * self.data["base_stat_scales"][stat_name]
             for stat_name in ("eff_hr", "eff_res"):
-                self.target.stats[stat_name].base_value = Monster.get_base_stat(
+                self.target.stats[stat_name].base_value = self.get_base_stat(
                     stat_name, self.target.level, self.target.moc) + self.data["base_stat_flats"][stat_name]
             for element in enums.Element.ALL:
                 self.target.stats[f"{element.nameid}_res"].base_value = self.data["base_dmg_res"][element.nameid]
             self.target.stats["toughness"].base_value = self.data["toughness"]
+    
+        @classmethod
+        def get_base_stat(cls, name, level, moc):
+            if name == "def":
+                return 200 + min(level, 100) * 10
+            if not hasattr(cls, "level_curve"):
+                with open("core/config/monsters/level_curve.json", "r") as f:
+                    cls.level_curve = json.load(f)
+            curve = cls.level_curve["3" if moc else "1"]
+            return curve[name][level - 1]
 
     class MonsterSkill(skill.Skill):
         def __init__(self, t, skill_name):
@@ -119,13 +129,3 @@ class Monster(target.Target):
             return
         self.cur_toughness = self.stats["toughness"].calculate()
         self.weakness_broken = False
-    
-    @classmethod
-    def get_base_stat(cls, name, level, moc):
-        if name == "def":
-            return 200 + min(level, 100) * 10
-        if not hasattr(cls, "level_curve"):
-            with open("core/config/monsters/level_curve.json", "r") as f:
-                cls.level_curve = json.load(f)
-        curve = cls.level_curve["3" if moc else "1"]
-        return curve[name][level - 1]
