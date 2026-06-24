@@ -228,10 +228,6 @@ class RuanMei(base.Character):
                 modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon2", "atk_boost"))), self.validator_e2, self)
             for c in battle.current.characters:
                 c.stats["atk"].modifiers.append(mod)
-        
-        # temp
-        target.Target.NormalTurn.advance_target(self, 1)
-        self.cur_energy = self.stats["max_energy"].calculate()
     
     def validator_e2(self, stat, **kwargs):
         dmg = kwargs.get("damage", None)

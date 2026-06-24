@@ -7,6 +7,7 @@ import battle
 import config
 import enums
 import effect
+import server
 
 class Monster(target.Target):
     class MonsterConfig(target.Target.TargetConfig):
@@ -81,6 +82,9 @@ class Monster(target.Target):
         for i, skill in enumerate(skill_classes):
             self.skills.add(skill(self, f"skill{i + 1}"))
     
+    def countable(self):
+        return True
+    
     def has_weakness(self, elem):
         return elem in self.base_weakness or elem in self.additional_weakness
     
@@ -124,8 +128,84 @@ class Monster(target.Target):
         self.weakness_broken = True
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def weakness_recover(self, tr):
-        if self is not tr.target:
+    async def weakness_recover(self, t):
+        if self is not t:
             return
         self.cur_toughness = self.stats["toughness"].calculate()
         self.weakness_broken = False
+
+class Group:
+    def __init__(self, name, record):
+        self.name = name
+        self.monsters = []
+        self.condition = []
+        self.summoned = False
+        self.set_record(record)
+    
+    def set_record(self, record):
+        for monster in record["monsters"]:
+            self.monsters.append(config.load_class("monsters", monster["name"])(monster["level"], monster["moc"]))
+        self.condition = record["condition"]
+    
+    def all_cleared(self):
+        for monster in self.monsters:
+            if not monster.dead():
+                return False
+        return True
+    
+    def check_condition(self):
+        for condition in self.condition:
+            if not battle.current.monster_setup.current_wave().groups[condition].all_cleared():
+                return False
+        return True
+
+class Wave:
+    def __init__(self, record):
+        self.groups = {}
+        self.set_record(record)
+    
+    def set_record(self, record):
+        for name, group in record.items():
+            self.groups[name] = Group(name, group)
+    
+    def check(self):
+        result = []
+        for group in self.groups.values():
+            if not group.summoned and group.check_condition():
+                result.append(group)
+                group.summoned = True
+        return result
+
+class Setup:
+    def __init__(self):
+        self.waves = []
+        self.monster_queue = []
+        self.cur_wave = -1
+    
+    def current_wave(self):
+        return self.waves[self.cur_wave]
+    
+    def set_record(self, record):
+        for wave in record:
+            self.waves.append(Wave(wave))
+    
+    async def check_add_monsters(self):
+        for group in self.current_wave().check():
+            for monster in group.monsters:
+                self.monster_queue.append(monster)
+        while battle.current.count_monsters() < 5:
+            if len(self.monster_queue) == 0:
+                break
+            await battle.current.event_bus.dispatch("add_monster", self.monster_queue.pop(0))
+    
+    async def check(self):
+        if self.cur_wave >= 0:
+            await self.check_add_monsters()
+        if not battle.current.monsters:
+            self.cur_wave += 1
+            if self.cur_wave >= len(self.waves):
+                return True
+            await server.send_and_recv({"type": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
+            await battle.current.event_bus.dispatch("new_wave_start")
+            await self.check_add_monsters()
+        return False

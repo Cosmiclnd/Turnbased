@@ -1,3 +1,4 @@
+import math
 import asyncio
 import aioconsole
 import websockets
@@ -67,7 +68,7 @@ async def handle_query(websocket, words):
                 for i, t in enumerate(response["characters"]):
                     cprint(f"[{i}] {t['name']} "
                         f"HP: {round(t['cur_hp'])}/{round(t['hp'])} "
-                        f"Energy: {round(t['cur_energy'])}/{round(t['energy'])} "
+                        f"Energy: {math.floor(t['cur_energy'])}/{round(t['energy'])} "
                         f"({t['nameid']})", "cyan")
             elif len(words) == 4:
                 subtype = words[2]
@@ -110,6 +111,11 @@ async def handle_input(websocket, allow_empty=False):
             await handle_command(websocket, raw[1:])
             continue
         return raw
+
+async def respond_new_wave(websocket, message):
+    print("*" * 50)
+    cprint(f"Wave {message['wave']} / {message['total']}.", "light_yellow")
+    return {"type": "empty"}
 
 async def respond_prepare_next_action_unit(websocket, message):
     if message["verbose"]:
@@ -192,7 +198,9 @@ async def respond_battle_lose(websocket, message):
 
 async def handle_message(websocket, message):
     type = message["type"]
-    if type == "prepare_next_action_unit":
+    if type == "new_wave":
+        return await respond_new_wave(websocket, message)
+    elif type == "prepare_next_action_unit":
         return await respond_prepare_next_action_unit(websocket, message)
     elif type == "start_normal_turn":
         return await respond_start_normal_turn(websocket, message)
@@ -343,14 +351,31 @@ async def main():
             "talent_level": 10,
             "technique_level": 1,
             "traces_stats_unlocked": (True,) * 10,
-            "traces_unlocked": (True, True, True)
+            "traces_unlocked": (True, True, True),
+            "lightcone": {
+                "name": "past_self_in_mirror",
+                "level": 80,
+                "stacks": 5
+            },
         }
         await send_message(websocket, {"type": "add_character", "name": "herta", "record": record_herta})
         await send_message(websocket, {"type": "add_character", "name": "huohuo", "record": record_huohuo})
         await send_message(websocket, {"type": "add_character", "name": "ruan_mei", "record": record_ruan_mei})
-        for i in range(5):
-            await send_message(websocket, {"type": "add_monster", "name": "baryon", "level": 100, "moc": False})
-            #await send_message(websocket, {"type": "add_monster", "name": "dummy", "level": 120, "moc": True})
+        monster_setup = [
+            {
+                "1": {
+                    "monsters": [
+                        {"name": "baryon", "level": 120, "moc": True},
+                        {"name": "baryon", "level": 120, "moc": True},
+                        {"name": "baryon", "level": 120, "moc": True},
+                        {"name": "baryon", "level": 120, "moc": True},
+                        {"name": "baryon", "level": 120, "moc": True},
+                    ],
+                    "condition": []
+                }
+            }
+        ]
+        await send_message(websocket, {"type": "setup_monsters", "record": monster_setup})
         await send_message(websocket, {"type": "start_battle"})
         while True:
             message = json.loads(await websocket.recv())

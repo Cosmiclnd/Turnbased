@@ -6,6 +6,7 @@ import item
 import target
 import modifier
 import server
+from monsters import base as monster
 
 class Skillpoints:
     def __init__(self):
@@ -35,14 +36,19 @@ class Battle:
         self.skillpoints = Skillpoints()
         self.characters = item.ItemList()
         self.monsters = item.ItemList()
+        self.monster_setup = monster.Setup()
         self.target_index = 0
 
         self.event_bus.add_member_listener(self.battle_start, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener(self.add_monster, nameid="battle", name="Battle")
     
     def refresh(self):
         self.characters.refresh()
         self.monsters.refresh()
     
+    def count_monsters(self):
+        return sum(1 for m in self.monsters if m.countable())
+
     async def prepare_next_action_unit(self):
         verbose = True
         while True:
@@ -55,12 +61,13 @@ class Battle:
     
     async def start(self):
         await self.event_bus.dispatch("battle_start")
+        await self.monster_setup.check()
         while True:
             await self.prepare_next_action_unit()
             self.action_list.refresh()
             self.action_list.sort(key=lambda x: x.sort_key())
             await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
-            if not self.monsters:
+            if await self.monster_setup.check():
                 await server.send_and_recv({"type": "battle_win"})
                 break
             if not self.characters:
@@ -69,7 +76,12 @@ class Battle:
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def battle_start(self):
-        for t in self.characters + self.monsters:
+        for t in self.characters:
             self.action_list.append(target.Target.NormalTurn(t))
+    
+    @event.member_listener(event.ListenerPriority.PRE_PROCESS)
+    async def add_monster(self, m):
+        self.monsters.append(m)
+        self.action_list.append(target.Target.NormalTurn(m))
 
 current = None

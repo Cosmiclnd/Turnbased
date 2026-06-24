@@ -87,7 +87,13 @@ class Herta(base.Character):
     
     class Talent(base.Character.CharacterSkill):
         class FollowUp(target.Target.FollowUpTurn):
-            pass
+            def dead(self):
+                if super().dead():
+                    return True
+                skill = self.target.skills["talent"].skills[0]
+                if skill.attacks == 0:
+                    skill.follow_up_launched = False
+                    return True
 
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
@@ -96,6 +102,7 @@ class Herta(base.Character):
 
             battle.current.event_bus.add_member_listener(self.cur_hp_modify, t)
             battle.current.event_bus.add_member_listener(self.action_unit_trigger, t)
+            battle.current.event_bus.add_member_listener(self.new_wave_start, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE - 1)
         async def cur_hp_modify(self, t, amount):
@@ -129,6 +136,10 @@ class Herta(base.Character):
                     i += 1
                 self.attacks = 0
                 self.follow_up_launched = False
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def new_wave_start(self):
+            self.attacks = 0
         
     def __init__(self, record):
         super().__init__("herta", record)

@@ -81,7 +81,7 @@ class ModifierEffect(Effect):
                 stat.modifiers.extend(self.modifiers)
                 self.mod_dead = item.DeadToggle(self.target)
                 for mod in self.modifiers:
-                    mod.dead_toggle = self.mod_dead
+                    mod.master = self.mod_dead
             elif self.old_stacks != 0 and stacks == 0:
                 self.mod_dead.dead_toggle = True
             for i in range(len(self.modifiers)):

@@ -21,12 +21,10 @@ async def handle_message(message):
     elif type == "add_character":
         character = config.load_class("characters", message["name"])(message["record"])
         battle.current.characters.append(character)
-    elif type == "add_monster":
-        monster = config.load_class("monsters", message["name"])(message["level"], message["moc"])
-        battle.current.monsters.append(monster)
+    elif type == "setup_monsters":
+        battle.current.monster_setup.set_record(message["record"])
 
 async def handle(w):
-    
     global websocket
     websocket = w
     while True:
