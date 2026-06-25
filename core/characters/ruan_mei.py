@@ -5,6 +5,7 @@ import battle
 import modifier
 import damage
 import effect
+import action
 from monsters import base as monster
 
 from characters import base
@@ -125,41 +126,43 @@ class RuanMei(base.Character):
                 stacks = self.target.effects.get_stacks(self.effect)
                 if self.old_stacks == 0 and stacks != 0:
                     self.eff_dead = item.DeadToggle(self.target)
-                    battle.current.event_bus.add_member_listener(self.action_unit_trigger, self.eff_dead)
                     battle.current.event_bus.add_member_listener(self.weakness_recover, self.eff_dead)
                 elif self.old_stacks != 0 and stacks == 0:
                     self.eff_dead.dead_toggle = True
                 self.old_stacks = stacks
             
             @event.member_listener(event.ListenerPriority.PRE_PROCESS + 2)
-            async def action_unit_trigger(self, action_unit):
-                if isinstance(action_unit, target.Target.NormalTurn) and action_unit.target is self.target and self.target.weakness_broken:
-                    battle.current.event_bus.stop_current()
-                    await self.target.effects.delete(self.effect)
-                    self.effect.immune_targets.append(self.target)
-                    ultimate = self.effect.target.skills["ultimate"].skills[0]
-                    stat_desc = modifier.StatDesc((
-                        (self.effect.target.stats["break_eff"], modifier.ModifierFilter.CALCULATED, ultimate.get_value("delay_percentage")),
-                        (None, None, ultimate.get_value("delay_flat"))
-                    ))
-                    target.Target.NormalTurn.delay_target(self.target, stat_desc.calculate())
-                    dmg = damage.Damage(self.effect.target, self.target,
-                        modifier.StatDesc((self.effect.target.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED,
-                            ultimate.get_value("percentage"))),
-                        self.effect.target.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
-                    await battle.current.event_bus.dispatch("additional_damage", dmg)
-            
-            @event.member_listener(event.ListenerPriority.EXECUTE - 1)
             async def weakness_recover(self, t):
-                if self.target is not t:
+                if self.target is not t or not self.target.weakness_broken:
                     return
-                if t in self.effect.immune_targets:
-                    self.effect.immune_targets.remove(t)
+                await self.target.effects.delete(self.effect)
+                self.effect.immune_targets.append(self.target)
+                ultimate = self.effect.target.skills["ultimate"].skills[0]
+                stat_desc = modifier.StatDesc((
+                    (self.effect.target.stats["break_eff"], modifier.ModifierFilter.CALCULATED, ultimate.get_value("delay_percentage")),
+                    (None, None, ultimate.get_value("delay_flat"))
+                ))
+                action.NormalTurn.advance_target(self.target, 1)  # 回退1回合
+                action.NormalTurn.delay_target(self.target, stat_desc.calculate())
+                dmg = damage.Damage(self.effect.target, self.target,
+                    modifier.StatDesc((self.effect.target.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED,
+                        ultimate.get_value("percentage"))),
+                    self.effect.target.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+                await battle.current.event_bus.dispatch("additional_damage", dmg)
+                battle.current.event_bus.interrupt("normal_turn")
 
         def __init__(self, t):
             super().__init__("thanatoplum_rebloom", "Thanatoplum Rebloom", effect.Effect.Type.DEBUFF, effect.Effect.DurationType.PERMANENT, 1)
             self.immune_targets = []
             self.target = t
+            battle.current.event_bus.add_member_listener(self.weakness_recover, t)
+            
+        @event.member_listener(event.ListenerPriority.EXECUTE - 1)
+        async def weakness_recover(self, t):
+            if self.target is not t:
+                return
+            if t in self.immune_targets:
+                self.immune_targets.remove(t)
 
     def __init__(self, record):
         super().__init__("ruan_mei", record)

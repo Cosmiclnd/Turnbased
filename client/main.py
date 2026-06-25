@@ -99,9 +99,9 @@ async def handle_command(websocket, command):
     else:
         cprint("Unknown command.", "red")
 
-async def handle_input(websocket, allow_empty=False):
+async def handle_input(websocket, allow_empty=False, prompt="> "):
     while True:
-        cprint("> ", "light_green", end="")
+        cprint(prompt, "light_green", end="")
         raw = (await aioconsole.ainput()).strip()
         if not raw:
             if allow_empty:
@@ -117,12 +117,9 @@ async def respond_new_wave(websocket, message):
     cprint(f"Wave {message['wave']} / {message['total']}.", "light_yellow")
     return {"type": "empty"}
 
-async def respond_prepare_next_action_unit(websocket, message):
-    if message["verbose"]:
-        print("-" * 50)
-        cprint(f"New action unit is about to start.", "yellow")
+async def respond_ask_ultimate(websocket, message):
     while True:
-        option = await handle_input(websocket, True)
+        option = await handle_input(websocket, True, "u> ")
         if not option:
             return {"type": "empty"}
         words = option.split()
@@ -136,7 +133,7 @@ async def respond_prepare_next_action_unit(websocket, message):
         if opt not in ("u", "ultimate"):
             cprint("Can only use ultimate.", "light_red")
             continue
-        return {"type": "prepare_ultimate", "index": int(index)}
+        return {"type": "ask_ultimate", "index": int(index)}
 
 async def respond_start_normal_turn(websocket, message):
     cprint(f"{message['name']} takes a Normal Turn.", "light_yellow")
@@ -145,7 +142,7 @@ async def respond_start_normal_turn(websocket, message):
 async def respond_character_normal_turn_option(websocket, message):
     match message["info"]:
         case "bad_option":
-            cprint("Options: basic_atk(a/b/q), skill(s/e)", "light_red")
+            cprint("Options: basic_atk(a/b/q), skill(s/e).", "light_red")
         case "not_enough_skillpoints":
             cprint("Not enough skillpoints.", "light_red")
         case "invalid_target":
@@ -168,8 +165,8 @@ async def respond_character_normal_turn_option(websocket, message):
         opt = "basic_atk"
     if opt in ("s", "e"):
         opt = "skill"
-    if opt in ("u", "ultimate"):
-        return {"type": "character_prepare_ultimate"}
+    if opt == "u":
+        opt = "ultimate"
     return {"type": "character_normal_turn_option", "option": opt, "index": int(index)}
 
 async def respond_start_ultimate_turn(websocket, message):
@@ -200,8 +197,8 @@ async def handle_message(websocket, message):
     type = message["type"]
     if type == "new_wave":
         return await respond_new_wave(websocket, message)
-    elif type == "prepare_next_action_unit":
-        return await respond_prepare_next_action_unit(websocket, message)
+    elif type == "ask_ultimate":
+        return await respond_ask_ultimate(websocket, message)
     elif type == "start_normal_turn":
         return await respond_start_normal_turn(websocket, message)
     elif type == "character_normal_turn_option":

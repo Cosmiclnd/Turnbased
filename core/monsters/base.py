@@ -95,12 +95,10 @@ class Monster(target.Target):
         self.cur_toughness = self.stats["toughness"].calculate()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def normal_turn(self, t):
-        if self is not t:
+    async def normal_turn(self, turn):
+        if self is not turn.target:
             return
-        self.frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
-        if self.frozen:
-            target.Target.NormalTurn.advance_target(self, 0.5)
+        if not self.effects.can_act():
             return
         if self.weakness_broken:
             await battle.current.event_bus.dispatch("weakness_recover", self)

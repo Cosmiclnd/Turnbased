@@ -23,8 +23,9 @@ class NightOfFright(base.LightCone):
             battle.current.event_bus.add_member_listener(self.heal, t)
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1)
-    async def ultimate_turn(self, t):
-        heal = healing.Healing(self.target, t, modifier.StatDesc((t.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))))
+    async def ultimate_turn(self, turn):
+        heal = healing.Healing(self.target, turn.target, modifier.StatDesc((turn.target.stats["hp"], modifier.ModifierFilter.CALCULATED,
+            self.get_value("percentage"))))
         await battle.current.event_bus.dispatch("heal", heal)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

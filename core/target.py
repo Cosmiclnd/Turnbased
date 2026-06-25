@@ -43,45 +43,6 @@ class Target(item.Item):
                 else:
                     values[name] = self.get_skill_value(skill_name, name)
             return desc.format(**values)
-    
-    class NormalTurn(action.ActionUnit):
-        def __init__(self, target):
-            super().__init__("normal_turn", "Normal Turn", action.ActionPriority.NORMAL_TURN, target)
-            self.target = target
-            self.start_action_value = 0
-            self.scale = 1
-        
-        def action_value(self):
-            return self.start_action_value + max(self.scale * 10000 / self.target.stats["spd"].calculate(), 0)
-        
-        def advance(self, scale):
-            self.scale -= scale
-        
-        def delay(self, scale):
-            self.advance(-scale)
-        
-        @classmethod
-        def advance_target(cls, t, scale):
-            for unit in battle.current.action_list:
-                if isinstance(unit, Target.NormalTurn) and t is unit.target:
-                    unit.advance(scale)
-                    break
-        
-        @classmethod
-        def delay_target(cls, t, scale):
-            cls.advance_target(t, -scale)
-    
-    class ExtraTurn(action.ActionUnit):
-        def __init__(self, target, priority):
-            super().__init__("extra_turn", "Extra Turn", priority, item.DeadToggle(target))
-            self.target = target
-        
-        def action_value(self):
-            return 0
-    
-    class FollowUpTurn(ExtraTurn):
-        def __init__(self, target):
-            super().__init__(target, action.ActionPriority.FOLLOW_UP)
 
     def __init__(self, nameid, name, level):
         super().__init__(nameid, name, None)
@@ -97,13 +58,12 @@ class Target(item.Item):
             stat_names.append(f"{e.nameid}_res")
         self.stats.new_stats(stat_names, self)
         self.cur_hp = 0
-        self.frozen = False
         self.death_state = DeathState(self)
         self.effects = effect.EffectList(self)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
-        battle.current.event_bus.add_member_listener(self.action_unit_trigger, self)
         battle.current.event_bus.add_member_listener(self.normal_turn_message, self)
+        battle.current.event_bus.add_member_listener(self.check_frozen, self)
         battle.current.event_bus.add_member_listener(self.attack, self)
         battle.current.event_bus.add_member_listener(self.hit, self)
         battle.current.event_bus.add_member_listener(self.additional_damage, self)
@@ -134,26 +94,29 @@ class Target(item.Item):
         if battle.current.random.random() < chance:
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
+    async def prepare_skill(self):
+        # 同一回合多次调用是合理的
+        pass
+    
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         self.cur_hp = self.stats["hp"].calculate()
         self.death_state.clear()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def action_unit_trigger(self, action_unit):
-        if isinstance(action_unit, Target.NormalTurn) and action_unit.target is self:
-            battle.current.current_action_value = action_unit.action_value()
-            action_unit.start_action_value = battle.current.current_action_value
-            action_unit.order = action.ActionUnit.next_order()
-            action_unit.scale = 1
-            await battle.current.event_bus.dispatch("normal_turn", self)
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
-    async def normal_turn_message(self, t):
-        if self is not t:
+    @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
+    async def normal_turn_message(self, turn):
+        if self is not turn.target:
             return
-        message = {"type": "start_normal_turn"} | self.get_info()
+        message = {"type": "start_normal_turn"} | self.get_info()  # TODO: better message
         await server.send_and_recv(message)
+    
+    @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
+    async def check_frozen(self, turn):
+        if self is not turn.target:
+            return
+        frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
+        if frozen:
+            action.NormalTurn.delay_target(self, 0.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def attack(self, damage):

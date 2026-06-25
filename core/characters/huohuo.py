@@ -111,7 +111,7 @@ class Huohuo(base.Character):
                 if c.cur_hp <= c.stats["hp"].calculate() * self.get_value("hp_threshold"):
                     await self.heal(c)
             
-        @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
+        @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
         async def turn_start(self, t):
             if not isinstance(t, base.Character) or not self.target.has_divine_provision():
                 return

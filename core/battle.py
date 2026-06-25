@@ -31,13 +31,13 @@ class Battle:
     def __init__(self, seed=None):
         self.random = random.Random(seed)
         self.event_bus = event.EventBus()
-        self.action_list = item.ItemList()
-        self.current_action_value = 0
+        self.action_list = action.ActionList()
         self.skillpoints = Skillpoints()
         self.characters = item.ItemList()
         self.monsters = item.ItemList()
         self.monster_setup = monster.Setup()
         self.target_index = 0
+        self.suspended = False
 
         self.event_bus.add_member_listener(self.battle_start, nameid="battle", name="Battle")
         self.event_bus.add_member_listener(self.add_monster, nameid="battle", name="Battle")
@@ -48,40 +48,30 @@ class Battle:
     
     def count_monsters(self):
         return sum(1 for m in self.monsters if m.countable())
-
-    async def prepare_next_action_unit(self):
-        verbose = True
-        while True:
-            message = await server.send_and_recv({"type": "prepare_next_action_unit", "verbose": verbose})
-            if message["type"] == "empty":
-                break
-            if message["type"] == "prepare_ultimate":
-                await self.event_bus.dispatch("prepare_ultimate", self.characters[message["index"]])
-            verbose = False
+    
+    async def check_targets(self):
+        if await self.monster_setup.check():
+            await server.send_and_recv({"type": "battle_win"})
+            return True
+        if not self.characters:
+            await server.send_and_recv({"type": "battle_lose"})
+            return True
+        return False
     
     async def start(self):
         await self.event_bus.dispatch("battle_start")
         await self.monster_setup.check()
         while True:
-            await self.prepare_next_action_unit()
-            self.action_list.refresh()
-            self.action_list.sort(key=lambda x: x.sort_key())
-            await self.event_bus.dispatch("action_unit_trigger", self.action_list[0])
-            if await self.monster_setup.check():
-                await server.send_and_recv({"type": "battle_win"})
-                break
-            if not self.characters:
-                await server.send_and_recv({"type": "battle_lose"})
-                break
+            await self.action_list.next_normal_turn()
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def battle_start(self):
-        for t in self.characters:
-            self.action_list.append(target.Target.NormalTurn(t))
+        for t in self.characters[::-1]:
+            self.action_list.normals.append(action.NormalTurn(t))
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def add_monster(self, m):
         self.monsters.append(m)
-        self.action_list.append(target.Target.NormalTurn(m))
+        self.action_list.normals.append(action.NormalTurn(m))
 
 current = None

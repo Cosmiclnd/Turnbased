@@ -61,9 +61,10 @@ class Character(target.Target):
                     cls.level_curve = json.load(f)
             return cls.level_curve[name][level - 1]
 
-    class UltimateTurn(target.Target.ExtraTurn):
+    class UltimateTurn(action.ExtraTurn):
         def __init__(self, t):
-            super().__init__(t, action.ActionPriority.EXTRA_TURN)
+            super().__init__(t, action.ExtraTurn.Priority.ULTIMATE)
+            battle.current.event_bus.add_member_listener(self.extra_turn, self)
         
         def dead(self):
             if super().dead():
@@ -72,6 +73,16 @@ class Character(target.Target):
             if self.target.cur_energy < energy:
                 self.target.ultimate_activated = False
                 return True
+        
+        def is_ultimate(self):
+            return True
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def extra_turn(self, turn):
+            if self is not turn:
+                return
+            self.master.dead_toggle = True
+            await battle.current.event_bus.dispatch("ultimate_turn", self)
 
     class CharacterSkill(skill.Skill):
         def __init__(self, t, skill_name):
@@ -247,19 +258,20 @@ class Character(target.Target):
             result[category].append(info)
         return result
 
+    def ultimate_available(self):
+        return not self.ultimate_activated and self.cur_energy >= self.stats["energy"].calculate()
+
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         # 这个listener在Target类中已经被添加
         await super().battle_start()
-        self.cur_energy = 0.5 * self.stats["energy"].calculate()
+        self.cur_energy = 0.5 * self.stats["energy"].calculate() * 2
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def normal_turn(self, t):
-        if self is not t:
+    async def normal_turn(self, turn):
+        if self is not turn.target:
             return
-        self.frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
-        if self.frozen:
-            target.Target.NormalTurn.advance_target(self, 0.5)
+        if not self.effects.can_act():
             return
         message = {"type": "character_normal_turn_option", "options": list(self.skills.keys()), "info": None} | self.get_info()
         while True:
@@ -275,8 +287,7 @@ class Character(target.Target):
                 if info == "ok":
                     break
                 message["info"] = info
-        skill_group = self.skills[option]
-        await battle.current.event_bus.dispatch("skill_group_trigger", skill_group)
+        await battle.current.event_bus.dispatch("skill_group_trigger", self.skills[option])
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "weakness_break")
     async def break_weakness(self, tr):
@@ -286,7 +297,7 @@ class Character(target.Target):
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
-        target.Target.NormalTurn.delay_target(tr.target, 0.25)
+        action.NormalTurn.delay_target(tr.target, 0.25)
         if self.element is enums.Element.ICE:
             dmg = damage.Damage(self, tr.target,
                 modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
@@ -312,24 +323,12 @@ class Character(target.Target):
     async def prepare_ultimate(self, t):
         if self is not t:
             return
-        if self.ultimate_activated:
-            return
-        energy = self.stats["energy"].calculate()
-        if self.cur_energy >= energy:
-            self.ultimate_activated = True
-            battle.current.action_list.append(Character.UltimateTurn(self))
+        self.ultimate_activated = True
+        battle.current.action_list.extras.append(Character.UltimateTurn(self))
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def action_unit_trigger(self, action_unit):
-        # 这个listener在Target类中已经被添加
-        await super().action_unit_trigger(action_unit)
-        if isinstance(action_unit, Character.UltimateTurn) and action_unit.target is self:
-            action_unit.master.dead_toggle = True
-            await battle.current.event_bus.dispatch("ultimate_turn", self)
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def ultimate_turn(self, t):
-        if self is not t:
+    async def ultimate_turn(self, turn):
+        if self is not turn.target:
             return
         message = {"type": "start_ultimate_turn"} | self.get_info()
         await server.send_and_recv(message)

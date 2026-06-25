@@ -70,6 +70,9 @@ class Effect(item.Item):
     
     def is_immune(self, t):
         return False
+    
+    def can_act(self, t):
+        return True
 
 class ModifierEffect(Effect):
     class Instance(Effect.Instance):
@@ -99,14 +102,14 @@ class FrozenEffect(Effect):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
-                battle.current.event_bus.add_member_listener(self.turn_end, self.listener_dead)
+                battle.current.event_bus.add_member_listener(self.normal_turn_start, self.listener_dead)
             elif self.old_stacks != 0 and stacks == 0:
                 self.listener_dead.dead_toggle = True
             self.old_stacks = stacks
         
-        @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
-        async def turn_end(self, t):
-            if self.target is not t:
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def normal_turn_start(self, turn):
+            if self.target is not turn.target:
                 return
             if self.effect.additional_dmg is not None:
                 await battle.current.event_bus.dispatch("additional_damage", self.effect.additional_dmg)
@@ -117,6 +120,9 @@ class FrozenEffect(Effect):
 
     def is_debuff_type(self, type):
         return type in (Debuff.FROZEN, Debuff.CONTROL)
+    
+    def can_act(self, t):
+        return False
 
 class EffectList:
     def __init__(self, t):
@@ -128,8 +134,8 @@ class EffectList:
         # effect.Instance的实现保证没有副作用
         self.instances = {}
 
-        battle.current.event_bus.add_member_listener(self.turn_start, t)
-        battle.current.event_bus.add_member_listener(self.turn_end, t)
+        battle.current.event_bus.add_member_listener(self.normal_turn_start, t)
+        battle.current.event_bus.add_member_listener(self.normal_turn_end, t)
     
     def print(self, indent=0):
         print(" " * indent + f"{self.target.nameid}.effects:")
@@ -204,6 +210,12 @@ class EffectList:
                 return True
         return False
     
+    def can_act(self):
+        for eff in self.effects.keys():
+            if not eff.can_act(self.target):
+                return False
+        return True
+    
     async def dispel(self, count, f=None):
         for i in range(count):
             effects = list(filter(lambda eff: eff.dispellable and (f is None or f(eff)), self.effects.keys()))
@@ -217,17 +229,17 @@ class EffectList:
         for eff in list(self.effects.keys()):
             await self.delete(eff)
     
-    @event.member_listener(event.ListenerPriority.START, "normal_turn")
-    async def turn_start(self, t):
-        if self.target is not t:
+    @event.member_listener(event.ListenerPriority.PRE_PROCESS)
+    async def normal_turn_start(self, turn):
+        if self.target is not turn.target:
             return
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_START:
                 await self.advance_turn(eff)
     
-    @event.member_listener(event.ListenerPriority.END, "normal_turn")
-    async def turn_end(self, t):
-        if self.target is not t:
+    @event.member_listener(event.ListenerPriority.POST_PROCESS)
+    async def normal_turn_end(self, turn):
+        if self.target is not turn.target:
             return
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_END:
