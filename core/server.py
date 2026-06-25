@@ -1,5 +1,6 @@
 import websockets
 import logging
+import asyncio
 import json
 import os
 import sys
@@ -11,6 +12,7 @@ import config
 
 port = 55716
 websocket = None
+shutdown_event = asyncio.Event()
 
 async def handle_message(message):
     type = message["type"]
@@ -37,8 +39,8 @@ async def handle(w):
         except Exception as e:
             logging.exception(e)
             logging.error(battle.current.event_bus.format_stack())
-            logging.info("server closing")
-            os._exit(1)
+            await websocket.close()
+            shutdown_event.set()
 
 async def handle_command(message):
     type = message["type"]
