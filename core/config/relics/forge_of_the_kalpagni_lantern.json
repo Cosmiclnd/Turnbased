@@ -1,0 +1,25 @@
+{
+    "nameid": "forge_of_the_kalpagni_lantern",
+    "name": "Forge of the Kalpagni Lantern",
+    "skills": {
+        "2pc": {
+            "nameid": "2pc_effect",
+            "name": "2-Pc Effect",
+            "desc": "Increases the wearer's SPD by {spd_boost:.2%}. When the wearer hits an enemy target that has Fire Weakness, the wearer's Break Effect increases by {break_eff_boost:.0%}, lasting for {duration} turn(s).",
+            "values": {
+                "spd_boost": {
+                    "is_dynamic": false,
+                    "value": 0.06
+                },
+                "break_eff_boost": {
+                    "is_dynamic": false,
+                    "value": 0.4
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        }
+    }
+}

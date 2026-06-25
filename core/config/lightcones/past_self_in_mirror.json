@@ -12,7 +12,7 @@
         "skill": {
             "nameid": "the_plum_fragrance_in_my_bones",
             "name": "The Plum Fragrance In My Bones",
-            "desc": "Increases the wearer's Break Effect by {break_eff_boost:.2%}. When the wearer uses their Ultimate, increases all allies' DMG by {dmg_boost:.2%}, lasting for {duration} turn(s). Should the wearer's Break Effect exceed or equal {break_eff_threshold:.2%}, 1 Skill Point will be recovered. At the start of each wave, all allies regenerate {energy_regen} Energy immediately. Effects of the same type cannot stack.",
+            "desc": "Increases the wearer's Break Effect by {break_eff_boost:.2%}. When the wearer uses their Ultimate, increases all allies' DMG by {dmg_boost:.2%}, lasting for {duration} turn(s). If the wearer's Break Effect exceeds or equals {break_eff_threshold:.2%}, 1 Skill Point will be recovered. At the start of each wave, all allies regenerate {energy_regen} Energy immediately. Abilities of the same type cannot stack.",
             "values": {
                 "break_eff_boost": {
                     "is_dynamic": true,

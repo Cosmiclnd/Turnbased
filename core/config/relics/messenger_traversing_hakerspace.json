@@ -1,0 +1,32 @@
+{
+    "nameid": "messenger_traversing_hakerspace",
+    "name": "Messenger Traversing Hackerspace",
+    "skills": {
+        "2pc": {
+            "nameid": "2pc_effect",
+            "name": "2-Pc Effect",
+            "desc": "Increases SPD by {spd_boost:.2%}.",
+            "values": {
+                "spd_boost": {
+                    "is_dynamic": false,
+                    "value": 0.06
+                }
+            }
+        },
+        "4pc": {
+            "nameid": "4pc_effect",
+            "name": "4-Pc Effect",
+            "desc": "When the wearer uses their Ultimate on an ally, SPD for all allies increases by {spd_boost:.2%} for {duration} turn(s). This effect cannot be stacked.",
+            "values": {
+                "spd_boost": {
+                    "is_dynamic": false,
+                    "value": 0.12
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        }
+    }
+}

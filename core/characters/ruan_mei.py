@@ -213,7 +213,7 @@ class RuanMei(base.Character):
         
         if self.traces_unlocked[2]:
             mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace3"),
-                modifier.StatDesc((self.stats["break_eff"], modifier.ModifierFilter.SELF_CONVERSION,
+                modifier.StatDesc((self.stats["break_eff"], modifier.ModifierFilter.CALCULATED,  # 经测试可以二次转化
                     modifier.StatConverter(
                         self.config.get_skill_value("bonus_trace3", "break_eff_threshold"),
                         self.config.get_skill_value("bonus_trace3", "break_eff_step"),
