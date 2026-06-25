@@ -16,7 +16,7 @@ class NightOfFright(base.LightCone):
             mod = modifier.Modifier(self.nameid, self.name, modifier.StatDesc((None, None, self.get_value("energy_regen_boost"))), None, t)
             t.stats["energy_regen_rate"].modifiers.append(mod)
             mod2 = modifier.Modifier(self.nameid, self.name,
-                modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.get_value("atk_boost"))), None, t)
+                modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.get_value("atk_boost"))))
             self.effect = effect.ModifierEffect(self.nameid, self.name, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
                 self.get_value("max_stacks"), "atk", mod2)
             battle.current.event_bus.add_member_listener(self.ultimate_turn, t)

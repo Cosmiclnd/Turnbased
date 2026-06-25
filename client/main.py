@@ -354,6 +354,36 @@ async def main():
                 "level": 80,
                 "stacks": 5
             },
+            "relics": {
+                "head": {
+                    "name": "messenger_traversing_hakerspace",
+                    "level": 15,
+                    "main_stat_type": "hp",
+                    "sub_stat_types": ["def", "spd", "break_eff", "crt_rate"],
+                    "enhancements": [(1, 2), (1, 2, 1), (1, 2, 2), (0,)]
+                },
+                "hands": {
+                    "name": "messenger_traversing_hakerspace",
+                    "level": 15,
+                    "main_stat_type": "atk",
+                    "sub_stat_types": ["break_eff", "spd", "eff_res", "atk%"],
+                    "enhancements": [(1, 1, 0, 1), (2, 2), (2,), (2,)]
+                },
+                "body": {
+                    "name": "messenger_traversing_hakerspace",
+                    "level": 15,
+                    "main_stat_type": "hp%",
+                    "sub_stat_types": ["break_eff", "def%", "spd", "hp"],
+                    "enhancements": [(1, 2, 1, 1), (1, 0), (2, 2), (1,)]
+                },
+                "feet": {
+                    "name": "messenger_traversing_hakerspace",
+                    "level": 15,
+                    "main_stat_type": "spd",
+                    "sub_stat_types": ["spd", "eff_res", "hp", "break_eff"],
+                    "enhancements": [(1, 2, 1, 1), (1, 2, 1), (1,), (2,)]
+                }
+            }
         }
         await send_message(websocket, {"type": "add_character", "name": "herta", "record": record_herta})
         await send_message(websocket, {"type": "add_character", "name": "huohuo", "record": record_huohuo})

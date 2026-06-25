@@ -174,7 +174,7 @@ class Huohuo(base.Character):
 
         names = self.config.get_skill_name("ultimate")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.skills["ultimate"].skills[0].get_value("atk_boost"))), None, self)
+            modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.skills["ultimate"].skills[0].get_value("atk_boost"))))
         self.effect_types["ultimate"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "atk", mod)
 
         if self.traces_unlocked[1]:
@@ -185,11 +185,11 @@ class Huohuo(base.Character):
         
         names = self.config.get_skill_name("eidolon1")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon1", "spd_boost"))), None, self)
+            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon1", "spd_boost"))))
         self.effect_types["eidolon1"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod)
         
         names = self.config.get_skill_name("eidolon6")
-        mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon6", "percentage"))), None, self)
+        mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon6", "percentage"))))
         self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "dmg_boost", mod)
     
     def validator_trace2(self, stat, **kwargs):

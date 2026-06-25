@@ -34,7 +34,8 @@ class Effect(item.Item):
         PERMANENT = item.Item("permanent", "Permanent")
         TURN_START = item.Item("turn_start", "Turn Start")
         TURN_END = item.Item("turn_end", "Turn End")
-        ALL = (PERMANENT, TURN_START, TURN_END)
+        TURN_END_CHECK_START = item.Item("turn_end_check_start", "Turn End (Check Start)")
+        ALL = (PERMANENT, TURN_START, TURN_END, TURN_END_CHECK_START)
     DurationType.init()
     
     # 表示已经应用到某个target的状态效果
@@ -133,6 +134,7 @@ class EffectList:
         # instance一旦被添加就不会被删除
         # effect.Instance的实现保证没有副作用
         self.instances = {}
+        self.start_effects = []
 
         battle.current.event_bus.add_member_listener(self.normal_turn_start, t)
         battle.current.event_bus.add_member_listener(self.normal_turn_end, t)
@@ -236,6 +238,7 @@ class EffectList:
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_START:
                 await self.advance_turn(eff)
+        self.start_effects = list(self.effects.keys())
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS)
     async def normal_turn_end(self, turn):
@@ -243,6 +246,8 @@ class EffectList:
             return
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_END:
+                await self.advance_turn(eff)
+            elif eff.duration_type == Effect.DurationType.TURN_END_CHECK_START and eff in self.start_effects:
                 await self.advance_turn(eff)
 
 class EffectAddition:

@@ -171,13 +171,13 @@ class Herta(base.Character):
         self.effect_types = {}
 
         names = self.config.get_skill_name("eidolon2")
-        mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon2", "crt_rate_boost"))), None, self)
+        mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon2", "crt_rate_boost"))))
         self.effect_types["eidolon2"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT,
             self.config.get_skill_value("eidolon2", "max_stacks"), "crt_rate", mod)
         
         names = self.config.get_skill_name("eidolon6")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon6", "atk_boost"))), None, self)
+            modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon6", "atk_boost"))))
         self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
             1, "atk", mod)
     

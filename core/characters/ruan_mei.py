@@ -191,12 +191,12 @@ class RuanMei(base.Character):
 
         names = self.config.get_skill_name("talent")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.skills["talent"].skills[0].get_value("spd_boost"))), None, self)
+            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.skills["talent"].skills[0].get_value("spd_boost"))))
         self.effect_types["talent"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod)
 
         names = self.config.get_skill_name("eidolon4")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc((None, None, self.config.get_skill_value("eidolon4", "break_eff_boost"))), None, self)
+            modifier.StatDesc((None, None, self.config.get_skill_value("eidolon4", "break_eff_boost"))))
         self.effect_types["eidolon4"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "break_eff", mod)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

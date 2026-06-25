@@ -18,17 +18,17 @@ class PastSelfInMirror(base.LightCone):
             mod1 = modifier.Modifier(self.nameid, self.name,
                 modifier.StatDesc((None, None, self.get_value("break_eff_boost"))), None, t)
             t.stats["break_eff"].modifiers.append(mod1)
-            mod2 = modifier.Modifier(self.nameid, self.name,
-                modifier.StatDesc((None, None, self.get_value("dmg_boost"))), None, t)
+            mod2 = modifier.Modifier(self.nameid, self.name, modifier.StatDesc((None, None, self.get_value("dmg_boost"))))
             self.effect = effect.ModifierEffect(self.nameid, self.name, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
                 1, "dmg_boost", mod2)
             battle.current.event_bus.add_member_listener(self.ultimate_turn, self.target)
             self.init_class()
     
     def init_class(self):
-        if self.inited:
+        cls = self.__class__
+        if cls.inited:
             return
-        self.inited = True
+        cls.inited = True
         battle.current.event_bus.add_member_listener(self.new_wave_start, self.target)
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)

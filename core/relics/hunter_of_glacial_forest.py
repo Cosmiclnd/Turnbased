@@ -16,8 +16,7 @@ class HunterOfGlacialForest(base.RelicSet):
                 t.stats["ice_dmg_boost"].modifiers.append(mod)
             if self.pieces >= 4:
                 mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
-                    modifier.StatDesc((None, None, relic_set.config.get_skill_value("4pc", "crt_dmg_boost"))),
-                    None, t)
+                    modifier.StatDesc((None, None, relic_set.config.get_skill_value("4pc", "crt_dmg_boost"))))
                 self.effect = effect.ModifierEffect(self.relic_set.nameid, self.relic_set.name, effect.Effect.Type.BUFF,
                     effect.Effect.DurationType.TURN_END, 1, "crt_dmg", mod)
                 battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
