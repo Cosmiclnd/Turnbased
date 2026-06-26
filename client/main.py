@@ -408,7 +408,7 @@ async def main():
                     "monsters": [
                         {"name": "baryon", "level": 120, "moc": True},
                         {"name": "baryon", "level": 120, "moc": True},
-                        {"name": "baryon", "level": 120, "moc": True},
+                        {"name": "blaze_out_of_space", "level": 120, "moc": True},
                         {"name": "baryon", "level": 120, "moc": True},
                         {"name": "baryon", "level": 120, "moc": True},
                     ],

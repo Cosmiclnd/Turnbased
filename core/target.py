@@ -79,6 +79,9 @@ class Target(item.Item):
     def get_stats_info(self):
         return {name: (stat.calculate(modifier.ModifierFilter.BASE), stat.calculate()) for name, stat in self.stats.items()}
     
+    def new_normal_turn(self):
+        return action.NormalTurn(self)
+    
     async def check_death(self):
         if not self.death_state.alive:
             await battle.current.event_bus.dispatch("die", self)

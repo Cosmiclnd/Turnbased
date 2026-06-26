@@ -10,8 +10,9 @@ class SkillType(enums.Enum):
     AOE = item.Item("aoe", "AoE")
     RESTORE = item.Item("restore", "Restore")
     SUPPORT = item.Item("support", "Support")
+    ENHANCE = item.Item("enhance", "Enhance")
     OTHERS = item.Item("others", "Others")
-    ALL = (SINGLE, BLAST, BOUNCE, AOE, RESTORE, SUPPORT, OTHERS)
+    ALL = (SINGLE, BLAST, BOUNCE, AOE, RESTORE, ENHANCE, SUPPORT, OTHERS)
 SkillType.init()
 
 class Skill(item.Item):
@@ -25,17 +26,17 @@ class Skill(item.Item):
         return "ok"
 
 class SkillGroup:
-    def __init__(self, t):
+    def __init__(self, t, selector=lambda group: group.skills[0]):
         self.target = t
         self.skills = item.ItemList()
-        self.current = 0
+        self.selector = selector
         battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
     
     def current_skill(self):
-        return self.skills[self.current]
+        return self.selector(self)
     
     def available(self):
-        return self.skills[self.current].available()
+        return self.current_skill().available()
     
     def add(self, skill):
         self.skills.append(skill)
@@ -52,4 +53,4 @@ class SkillGroup:
     async def skill_group_trigger(self, skill_group):
         if self is not skill_group:
             return
-        await battle.current.event_bus.dispatch("skill_trigger", self.skills[self.current])
+        await battle.current.event_bus.dispatch("skill_trigger", self.current_skill())

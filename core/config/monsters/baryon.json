@@ -7,6 +7,7 @@
         "wind"
     ],
     "toughness": 10,
+    "first_turn_delay": 1,
     "base_stat_scales": {
         "hp": 0.6,
         "atk": 18,
@@ -26,12 +27,23 @@
         "quantum": 0.2,
         "imaginary": 0.2
     },
+    "base_debuff_res": {
+        "bleed": 0,
+        "burn": 0,
+        "frozen": 0,
+        "shock": 0,
+        "wind_sheer": 0,
+        "entanglement": 0,
+        "imprisonment": 0,
+        "control": 0
+    },
     "skills": {
         "skill1": {
             "nameid": "obliterate",
             "name": "Obliterate",
             "type": "single",
-            "desc": "Deals Quantum DMG equal to {percentage:.2%} of Baryon's ATK to one designated enemy.",
+            "powerful": false,
+            "desc": "Deals Quantum DMG equal to {percentage:.2%} of Baryon's ATK to one designated target.",
             "values": {
                 "energy_regen": {
                     "is_dynamic": false,

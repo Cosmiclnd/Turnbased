@@ -67,11 +67,13 @@ class Battle:
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def battle_start(self):
         for t in self.characters[::-1]:
-            self.action_list.normals.append(action.NormalTurn(t))
+            self.action_list.normals.append(t.new_normal_turn())
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def add_monster(self, m):
         self.monsters.append(m)
-        self.action_list.normals.append(action.NormalTurn(m))
+        turn = m.new_normal_turn()
+        self.action_list.normals.append(turn)
+        turn.advance(1 - m.first_turn_delay)
 
 current = None

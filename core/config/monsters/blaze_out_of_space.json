@@ -1,0 +1,122 @@
+{
+    "nameid": "blaze_out_of_space",
+    "name": "Blaze Out of Space",
+    "tier": "elite",
+    "weakness": [
+        "physical",
+        "ice",
+        "quantum"
+    ],
+    "toughness": 100,
+    "first_turn_delay": 1,
+    "base_stat_scales": {
+        "hp": 10,
+        "atk": 18,
+        "def": 1,
+        "spd": 120
+    },
+    "base_stat_flats": {
+        "eff_hr": 0,
+        "eff_res": 0.2
+    },
+    "base_dmg_res": {
+        "physical": 0,
+        "fire": 0.4,
+        "ice": 0,
+        "lightning": 0.2,
+        "wind": 0.2,
+        "quantum": 0,
+        "imaginary": 0.2
+    },
+    "base_debuff_res": {
+        "bleed": 0,
+        "burn": 1,
+        "frozen": 0,
+        "shock": 0,
+        "wind_sheer": 0,
+        "entanglement": 0,
+        "imprisonment": 0,
+        "control": 0
+    },
+    "skills": {
+        "skill1": {
+            "nameid": "bellowing_inferno",
+            "name": "Bellowing Inferno",
+            "type": "single",
+            "powerful": false,
+            "desc": "Deals Fire DMG equal to {percentage:.2%} of Blaze Out of Space's ATK to one designated target and has a {base_chance:.2%} base chance to inflict Enkindle, lasting for {duration} turn(s).",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 2.5
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "skill2": {
+            "nameid": "blazing_absorption",
+            "name": "Blazing Absorption",
+            "type": "enhance",
+            "powerful": false,
+            "desc": "Enters the Spontaneous Combustion state. Rain of Purifying Flames can be used in subsequent attacks.",
+            "values": {}
+        },
+        "skill3": {
+            "nameid": "rain_of_purifying_flames",
+            "name": "Rain of Purifying Flames",
+            "type": "bounce",
+            "powerful": true,
+            "desc": "Deals {times} instances of DMG, with each instance dealing Fire DMG equal to {percentage:.2%} of Blaze Out of Space's ATK. Each instance has a {base_chance:.2%} base chance to inflict Enkindle, lasting for {duration} turn(s).",
+            "values": {
+                "times": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "skill4": {
+            "nameid": "molten_fusion",
+            "name": "Molten Fusion",
+            "type": "enhance",
+            "powerful": false,
+            "desc": "Increase Blaze Out of Space's ATK by {atk_boost:.2%}, lasting for {duration} turn(s). This effect can stack up to {max_stacks} time(s) and is dispelled upon Weakness Break.",
+            "values": {
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 0.3
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "max_stacks": {
+                    "is_dynamic": false,
+                    "value": 3
+                }
+            }
+        }
+    }
+}

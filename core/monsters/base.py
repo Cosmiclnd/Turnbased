@@ -19,6 +19,7 @@ class Monster(target.Target):
         def init(self):
             self.target.tier = enums.MonsterTier.dict_nameid[self.data["tier"]]
             self.target.base_weakness = list(map(lambda x: enums.Element.dict_nameid[x], self.data["weakness"]))
+            self.target.first_turn_delay = self.data["first_turn_delay"]
         
         def set_base_stats(self):
             for stat_name in ("hp", "atk", "def", "spd"):
@@ -29,6 +30,8 @@ class Monster(target.Target):
                     stat_name, self.target.level, self.target.moc) + self.data["base_stat_flats"][stat_name]
             for element in enums.Element.ALL:
                 self.target.stats[f"{element.nameid}_res"].base_value = self.data["base_dmg_res"][element.nameid]
+            for debuff in effect.Debuff.ALL:
+                self.target.stats[f"{debuff.nameid}_res"].base_value = self.data["base_debuff_res"][debuff.nameid]
             self.target.stats["toughness"].base_value = self.data["toughness"]
     
         @classmethod

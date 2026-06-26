@@ -56,6 +56,7 @@ class Effect(item.Item):
         super().__init__(nameid, name)
         self.type = type
         self.duration_type = duration_type
+        # max_stacks=0表示无限制
         self.max_stacks = max_stacks
         self.dispellable = dispellable
     
@@ -160,7 +161,7 @@ class EffectList:
             self.effects[eff][duration] = 0
         self.effects[eff][duration] += stacks
         current_stacks = self.get_stacks(eff)
-        if current_stacks > eff.max_stacks:
+        if eff.max_stacks != 0 and current_stacks > eff.max_stacks:
             await self.remove(eff, current_stacks - eff.max_stacks)
         await self.instances[eff].refresh()
         return True

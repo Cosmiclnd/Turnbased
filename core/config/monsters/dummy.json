@@ -23,12 +23,23 @@
         "quantum": 0.2,
         "imaginary": 0.2
     },
+    "base_debuff_res": {
+        "bleed": 0,
+        "burn": 0,
+        "frozen": 0,
+        "shock": 0,
+        "wind_sheer": 0,
+        "entanglement": 0,
+        "imprisonment": 0,
+        "control": 0
+    },
     "skills": {
         "skill1": {
             "nameid": "dummy",
             "name": "Dummy",
             "type": "single",
-            "desc": "Deals DMG equal to {percentage:.2%} of Dummy's ATK to one designated enemy.",
+            "powerful": false,
+            "desc": "Deals DMG equal to {percentage:.2%} of Dummy's ATK to one designated target.",
             "values": {
                 "energy_regen": {
                     "is_dynamic": false,

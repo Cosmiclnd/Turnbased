@@ -10,9 +10,10 @@ def next_order():
     return order
 
 class NormalTurn(item.Item):
-    def __init__(self, t):
+    def __init__(self, t, actions=1):
         super().__init__(f"{t.nameid}_normal_turn", f"{t.name}'s Normal Turn", item.DeadToggle(t))
         self.target = t
+        self.actions = actions
         self.next_run()
     
     def base_action_value(self):
@@ -92,6 +93,10 @@ class ActionList:
         while self.extras:
             extra = self.extras.pop(0)
             await battle.current.event_bus.dispatch("extra_turn", extra)
+            await self.ask_ultimate()
+            if await self.refresh_targets():
+                return True
+        return False
     
     async def ask_ultimate(self):
         while True:
@@ -111,25 +116,16 @@ class ActionList:
         for turn in self.normals:
             turn.action_value -= delta
         await battle.current.event_bus.dispatch("normal_turn_start", current)
-        if await battle.current.check_targets():
-            return
-        await self.ask_ultimate()
-        if await self.refresh_targets():
-            return
-        await self.check_extra_turns()
-        if await self.refresh_targets():
-            return
-        if current.target.effects.can_act():
-            current.next_run()
-        await battle.current.event_bus.dispatch("normal_turn", current)
-        if await battle.current.check_targets():
-            return
-        await self.ask_ultimate()
-        if await self.refresh_targets():
-            return
-        await self.check_extra_turns()
-        if await self.refresh_targets():
-            return
+        for i in range(current.actions + 1):
+            if i != 0:
+                if i == 1:
+                    current.next_run()
+                await battle.current.event_bus.dispatch("normal_turn", current)
+            if await self.refresh_targets():
+                return
+            await self.ask_ultimate()
+            if await self.check_extra_turns():
+                return
         await battle.current.event_bus.dispatch("normal_turn_end", current)
     
     def print(self):
