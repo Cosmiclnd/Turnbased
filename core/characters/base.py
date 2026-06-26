@@ -265,7 +265,7 @@ class Character(target.Target):
     async def battle_start(self):
         # 这个listener在Target类中已经被添加
         await super().battle_start()
-        self.cur_energy = 0.5 * self.stats["energy"].calculate() * 2
+        self.cur_energy = 0.5 * self.stats["energy"].calculate()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def normal_turn(self, turn):

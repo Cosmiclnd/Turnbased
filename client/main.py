@@ -382,6 +382,20 @@ async def main():
                     "main_stat_type": "spd",
                     "sub_stat_types": ["spd", "eff_res", "hp", "break_eff"],
                     "enhancements": [(1, 2, 1, 1), (1, 2, 1), (1,), (2,)]
+                },
+                "planar_sphere": {
+                    "name": "forge_of_the_kalpagni_lantern",
+                    "level": 15,
+                    "main_stat_type": "hp%",
+                    "sub_stat_types": ["eff_res", "spd", "atk%", "def%"],
+                    "enhancements": [(1, 2, 1, 1), (1, 0), (2, 2), (0,)]
+                },
+                "link_rope": {
+                    "name": "forge_of_the_kalpagni_lantern",
+                    "level": 15,
+                    "main_stat_type": "energy_regen_rate",
+                    "sub_stat_types": ["hp", "eff_res", "break_eff", "def%"],
+                    "enhancements": [(1, 2), (1, 2, 2), (2, 1, 2), (0,)]
                 }
             }
         }
