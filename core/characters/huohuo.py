@@ -112,10 +112,10 @@ class Huohuo(base.Character):
                     await self.heal(c)
             
         @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
-        async def turn_start(self, t):
-            if not isinstance(t, base.Character) or not self.target.has_divine_provision():
+        async def turn_start(self, turn):
+            if not isinstance(turn.target, base.Character) or not self.target.has_divine_provision():
                 return
-            await self.trigger_divine_provision(t)
+            await self.trigger_divine_provision(turn.target)
         
         @event.member_listener(event.ListenerPriority.EXECUTE + 1, "ultimate_turn")
         async def ultimate_turn_start(self, t):

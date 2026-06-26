@@ -238,9 +238,9 @@ class RuanMei(base.Character):
             return False
         return dmg.target.weakness_break
     
-    @event.member_listener(event.ListenerPriority.PRE_PROCESS, "normal_turn")
-    async def turn_start(self, t):
-        if self is not t:
+    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
+    async def turn_start(self, turn):
+        if self is not turn.target:
             return
         if self.traces_unlocked[1]:
             await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace2", "energy"))
