@@ -80,12 +80,13 @@ class RuanMei(base.Character):
                 stacks = self.target.effects.get_stacks(self.effect)
                 if self.old_stacks == 0 and stacks != 0:
                     self.mod_dead = item.DeadToggle(self.target)
+                    skill = self.target.get_current_skill("skill")
                     mod_dmg_boost = modifier.Modifier(self.effect.nameid, self.effect.name,
-                        modifier.StatDesc((None, None, self.target.skills["skill"].skills[0].get_value("dmg_boost"))), None, self.mod_dead)
+                        modifier.StatDesc((None, None, skill.get_value("dmg_boost"))), None, self.mod_dead)
                     for c in battle.current.characters:
                         c.stats["dmg_boost"].modifiers.append(mod_dmg_boost)
                     mod_wb_eff = modifier.Modifier(self.effect.nameid, self.effect.name,
-                        modifier.StatDesc((None, None, self.target.skills["skill"].skills[0].get_value("wb_eff_boost"))), None, self.mod_dead)
+                        modifier.StatDesc((None, None, skill.get_value("wb_eff_boost"))), None, self.mod_dead)
                     for c in battle.current.characters:
                         c.stats["wb_eff"].modifiers.append(mod_wb_eff)
                 elif self.old_stacks != 0 and stacks == 0:
@@ -102,7 +103,7 @@ class RuanMei(base.Character):
                 if self.old_stacks == 0 and stacks != 0:
                     self.eff_dead = item.DeadToggle(self.target)
                     mod_res_pen = modifier.Modifier(self.effect.nameid, self.effect.name,
-                        modifier.StatDesc((None, None, self.target.skills["ultimate"].skills[0].get_value("res_pen_boost"))), None, self.eff_dead)
+                        modifier.StatDesc((None, None, self.target.get_current_skill("ultimate").get_value("res_pen_boost"))), None, self.eff_dead)
                     for c in battle.current.characters:
                         c.stats["res_pen"].modifiers.append(mod_res_pen)
                     if self.target.eidolons >= 1:
@@ -137,7 +138,7 @@ class RuanMei(base.Character):
                     return
                 await self.target.effects.delete(self.effect)
                 self.effect.immune_targets.append(self.target)
-                ultimate = self.effect.target.skills["ultimate"].skills[0]
+                ultimate = self.effect.target.get_current_skill("ultimate")
                 stat_desc = modifier.StatDesc((
                     (self.effect.target.stats["break_eff"], modifier.ModifierFilter.CALCULATED, ultimate.get_value("delay_percentage")),
                     (None, None, ultimate.get_value("delay_flat"))
@@ -191,7 +192,7 @@ class RuanMei(base.Character):
 
         names = self.config.get_skill_name("talent")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.skills["talent"].skills[0].get_value("spd_boost"))))
+            modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.get_current_skill("talent").get_value("spd_boost"))))
         self.effect_types["talent"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod)
 
         names = self.config.get_skill_name("eidolon4")
@@ -247,7 +248,7 @@ class RuanMei(base.Character):
     
     @event.member_listener(event.ListenerPriority.EXECUTE - 1)
     async def weakness_break(self, tr):
-        mult = self.skills["talent"].skills[0].get_value("percentage")
+        mult = self.get_current_skill("talent").get_value("percentage")
         if self.eidolons >= 6:
             mult += self.config.get_skill_value("eidolon6", "percentage")
         dmg = damage.Damage(self, tr.target,

@@ -145,8 +145,8 @@ async def respond_character_normal_turn_option(websocket, message):
             cprint("Options: basic_atk(a/b/q), skill(s/e).", "light_red")
         case "not_enough_skillpoints":
             cprint("Not enough skillpoints.", "light_red")
-        case "invalid_target":
-            cprint("Invalid target.", "light_red")
+        case "bad_index":
+            cprint("Index out of range.", "light_red")
         case _:
             if message["info"] is not None:
                 cprint(message["info"], "light_red")

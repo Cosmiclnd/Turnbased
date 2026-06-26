@@ -174,7 +174,7 @@ class Huohuo(base.Character):
 
         names = self.config.get_skill_name("ultimate")
         mod = modifier.Modifier(*names,
-            modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.skills["ultimate"].skills[0].get_value("atk_boost"))))
+            modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.get_current_skill("ultimate").get_value("atk_boost"))))
         self.effect_types["ultimate"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "atk", mod)
 
         if self.traces_unlocked[1]:

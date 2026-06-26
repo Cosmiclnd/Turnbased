@@ -31,6 +31,9 @@ class SkillGroup:
         self.current = 0
         battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
     
+    def current_skill(self):
+        return self.skills[self.current]
+    
     def available(self):
         return self.skills[self.current].available()
     

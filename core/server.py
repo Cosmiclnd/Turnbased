@@ -89,3 +89,21 @@ async def send_and_recv(message):
         if not await handle_command(response):
             break
     return response
+
+def request_validator(func):
+    def validator(*args):
+        result = func(*args)
+        if type(result) is not str:
+            return "internal_error"
+        return result
+    return validator
+
+async def request_option(message, validator):
+    type = message["type"]
+    message["info"] = None
+    while True:
+        response = await send_and_recv(message)
+        message["info"] = validator(response)
+        if message["info"] == "ok":
+            break
+    return response

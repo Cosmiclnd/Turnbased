@@ -126,15 +126,6 @@ class Character(target.Target):
                         result.append(t)
             return result
         
-        def available(self):
-            if not battle.current.skillpoints.available(self.delta_skillpoints):
-                return "not_enough_skillpoints"
-            try:
-                self.get_main_target()
-            except IndexError:
-                return "invalid_target"
-            return "ok"
-        
         @event.member_listener(event.ListenerPriority.PRE_PROCESS, "skill_trigger")
         async def skill_trigger_pre(self, skill):
             if self is not skill:
@@ -156,13 +147,7 @@ class Character(target.Target):
         self.eidolons = None
         self.traces_stats_unlocked = None
         self.traces_unlocked = None
-        self.skills = {
-            "basic_atk": skill.SkillGroup(self),
-            "skill": skill.SkillGroup(self),
-            "ultimate": skill.SkillGroup(self),
-            "talent": skill.SkillGroup(self),
-            "technique": skill.SkillGroup(self)
-        }
+        self.selected_skill = None
         self.lightcone = None
         self.relics = {}
         for type in relic.RelicType.ALL:
@@ -177,11 +162,24 @@ class Character(target.Target):
         battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
         battle.current.event_bus.add_member_listener(self.ultimate_turn, self)
 
+        self.init_skills()
+        self.set_record(record)
+    
+    def init_skills(self):
+        self.skills = {
+            "basic_atk": skill.SkillGroup(self),
+            "skill": skill.SkillGroup(self),
+            "ultimate": skill.SkillGroup(self),
+            "talent": skill.SkillGroup(self),
+            "technique": skill.SkillGroup(self)
+        }
         self.skills["basic_atk"].add(self.BasicAtk(self, "basic_atk"))
         self.skills["skill"].add(self.Skill(self, "skill"))
         self.skills["ultimate"].add(self.Ultimate(self, "ultimate"))
         self.skills["talent"].add(self.Talent(self, "talent"))
-        self.set_record(record)
+    
+    def get_current_skill(self, name):
+        return self.skills[name].current_skill()
     
     def set_record(self, record):
         # 读取record
@@ -213,11 +211,11 @@ class Character(target.Target):
         record =  {
             "level": self.level,
             "eidolons": self.eidolons,
-            "basic_atk_level": self.skills["basic_atk"][0].level,
-            "skill_level": self.skills["skill"][0].level,
-            "ultimate_level": self.skills["ultimate"][0].level,
-            "talent_level": self.skills["talent"][0].level,
-            "technique_level": self.skills["technique"][0].level,
+            "basic_atk_level": self.get_current_skill("basic_atk").level,
+            "skill_level": self.get_current_skill("skill").level,
+            "ultimate_level": self.get_current_skill("ultimate").level,
+            "talent_level": self.get_current_skill("talent").level,
+            "technique_level": self.get_current_skill("technique").level,
             "traces_stats_unlocked": self.traces_stats_unlocked,
             "traces_unlocked": self.traces_unlocked
         }
@@ -260,6 +258,26 @@ class Character(target.Target):
 
     def ultimate_available(self):
         return not self.ultimate_activated and self.cur_energy >= self.stats["energy"].calculate()
+        
+    @server.request_validator
+    def normal_turn_option_validator(self, response):
+        if response.get("type") != "character_normal_turn_option":
+            return "bad_message_type"
+        option = response.get("option")
+        if option not in ("basic_atk", "skill"):
+            return "bad_option"
+        battle.current.target_index = response.get("index")
+        if battle.current.target_index is None:
+            return "bad_index"
+        self.selected_skill = self.skills[option]
+        skill = self.selected_skill.current_skill()
+        if not battle.current.skillpoints.available(skill.delta_skillpoints):
+            return "not_enough_skillpoints"
+        try:
+            skill.get_main_target()
+        except IndexError:
+            return "bad_index"
+        return "ok"
 
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
@@ -273,21 +291,9 @@ class Character(target.Target):
             return
         if not self.effects.can_act():
             return
-        message = {"type": "character_normal_turn_option", "options": list(self.skills.keys()), "info": None} | self.get_info()
-        while True:
-            response = await server.send_and_recv(message)
-            message["info"] = None
-            if response["type"] == "character_normal_turn_option":
-                option = response["option"]
-                if option not in ("basic_atk", "skill"):
-                    message["info"] = "bad_option"
-                    continue
-                battle.current.target_index = response["index"]
-                info = self.skills[option].available()
-                if info == "ok":
-                    break
-                message["info"] = info
-        await battle.current.event_bus.dispatch("skill_group_trigger", self.skills[option])
+        message = {"type": "character_normal_turn_option"} | self.get_info()
+        await server.request_option(message, self.normal_turn_option_validator)
+        await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill)
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "weakness_break")
     async def break_weakness(self, tr):
