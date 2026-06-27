@@ -22,13 +22,16 @@ class Huohuo(base.Character):
             if self is not skill:
                 return
             t = self.get_main_target()
+            await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = damage.Damage(self.target, t,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
-            dmg.hit_split = (0.2, 0.2, 0.2, 0.4)
-            await battle.current.event_bus.dispatch("attack", dmg)
+            for ratio in (0.2, 0.2, 0.2, 0.4):
+                dmg.hit_split_ratio = ratio
+                await battle.current.event_bus.dispatch("hit", dmg)
+            await battle.current.event_bus.dispatch("attack_end", self.target)
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):

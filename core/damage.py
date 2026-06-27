@@ -91,7 +91,8 @@ DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, brea
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
 
 class Damage:
-    __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split", "energy_regen", "damage")
+    __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split_ratio",
+        "energy_regen", "damage")
 
     def __init__(self, dealer, t, stat_desc, element, types, source):
         self.dealer = dealer
@@ -102,7 +103,7 @@ class Damage:
         self.source = source
         self.factors = {}
         self.toughness_reduction = None
-        self.hit_split = None
+        self.hit_split_ratio = 1
         self.energy_regen = None
         self.damage = None
 
@@ -148,32 +149,18 @@ class Damage:
         self.damage = damage
         return damage
     
-    async def on_attack(self):
-        if self.hit_split is None:
-            await battle.current.event_bus.dispatch("hit", self)
-        else:
-            toughness_reduction = self.toughness_reduction.base_amount if self.toughness_reduction is not None else None
-            energy_regen = self.energy_regen
-            for rate in self.hit_split:
-                dmg = copy.copy(self)
-                dmg.stat_desc = self.stat_desc.scale(rate)
-                dmg.hit_split = None
-                if dmg.toughness_reduction is not None:
-                    dmg.toughness_reduction.base_amount = toughness_reduction * rate
-                if dmg.energy_regen is not None:
-                    dmg.energy_regen = energy_regen * rate
-                await battle.current.event_bus.dispatch("hit", dmg)
-            if toughness_reduction is not None:
-                self.toughness_reduction.base_amount = toughness_reduction
-            self.energy_regen = energy_regen
-    
     async def on_hit(self):
-        await battle.current.event_bus.dispatch("deal_damage", self)
+        if self.hit_split_ratio == 1:
+            await battle.current.event_bus.dispatch("deal_damage", self)
+        else:
+            dmg = copy.copy(self)
+            dmg.stat_desc = self.stat_desc.scale(self.hit_split_ratio)
+            await battle.current.event_bus.dispatch("deal_damage", dmg)
         if self.toughness_reduction is not None and self.target.has_weakness(self.toughness_reduction.element):
-            await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction)
+            await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction.scale(self.hit_split_ratio))
         if self.energy_regen is not None:
             t = self.target if isinstance(self.target, character.Character) else self.dealer
-            await battle.current.event_bus.dispatch("regen_energy", t, self.energy_regen)
+            await battle.current.event_bus.dispatch("regen_energy", t, self.energy_regen * self.hit_split_ratio)
 
 class ToughnessReduction:
     def __init__(self, dealer, target, base_amount, element):
@@ -190,3 +177,8 @@ class ToughnessReduction:
                 self.target.stats["toughness_vulnerability"].calculate(toughness_reduction=self))
         value *= 1 + self.reduction_increase
         return value
+    
+    def scale(self, scale):
+        tr = ToughnessReduction(self.dealer, self.target, self.base_amount * scale, self.element)
+        tr.reduction_increase = self.reduction_increase
+        return tr

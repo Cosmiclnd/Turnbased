@@ -49,6 +49,9 @@ class Battle:
     def count_monsters(self):
         return sum(1 for m in self.monsters if m.countable())
     
+    def all_targets(self):
+        return self.characters + self.monsters
+    
     async def check_targets(self):
         if await self.monster_setup.check():
             await server.send_and_recv({"type": "battle_win"})

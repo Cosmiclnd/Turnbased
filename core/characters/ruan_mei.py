@@ -22,12 +22,14 @@ class RuanMei(base.Character):
             if self is not skill:
                 return
             t = self.get_main_target()
+            await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = damage.Damage(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
-            await battle.current.event_bus.dispatch("attack", dmg)
+            await battle.current.event_bus.dispatch("hit", dmg)
+            await battle.current.event_bus.dispatch("attack_end", self.target)
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
@@ -48,7 +50,7 @@ class RuanMei(base.Character):
             super().__init__(t, skill_name)
 
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
-            battle.current.event_bus.add_member_listener(self.attack, t)
+            battle.current.event_bus.add_member_listener(self.hit, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def skill_trigger(self, skill):
@@ -64,7 +66,7 @@ class RuanMei(base.Character):
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def attack(self, dmg):
+        async def hit(self, dmg):
             if not isinstance(dmg.target, monster.Monster):
                 return
             if self.target.effects.has_effect(self.target.effect_types["zone"]) and dmg.target.weakness_broken:
@@ -168,8 +170,11 @@ class RuanMei(base.Character):
     def __init__(self, record):
         super().__init__("ruan_mei", record)
 
-        battle.current.event_bus.add_member_listener(self.turn_start, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
+        if self.traces_unlocked[1]:
+            battle.current.event_bus.add_member_listener(self.turn_start, self)
+        if self.eidolons >= 4:
+            battle.current.event_bus.add_member_listener(self.before_weakness_break, self)
     
     def set_record(self, record):
         super().set_record(record)
@@ -239,13 +244,6 @@ class RuanMei(base.Character):
             return False
         return dmg.target.weakness_break
     
-    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
-    async def turn_start(self, turn):
-        if self is not turn.target:
-            return
-        if self.traces_unlocked[1]:
-            await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace2", "energy"))
-    
     @event.member_listener(event.ListenerPriority.EXECUTE - 1)
     async def weakness_break(self, tr):
         mult = self.get_current_skill("talent").get_value("percentage")
@@ -255,6 +253,14 @@ class RuanMei(base.Character):
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, mult)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
-        if self.eidolons >= 4:
-            eff_add = effect.EffectAddition(self, self, self.effect_types["eidolon4"], self.config.get_skill_value("eidolon4", "duration"))
-            await battle.current.event_bus.dispatch("add_effect", eff_add)
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
+    async def turn_start(self, turn):
+        if self is not turn.target:
+            return
+        await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace2", "energy"))
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
+    async def before_weakness_break(self, tr):
+        eff_add = effect.EffectAddition(self, self, self.effect_types["eidolon4"], self.config.get_skill_value("eidolon4", "duration"))
+        await battle.current.event_bus.dispatch("add_effect", eff_add)

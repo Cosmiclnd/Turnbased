@@ -21,6 +21,9 @@ class EventInterrupt(Exception):
     def __init__(self, name):
         self.name = name
 
+# 事件有两类
+# 一类是瞬时事件，如hit
+# 一类是持续事件，如normal_turn_start和normal_turn_end
 class EventBus:
     def __init__(self):
         self.listeners = {}

@@ -19,11 +19,13 @@ class Antibaryon(base.Monster):
             if self is not skill:
                 return
             t = self.get_target()
+            await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = damage.Damage(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.IMAGINARY, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
-            await battle.current.event_bus.dispatch("attack", dmg)
+            await battle.current.event_bus.dispatch("hit", dmg)
+            await battle.current.event_bus.dispatch("attack_end", self.target)
 
     def __init__(self, level, moc):
         super().__init__("antibaryon", level, moc)

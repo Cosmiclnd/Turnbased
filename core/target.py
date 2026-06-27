@@ -64,7 +64,7 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.battle_start, self)
         battle.current.event_bus.add_member_listener(self.normal_turn_message, self)
         battle.current.event_bus.add_member_listener(self.check_frozen, self)
-        battle.current.event_bus.add_member_listener(self.attack, self)
+        battle.current.event_bus.add_member_listener(self.attack_end, self)
         battle.current.event_bus.add_member_listener(self.hit, self)
         battle.current.event_bus.add_member_listener(self.additional_damage, self)
         battle.current.event_bus.add_member_listener(self.receive_damage, self)
@@ -97,10 +97,6 @@ class Target(item.Item):
         if battle.current.random.random() < chance:
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
-    async def prepare_skill(self):
-        # 同一回合多次调用是合理的
-        pass
-    
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         self.cur_hp = self.stats["hp"].calculate()
@@ -122,11 +118,11 @@ class Target(item.Item):
             action.NormalTurn.delay_target(self, 0.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def attack(self, damage):
-        if self is not damage.dealer:
+    async def attack_end(self, t):
+        if self is not t:
             return
-        await damage.on_attack()
-        await damage.target.check_death()
+        for t in battle.current.all_targets():
+            await t.check_death()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def hit(self, damage):
