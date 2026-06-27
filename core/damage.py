@@ -4,13 +4,12 @@ import battle
 import enums
 import modifier
 import item
-from characters import base as character
-from monsters import base as monster
 
 class DmgType(enums.Enum):
     NORMAL = item.Item("normal", "Normal")
     ADDITIONAL = item.Item("additional", "Additional")
     BREAK = item.Item("break", "Break")
+    DOT = item.Item("dot", "DoT")
     ALL = (NORMAL, ADDITIONAL, BREAK)
 DmgType.init()
 
@@ -71,6 +70,7 @@ def resistance_base_func(dmg):
     return value
 
 def mitigation_factor_base_func(dmg):
+    from monsters import base as monster  # TODO: Python 3.15 lazy import
     if isinstance(dmg.target, monster.Monster) and not dmg.target.weakness_broken:
         return 0.9
     return 1
@@ -89,6 +89,19 @@ DamageFactorType.VUNERABILITY = DamageFactorType(lambda dmg, value: 1 + value, l
 DamageFactorType.MITIGATION = DamageFactorType(lambda dmg, value: max(value, 0.01), mitigation_factor_base_func)
 DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, break_eff_base_func)
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
+
+class DamageDesc:
+    __slots__ = ("dealer", "stat_desc", "element", "types", "source")
+
+    def __init__(self, dealer, stat_desc, element, types, source):
+        self.dealer = dealer
+        self.stat_desc = stat_desc
+        self.element = element
+        self.types = types
+        self.source = source
+    
+    def summon(self, t):
+        return Damage(self.dealer, t, self.stat_desc, self.element, self.types, self.source)
 
 class Damage:
     __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split_ratio",
@@ -118,6 +131,7 @@ class Damage:
                 DamageFactorType.MITIGATION
             ):
                 self.new_factor(factor)
+            from characters import base as character  # TODO: Python 3.15 lazy import
             if isinstance(self.dealer, character.Character):
                 self.new_factor(DamageFactorType.CRIT)
         if self.has_types(DmgType.BREAK):
@@ -151,18 +165,29 @@ class Damage:
     
     async def on_hit(self):
         if self.hit_split_ratio == 1:
-            await battle.current.event_bus.dispatch("deal_damage", self)
+            dmg = self
         else:
-            dmg = copy.copy(self)
-            dmg.stat_desc = self.stat_desc.scale(self.hit_split_ratio)
-            await battle.current.event_bus.dispatch("deal_damage", dmg)
+            dmg = self.scale(self.hit_split_ratio)
+        await battle.current.event_bus.dispatch("deal_damage", dmg)
         if self.toughness_reduction is not None and self.target.has_weakness(self.toughness_reduction.element):
-            await battle.current.event_bus.dispatch("reduce_toughness", self.toughness_reduction.scale(self.hit_split_ratio))
+            await battle.current.event_bus.dispatch("reduce_toughness", dmg.toughness_reduction)
         if self.energy_regen is not None:
+            from characters import base as character  # TODO: Python 3.15 lazy import
             t = self.target if isinstance(self.target, character.Character) else self.dealer
-            await battle.current.event_bus.dispatch("regen_energy", t, self.energy_regen * self.hit_split_ratio)
+            await battle.current.event_bus.dispatch("regen_energy", t, dmg.energy_regen)
+    
+    def scale(self, scale):
+        dmg = copy.copy(self)
+        dmg.stat_desc = self.stat_desc.scale(scale)
+        if self.toughness_reduction is not None:
+            dmg.toughness_reduction = self.toughness_reduction.scale(scale)
+        if self.energy_regen is not None:
+            dmg.energy_regen = self.energy_regen * scale
+        return dmg
 
 class ToughnessReduction:
+    __slots__ = ("dealer", "target", "base_amount", "element", "reduction_increase")
+
     def __init__(self, dealer, target, base_amount, element):
         self.dealer = dealer
         self.target = target
@@ -179,6 +204,14 @@ class ToughnessReduction:
         return value
     
     def scale(self, scale):
-        tr = ToughnessReduction(self.dealer, self.target, self.base_amount * scale, self.element)
-        tr.reduction_increase = self.reduction_increase
+        tr = copy.copy(self)
+        tr.base_amount = self.base_amount * scale
         return tr
+
+class DotTick:
+    __slots__ = ("target", "filter", "percentage")
+
+    def __init__(self, target, filter, percentage):
+        self.target = target
+        self.filter = filter
+        self.percentage = percentage

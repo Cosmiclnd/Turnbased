@@ -53,8 +53,11 @@ class Monster(target.Target):
             super().__init__(nameid, name, type, t)
 
         def get_target(self):
-            taunts = [c.stats["taunt"].calculate() for c in battle.current.characters]
-            return battle.current.random.choices(battle.current.characters, weights=taunts)[0]
+            targets = [c for c in battle.current.characters if c.death_state.alive]
+            if not targets:
+                return None
+            taunts = [c.stats["taunt"].calculate() for c in targets]
+            return battle.current.random.choices(targets, weights=taunts)[0]
         
         def get_value(self, name):
             return self.target.config.get_skill_value(self.skill_name, name)
@@ -101,7 +104,7 @@ class Monster(target.Target):
     async def normal_turn(self, turn):
         if self is not turn.target:
             return
-        if not self.effects.can_act():
+        if not self.can_act():
             return
         if self.weakness_broken:
             await battle.current.event_bus.dispatch("weakness_recover", self)

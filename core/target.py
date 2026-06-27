@@ -82,6 +82,13 @@ class Target(item.Item):
     def new_normal_turn(self):
         return action.NormalTurn(self)
     
+    def can_act(self):
+        if not self.death_state.alive:
+            return False
+        if not self.effects.can_act():
+            return False
+        return True
+    
     async def check_death(self):
         if not self.death_state.alive:
             await battle.current.event_bus.dispatch("die", self)
@@ -111,7 +118,7 @@ class Target(item.Item):
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
     async def check_frozen(self, turn):
-        if self is not turn.target:
+        if self is not turn.target or turn.cur_action != 0:
             return
         frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
         if frozen:

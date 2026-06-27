@@ -10,11 +10,14 @@ def next_order():
     return order
 
 class NormalTurn(item.Item):
-    def __init__(self, t, actions=1):
+    def __init__(self, t):
         super().__init__(f"{t.nameid}_normal_turn", f"{t.name}'s Normal Turn", item.DeadToggle(t))
         self.target = t
-        self.actions = actions
+        self.cur_action = None
         self.next_run()
+    
+    def get_num_actions(self):
+        return 1
     
     def base_action_value(self):
         return 10000 / self.spd
@@ -116,16 +119,18 @@ class ActionList:
         for turn in self.normals:
             turn.action_value -= delta
         await battle.current.event_bus.dispatch("normal_turn_start", current)
-        for i in range(current.actions + 1):
+        for i in range(current.get_num_actions() + 1):
             if i != 0:
                 if i == 1:
                     current.next_run()
+                current.cur_action = i - 1
                 await battle.current.event_bus.dispatch("normal_turn", current)
             if await self.refresh_targets():
                 return
             await self.ask_ultimate()
             if await self.check_extra_turns():
                 return
+        current.cur_action = None
         await battle.current.event_bus.dispatch("normal_turn_end", current)
     
     def print(self):

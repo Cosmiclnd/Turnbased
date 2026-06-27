@@ -289,7 +289,7 @@ class Character(target.Target):
     async def normal_turn(self, turn):
         if self is not turn.target:
             return
-        if not self.effects.can_act():
+        if not self.can_act():
             return
         message = {"type": "character_normal_turn_option"} | self.get_info()
         await server.request_option(message, self.normal_turn_option_validator)

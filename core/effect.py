@@ -6,6 +6,7 @@ import event
 import battle
 import target
 import enums
+import damage
 
 class Debuff(enums.Enum):
     # 在需要时指定
@@ -70,6 +71,9 @@ class Effect(item.Item):
     def is_debuff_type(self, type):
         return False
     
+    def is_dot(self, t):
+        return False
+    
     def is_immune(self, t):
         return False
     
@@ -126,6 +130,35 @@ class FrozenEffect(Effect):
     def can_act(self, t):
         return False
 
+class DotEffect(Effect):
+    class Instance(Effect.Instance):
+        async def refresh(self):
+            stacks = self.target.effects.get_stacks(self.effect)
+            if self.old_stacks == 0 and stacks != 0:
+                self.listener_dead = item.DeadToggle(self.target)
+                battle.current.event_bus.add_member_listener(self.tick_dot, self.listener_dead)
+                self.dmg = self.effect.dmg_desc.summon(self.target)
+            elif self.old_stacks != 0 and stacks == 0:
+                self.listener_dead.dead_toggle = True
+            self.old_stacks = stacks
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def tick_dot(self, dot):
+            if self.target is not dot.target or not dot.filter(self.effect):
+                return
+            await battle.current.event_bus.dispatch("additional_damage", self.dmg.scale(dot.percentage * self.old_stacks))
+
+    def __init__(self, nameid, name, dmg_desc, debuff_type, max_stacks, dispellable=True):
+        super().__init__(nameid, name, Effect.Type.DEBUFF, Effect.DurationType.TURN_END, max_stacks, dispellable)
+        self.dmg_desc = dmg_desc
+        self.debuff_type = debuff_type
+    
+    def is_dot(self, t):
+        return True
+    
+    def is_debuff_type(self, type):
+        return type is self.debuff_type
+
 class EffectList:
     def __init__(self, t):
         self.target = t
@@ -173,12 +206,14 @@ class EffectList:
                 continue
             if durations[duration] >= stacks:
                 durations[duration] -= stacks
+                if durations[duration] == 0:
+                    del durations[duration]
                 break
             else:
                 stacks -= durations[duration]
                 del durations[duration]
-                if not durations:
-                    del self.effects[eff]
+        if not durations:
+            del self.effects[eff]
         await self.instances[eff].refresh()
     
     async def delete(self, eff):
@@ -240,6 +275,7 @@ class EffectList:
             if eff.duration_type == Effect.DurationType.TURN_START:
                 await self.advance_turn(eff)
         self.start_effects = list(self.effects.keys())
+        await battle.current.event_bus.dispatch("tick_dot", damage.DotTick(self.target, lambda x: True, 1))
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS)
     async def normal_turn_end(self, turn):
