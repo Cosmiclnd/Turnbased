@@ -406,11 +406,19 @@ async def main():
             {
                 "1": {
                     "monsters": [
-                        {"name": "baryon", "level": 120, "moc": True},
-                        {"name": "baryon", "level": 120, "moc": True},
-                        {"name": "blaze_out_of_space", "level": 120, "moc": True},
-                        {"name": "baryon", "level": 120, "moc": True},
-                        {"name": "baryon", "level": 120, "moc": True},
+                        {"name": "voidranger_distorter", "level": 120, "moc": True},
+                        {"name": "voidranger_distorter", "level": 120, "moc": True},
+                        {"name": "voidranger_distorter", "level": 120, "moc": True},
+                        {"name": "voidranger_distorter", "level": 120, "moc": True},
+                        {"name": "voidranger_distorter", "level": 120, "moc": True}
+                    ],
+                    "condition": []
+                }
+            },
+            {
+                "1": {
+                    "monsters": [
+                        {"name": "blaze_out_of_space", "level": 120, "moc": True}
                     ],
                     "condition": []
                 }

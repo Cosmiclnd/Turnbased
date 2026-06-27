@@ -20,7 +20,7 @@ class BlazeOutOfSpace(base.Monster):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            t = self.get_target()
+            t = await battle.current.event_bus.query("get_monster_target", self.target)
             await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = damage.Damage(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
@@ -54,7 +54,7 @@ class BlazeOutOfSpace(base.Monster):
                 return
             await battle.current.event_bus.dispatch("attack_start", self.target)
             for i in range(self.get_value("times")):
-                t = self.get_target()
+                t = await battle.current.event_bus.query("get_monster_target", self.target)
                 if t is None:
                     break
                 dmg = damage.Damage(self.target, t,
@@ -88,6 +88,7 @@ class BlazeOutOfSpace(base.Monster):
         self.skills.selector = self.skill_selector
         self.next_skill = None
         battle.current.event_bus.add_member_listener(self.reset_next_skill, self)
+        battle.current.event_bus.add_member_listener(self.discharge, self)
 
         self.set_effect_types()
     

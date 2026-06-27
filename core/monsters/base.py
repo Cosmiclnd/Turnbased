@@ -8,8 +8,17 @@ import config
 import enums
 import effect
 import server
+import item
 
 class Monster(target.Target):
+    class Tier(enums.Enum):
+        NORMAL = item.Item("normal", "Normal")
+        ELITE = item.Item("elite", "Elite")
+        BOSS = item.Item("boss", "Boss")
+        EOW = item.Item("eow", "Echo of War")
+        ALL = (NORMAL, ELITE, BOSS, EOW)
+    Tier.init()
+
     class MonsterConfig(target.Target.TargetConfig):
         __slots__ = ()
 
@@ -17,7 +26,7 @@ class Monster(target.Target):
             super().__init__(data, t)
         
         def init(self):
-            self.target.tier = enums.MonsterTier.dict_nameid[self.data["tier"]]
+            self.target.tier = Monster.Tier.dict_nameid[self.data["tier"]]
             self.target.base_weakness = list(map(lambda x: enums.Element.dict_nameid[x], self.data["weakness"]))
             self.target.first_turn_delay = self.data["first_turn_delay"]
         
@@ -51,13 +60,6 @@ class Monster(target.Target):
             nameid, name = t.config.get_skill_name(skill_name)
             type = skill.SkillType.dict_nameid[config_data["type"]]
             super().__init__(nameid, name, type, t)
-
-        def get_target(self):
-            targets = [c for c in battle.current.characters if c.death_state.alive]
-            if not targets:
-                return None
-            taunts = [c.stats["taunt"].calculate() for c in targets]
-            return battle.current.random.choices(targets, weights=taunts)[0]
         
         def get_value(self, name):
             return self.target.config.get_skill_value(self.skill_name, name)
@@ -81,6 +83,7 @@ class Monster(target.Target):
         battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_recover, self)
+        battle.current.event_bus.add_member_resolver(self.get_monster_target, self)
 
         self.config.set_base_stats()
 
@@ -137,6 +140,16 @@ class Monster(target.Target):
             return
         self.cur_toughness = self.stats["toughness"].calculate()
         self.weakness_broken = False
+
+    @event.member_resolver(event.ListenerPriority.EXECUTE)
+    async def get_monster_target(self, t):
+        if self is not t:
+            return
+        targets = [c for c in battle.current.characters if c.death_state.alive]
+        if not targets:
+            return
+        taunts = [c.stats["taunt"].calculate() for c in targets]
+        return event.QueryResult(battle.current.random.choices(targets, weights=taunts)[0])
 
 class Group:
     def __init__(self, name, record):

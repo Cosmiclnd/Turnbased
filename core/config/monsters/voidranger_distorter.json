@@ -1,0 +1,72 @@
+{
+    "nameid": "voidranger_distorter",
+    "name": "Voidranger: Distorter",
+    "tier": "normal",
+    "weakness": [
+        "wind",
+        "imaginary"
+    ],
+    "toughness": 20,
+    "first_turn_delay": 1,
+    "base_stat_scales": {
+        "hp": 1.8,
+        "atk": 18,
+        "def": 1,
+        "spd": 120
+    },
+    "base_stat_flats": {
+        "eff_hr": 0,
+        "eff_res": 0.1
+    },
+    "base_dmg_res": {
+        "physical": 0.2,
+        "fire": 0.2,
+        "ice": 0.2,
+        "lightning": 0.2,
+        "wind": 0,
+        "quantum": 0.2,
+        "imaginary": 0
+    },
+    "base_debuff_res": {
+        "bleed": 0,
+        "burn": 0,
+        "frozen": 0,
+        "shock": 0,
+        "wind_sheer": 0,
+        "entanglement": 0,
+        "imprisonment": 0,
+        "control": 0
+    },
+    "skills": {
+        "skill1": {
+            "nameid": "nihilitys_command",
+            "name": "Nihility's Command",
+            "type": "lock_on",
+            "powerful": false,
+            "desc": "Inflicts \"Lock On\" on one designated target, making them the target for incoming attacks from all of their enemies and increasing their DMG received by {vulnerability:.2%}.",
+            "values": {
+                "vulnerability": {
+                    "is_dynamic": false,
+                    "value": 0.1
+                }
+            }
+        },
+        "skill2": {
+            "nameid": "shadowless_void_strike",
+            "name": "Shadowless Void Strike",
+            "type": "single",
+            "powerful": false,
+            "desc": "Deals Quantum DMG equal to {percentage:.2%} of Voidranger: Distorter's ATK to one designated target.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 15
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 5
+                }
+            }
+        }
+    }
+}

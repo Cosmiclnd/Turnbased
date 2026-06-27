@@ -69,7 +69,7 @@
             "name": "Rain of Purifying Flames",
             "type": "bounce",
             "powerful": true,
-            "desc": "Deals {times} instances of DMG, with each instance dealing Fire DMG equal to {percentage:.2%} of Blaze Out of Space's ATK.",
+            "desc": "Deals {times} instances of DMG, with each instance dealing Fire DMG equal to {percentage:.2%} of Blaze Out of Space's ATK to a random target.",
             "values": {
                 "times": {
                     "is_dynamic": false,

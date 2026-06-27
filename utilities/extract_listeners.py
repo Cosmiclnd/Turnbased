@@ -12,7 +12,7 @@ class ListenerInfo:
         self.priority = None
         self.priority_number = None
 
-def parse(f, path):
+def parse(f, path, type):
     listeners = []
     cur_listener = None
     root = path.replace("\\", ".")[5:-3] + "."  # Windows
@@ -24,9 +24,9 @@ def parse(f, path):
         assert indents % 4 == 0  # PEP 8
         num_indents = indents // 4
         line = line.strip()
-        if line.startswith("@event.member_listener"):
+        if line.startswith("@event.member_" + type):
             cur_listener = ListenerInfo()
-            content = line[23:-1]
+            content = line[15 + len(type):-1]
             if "," in content:
                 priority, name = content.split(", ", 1)
                 cur_listener.event_name = name.strip()[1:-1]
@@ -51,22 +51,26 @@ def parse(f, path):
             namespace = namespace[:num_indents] + [class_name]
     return listeners
 
-result = defaultdict(list)
+def extract(file, type):
+    result = defaultdict(list)
 
-for dirpath, dirnames, filenames in os.walk(dir):
-    for filename in filenames:
-        if filename.endswith(".py"):
-            path = os.path.join(dirpath, filename)
-            with open(path, "r", encoding="utf-8") as f:
-                for listener in parse(f, path):
-                    result[listener.event_name].append(listener)
+    for dirpath, dirnames, filenames in os.walk(dir):
+        for filename in filenames:
+            if filename.endswith(".py"):
+                path = os.path.join(dirpath, filename)
+                with open(path, "r", encoding="utf-8") as f:
+                    for listener in parse(f, path, type):
+                        result[listener.event_name].append(listener)
 
-result = dict(result)
+    result = dict(result)
+
+    file.write(f"# {type.title()}s\n\n")
+    for event_name, listeners in sorted(result.items()):
+        file.write(f"## {event_name}\n\n")
+        for listener in sorted(listeners, key=lambda l: l.priority_number, reverse=True):
+            file.write(f"- {listener.name} at {listener.namespace}  <{listener.priority} = {listener.priority_number}>\n")
+        file.write("\n")
 
 with open(output, "w", encoding="utf-8") as f:
-    f.write("# Listeners\n\n")
-    for event_name, listeners in sorted(result.items()):
-        f.write(f"## {event_name}\n\n")
-        for listener in sorted(listeners, key=lambda l: l.priority_number, reverse=True):
-            f.write(f"- {listener.name} at {listener.namespace}  <{listener.priority} = {listener.priority_number}>\n")
-        f.write("\n")
+    extract(f, "listener")
+    extract(f, "resolver")

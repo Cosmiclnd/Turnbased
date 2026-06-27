@@ -21,6 +21,12 @@ class EventInterrupt(Exception):
     def __init__(self, name):
         self.name = name
 
+class QueryResult:
+    __slots__ = ("result",)
+
+    def __init__(self, result):
+        self.result = result
+
 # 事件有两类
 # 一类是瞬时事件，如hit
 # 一类是持续事件，如normal_turn_start和normal_turn_end
@@ -40,6 +46,8 @@ class EventBus:
         name = name or master.name
         self.add_listener(member_func.name, Listener(nameid, name, member_func, master, member_func.priority))
     
+    add_member_resolver = add_member_listener
+    
     async def dispatch(self, event_name, *args, **kwargs):
         if event_name in self.listeners:
             self.listeners[event_name].refresh()
@@ -55,10 +63,35 @@ class EventBus:
                     await listener.callback(*args, **kwargs)
                 except EventInterrupt as e:
                     if e.name != event_name:
+                        self.stack.pop()
                         raise
                 self.stack.pop()
         if event_name not in self.listeners or not self.listeners[event_name]:
             logging.warning(f"No listener for event {event_name}")
+    
+    async def query(self, event_name, *args, **kwargs):
+        if event_name in self.listeners:
+            self.listeners[event_name].refresh()
+            self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
+            for listener in self.listeners[event_name]:
+                self.stack.append((event_name, listener))
+                if len(self.stack) > MAX_STACKS:
+                    logging.warning(f"Max event stack depth exceeded: {len(self.stack)}")
+                    logging.warning(self.format_stack())
+                    self.stack.pop()
+                    return
+                try:
+                    result = await listener.callback(*args, **kwargs)
+                    if type(result) is QueryResult:
+                        self.stack.pop()
+                        return result.result
+                except EventInterrupt as e:
+                    if e.name != event_name:
+                        self.stack.pop()
+                        raise
+                self.stack.pop()
+        if event_name not in self.listeners or not self.listeners[event_name]:
+            logging.warning(f"No resolver for event {event_name}")
     
     def interrupt(self, name):
         raise EventInterrupt(name)
@@ -75,3 +108,5 @@ def member_listener(priority=0, name=None):
         func.name = name if name else func.__name__
         return func
     return decorator
+
+member_resolver = member_listener  # 用于提示语义

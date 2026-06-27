@@ -30,11 +30,3 @@ class Path(Enum):
     ABUNDANCE = item.Item("abundance", "Abundance")
     ALL = (DESTRUCTION, THE_HUNT, ERUDITION, HARMONY, NIHILITY, PRESERVATION, ABUNDANCE)
 Path.init()
-
-class MonsterTier(Enum):
-    NORMAL = item.Item("normal", "Normal")
-    ELITE = item.Item("elite", "Elite")
-    BOSS = item.Item("boss", "Boss")
-    EOW = item.Item("eow", "Echo of War")
-    ALL = (NORMAL, ELITE, BOSS, EOW)
-MonsterTier.init()

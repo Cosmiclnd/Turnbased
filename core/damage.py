@@ -85,7 +85,7 @@ DamageFactorType.WEAKEN = DamageFactorType(lambda dmg, value: 1 - value, lambda 
 DamageFactorType.DEFENCE = DamageFactorType(defence_factor_func, defence_factor_base_func)
 DamageFactorType.DEF_BOOST = DamageFactorType(lambda dmg, value: 1, lambda dmg: 0)
 DamageFactorType.RESISTANCE = DamageFactorType(lambda dmg, value: min(max(1 - value, 0.1), 2), resistance_base_func)
-DamageFactorType.VUNERABILITY = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
+DamageFactorType.VULNERABILITY = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
 DamageFactorType.MITIGATION = DamageFactorType(lambda dmg, value: max(value, 0.01), mitigation_factor_base_func)
 DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, break_eff_base_func)
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
@@ -127,7 +127,7 @@ class Damage:
                 DamageFactorType.DEFENCE,
                 DamageFactorType.DEF_BOOST,
                 DamageFactorType.RESISTANCE,
-                DamageFactorType.VUNERABILITY,
+                DamageFactorType.VULNERABILITY,
                 DamageFactorType.MITIGATION
             ):
                 self.new_factor(factor)
@@ -140,7 +140,7 @@ class Damage:
                 DamageFactorType.DEFENCE,
                 DamageFactorType.DEF_BOOST,
                 DamageFactorType.RESISTANCE,
-                DamageFactorType.VUNERABILITY,
+                DamageFactorType.VULNERABILITY,
                 DamageFactorType.MITIGATION,
                 DamageFactorType.BREAK_EFF,
                 DamageFactorType.BREAK_DMG_BOOST

@@ -18,7 +18,7 @@ class Dummy(base.Monster):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            t = self.get_target()
+            t = await battle.current.event_bus.query("get_monster_target", self.target)
             await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = damage.Damage(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
