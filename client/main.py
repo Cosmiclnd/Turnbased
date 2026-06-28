@@ -406,11 +406,11 @@ async def main():
             {
                 "1": {
                     "monsters": [
-                        {"name": "voidranger_distorter", "level": 120, "moc": True},
-                        {"name": "voidranger_distorter", "level": 120, "moc": True},
-                        {"name": "voidranger_distorter", "level": 120, "moc": True},
-                        {"name": "voidranger_distorter", "level": 120, "moc": True},
-                        {"name": "voidranger_distorter", "level": 120, "moc": True}
+                        {"name": "voidranger_eliminator", "level": 120, "moc": True},
+                        {"name": "voidranger_eliminator", "level": 120, "moc": True},
+                        {"name": "voidranger_eliminator", "level": 120, "moc": True},
+                        {"name": "voidranger_eliminator", "level": 120, "moc": True},
+                        {"name": "voidranger_eliminator", "level": 120, "moc": True}
                     ],
                     "condition": []
                 }

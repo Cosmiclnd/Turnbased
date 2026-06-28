@@ -1,0 +1,80 @@
+{
+    "nameid": "voidranger_eliminator",
+    "name": "Voidranger: Eliminator",
+    "tier": "normal",
+    "weakness": [
+        "fire",
+        "ice",
+        "quantum"
+    ],
+    "toughness": 30,
+    "first_turn_delay": 1,
+    "base_stat_scales": {
+        "hp": 2.1,
+        "atk": 18,
+        "def": 1,
+        "spd": 120
+    },
+    "base_stat_flats": {
+        "eff_hr": 0,
+        "eff_res": 0.1
+    },
+    "base_dmg_res": {
+        "physical": 0.2,
+        "fire": 0,
+        "ice": 0,
+        "lightning": 0.2,
+        "wind": 0.2,
+        "quantum": 0,
+        "imaginary": 0.2
+    },
+    "base_debuff_res": {
+        "bleed": 0,
+        "burn": 0,
+        "frozen": 0,
+        "shock": 0,
+        "wind_sheer": 0,
+        "entanglement": 0,
+        "imprisonment": 0,
+        "control": 0
+    },
+    "skills": {
+        "skill1": {
+            "nameid": "void_cannon",
+            "name": "Void Cannon",
+            "type": "single",
+            "powerful": false,
+            "desc": "Deals Imaginary DMG equal to {percentage:.2%} of Voidranger: Eliminator's ATK to one designated target, with a {base_chance:.2%} base chance to inflict Detonated. Targets inflicted with Detonated will take Imaginary Additional DMG equal to {additional_percentage:.2%} of Voidranger: Eliminator's ATK after being attacked. This effect can be triggered {trigger_count} time(s). Voidranger: Eliminator becomes Overloaded.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 15
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 4
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 0.75
+                },
+                "additional_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.4
+                },
+                "trigger_count": {
+                    "is_dynamic": false,
+                    "value": 3
+                }
+            }
+        },
+        "skill2": {
+            "nameid": "thermal_barrier",
+            "name": "Thermal Barrier",
+            "type": "others",
+            "powerful": false,
+            "desc": "Dispels Voidranger: Eliminator's Overloaded state.",
+            "values": {}
+        }
+    }
+}

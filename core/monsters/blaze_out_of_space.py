@@ -116,11 +116,11 @@ class BlazeOutOfSpace(base.Monster):
         if self.next_skill is not None:
             return self.next_skill
         if self.effects.has_effect(self.effect_types["spontaneous_combustion"]):
-            self.next_skill = self.skills.skills[3]
-            return self.skills.skills[2]
+            self.next_skill = group.skills[3]
+            return group.skills[2]
         else:
-            self.next_skill = self.skills.skills[1]
-            return self.skills.skills[0]
+            self.next_skill = group.skills[1]
+            return group.skills[0]
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
     async def reset_next_skill(self, turn):

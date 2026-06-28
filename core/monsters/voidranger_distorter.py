@@ -90,9 +90,11 @@ class VoidrangerDistorter(base.Monster):
         self.effect_types["lock_on"] = self.LockOnEffect(self)
     
     def skill_selector(self, group):
+        if len(battle.current.characters) == 0:
+            return group.skills[1]
         if self.has_lock_on is None:
-            return self.skills.skills[0]
-        return self.skills.skills[1]
+            return group.skills[0]
+        return group.skills[1]
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "attack_end")
     async def reset_lock_on(self, t):
