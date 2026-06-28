@@ -85,8 +85,6 @@ class VoidrangerDistorter(base.Monster):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types = {}
-
         self.effect_types["lock_on"] = self.LockOnEffect(self)
     
     def skill_selector(self, group):

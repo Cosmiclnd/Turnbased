@@ -60,6 +60,7 @@ class Target(item.Item):
         self.cur_hp = 0
         self.death_state = DeathState(self)
         self.effects = effect.EffectList(self)
+        self.effect_types = {}
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
         battle.current.event_bus.add_member_listener(self.normal_turn_message, self)
@@ -149,7 +150,8 @@ class Target(item.Item):
         if self is not damage.target:
             return
         dmg = damage.calculate()
-        message = {"type": "deal_damage", "dealer": damage.dealer.get_info(), "target": self.get_info(), "amount": dmg, "dmg_type": damage.types[0].get_info()}
+        message = {"type": "deal_damage", "dealer": damage.dealer.get_info(), "target": self.get_info(), "amount": dmg,
+            "dmg_types": [t.get_info() for t in sorted(damage.types, key=lambda t: t.nameid)]}
         await server.send_and_recv(message)
         await battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
         if self.cur_hp <= 0 and self.death_state.alive:

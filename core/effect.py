@@ -108,6 +108,8 @@ class FrozenEffect(Effect):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
+                if self.effect.dmg_desc is not None:
+                    self.dmg = self.effect.dmg_desc.summon(self.target)
                 battle.current.event_bus.add_member_listener(self.normal_turn_start, self.listener_dead)
             elif self.old_stacks != 0 and stacks == 0:
                 self.listener_dead.dead_toggle = True
@@ -117,12 +119,12 @@ class FrozenEffect(Effect):
         async def normal_turn_start(self, turn):
             if self.target is not turn.target:
                 return
-            if self.effect.additional_dmg is not None:
-                await battle.current.event_bus.dispatch("additional_damage", self.effect.additional_dmg)
+            if self.effect.dmg_desc is not None:
+                await battle.current.event_bus.dispatch("additional_damage", self.dmg)
 
-    def __init__(self, additional_dmg=None, dispellable=True):
+    def __init__(self, dmg_desc=None, dispellable=True):
         super().__init__("frozen", "Frozen", Effect.Type.DEBUFF, Effect.DurationType.TURN_END, 1, dispellable)
-        self.additional_dmg = additional_dmg
+        self.dmg_desc = dmg_desc
 
     def is_debuff_type(self, type):
         return type in (Debuff.FROZEN, Debuff.CONTROL)

@@ -206,6 +206,8 @@ class Character(target.Target):
         self.config.set_base_stats()
         self.config.set_traces_stats()
         self.update_lightcone_and_relics()
+
+        self.set_break_effect_types()
     
     def get_record(self):
         record =  {
@@ -240,6 +242,12 @@ class Character(target.Target):
                 relics[r.relic_set.id] += 1
         for id, pieces in relics.items():
             self.relic_effects.append(relic.relic_sets[id].get_pieces_effect(self, pieces))
+    
+    def set_break_effect_types(self):
+        dmg_desc = damage.DamageDesc(self,
+            modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
+            enums.Element.ICE, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+        self.effect_types["break.frozen"] = effect.FrozenEffect(dmg_desc)
     
     def get_skills_info(self):
         result = {"basic_atk": [], "skill": [], "ultimate": [], "talent": [], "trace": [], "eidolon": []}
@@ -295,7 +303,7 @@ class Character(target.Target):
         await server.request_option(message, self.normal_turn_option_validator)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE, "weakness_break")
+    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
     async def break_weakness(self, tr):
         if self is not tr.dealer:
             return
@@ -305,13 +313,8 @@ class Character(target.Target):
         await battle.current.event_bus.dispatch("additional_damage", dmg)
         action.NormalTurn.delay_target(tr.target, 0.25)
         if self.element is enums.Element.ICE:
-            dmg = damage.Damage(self, tr.target,
-                modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
-                self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
-            del dmg.factors[damage.DamageFactorType.MULTIPLIER]  # 击破造成的附加伤害没有击破倍率
-            dmg.types = (damage.DmgType.ADDITIONAL, damage.DmgType.BREAK)  # 附加伤害类型是副类型，单独设置
-            eff = effect.FrozenEffect(dmg)
-            await self.try_apply_debuff(effect.EffectAddition(self, tr.target, eff, 1), 1.5)
+            eff_add = effect.EffectAddition(self, tr.target, self.effect_types["break.frozen"], 1)
+            await self.try_apply_debuff(eff_add, 1.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def regen_energy(self, t, amount, fixed=False):

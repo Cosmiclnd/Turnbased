@@ -174,7 +174,8 @@ async def respond_start_ultimate_turn(websocket, message):
     return {"type": "empty"}
 
 async def respond_deal_damage(websocket, message):
-    cprint(f"{message['dealer']['name']} deals {round(message['amount'])} {message['dmg_type']['name']} DMG to {message['target']['name']}.", "light_blue")
+    types = " ".join([t["name"] for t in message["dmg_types"]])
+    cprint(f"{message['dealer']['name']} deals {round(message['amount'])} {types} DMG to {message['target']['name']}.", "light_blue")
     return {"type": "empty"}
 
 async def respond_heal(websocket, message):

@@ -88,8 +88,6 @@ class VoidrangerEliminator(base.Monster):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types = {}
-
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.CALCULATED,
                 self.config.get_skill_value("skill1", "additional_percentage"))),

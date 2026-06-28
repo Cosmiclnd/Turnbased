@@ -93,8 +93,6 @@ class BlazeOutOfSpace(base.Monster):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types = {}
-
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.CALCULATED, self.config.get_skill_value("talent", "percentage"))),
             enums.Element.FIRE, damage.DmgType.DOT, damage.DmgSource.MONSTER)

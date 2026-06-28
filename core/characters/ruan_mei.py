@@ -189,8 +189,6 @@ class RuanMei(base.Character):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types = {}
-
         self.effect_types["overtone"] = self.OvertoneEffect()
         self.effect_types["zone"] = self.ZoneEffect()
         self.effect_types["thanatoplum_rebloom"] = self.ThanatoplumRebloomEffect(self)

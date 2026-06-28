@@ -1,4 +1,5 @@
 import copy
+from collections.abc import Iterable
 
 import battle
 import enums
@@ -28,17 +29,18 @@ class DamageFactorType:
         self.func = func
         self.base_func = base_func
 
+def max_toughness_base_func(dmg):
+    return dmg.target.stats["toughness"].calculate(damage=dmg) / 40 + 0.5
+
 def multiplier_base_func(dmg):
-    if dmg.has_types(DmgType.BREAK):
-        mult = dmg.target.stats["toughness"].calculate(damage=dmg) / 40 + 0.5
-        if dmg.element in (enums.Element.FIRE, enums.Element.PHYSICAL):
-            mult *= 2
-        elif dmg.element is enums.Element.WIND:
-            mult *= 1.5
-        elif dmg.element in (enums.Element.QUANTUM, enums.Element.IMAGINARY):
-            mult *= 0.5
-        return mult
-    return 1
+    if dmg.element in (enums.Element.FIRE, enums.Element.PHYSICAL):
+        return 2
+    elif dmg.element is enums.Element.WIND:
+        return 1.5
+    elif dmg.element in (enums.Element.QUANTUM, enums.Element.IMAGINARY):
+        return 0.5
+    else:
+        return 1
 
 def crit_factor_func(dmg, value):
     if battle.current.random.random() < dmg.dealer.stats["crt_rate"].calculate(damage=dmg):
@@ -78,7 +80,8 @@ def mitigation_factor_base_func(dmg):
 def break_eff_base_func(dmg):
     return dmg.dealer.stats["break_eff"].calculate(damage=dmg)
 
-DamageFactorType.MULTIPLIER = DamageFactorType(lambda dmg, value: value, multiplier_base_func)  # 特指击破的倍率
+DamageFactorType.MAX_TOUGHNESS = DamageFactorType(lambda dmg, value: value, max_toughness_base_func)
+DamageFactorType.MULTIPLIER = DamageFactorType(lambda dmg, value: value, multiplier_base_func)  # 指击破的倍率
 DamageFactorType.CRIT = DamageFactorType(crit_factor_func, crit_factor_base_func)
 DamageFactorType.DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, dmg_boost_base_func)
 DamageFactorType.WEAKEN = DamageFactorType(lambda dmg, value: 1 - value, lambda dmg: 0)
@@ -112,7 +115,7 @@ class Damage:
         self.target = t
         self.stat_desc = stat_desc
         self.element = element
-        self.types = types if isinstance(types, tuple) else (types,)
+        self.types = set(types) if isinstance(types, Iterable) else {types}
         self.source = source
         self.factors = {}
         self.toughness_reduction = None
@@ -120,7 +123,7 @@ class Damage:
         self.energy_regen = None
         self.damage = None
 
-        if self.has_types(DmgType.NORMAL, DmgType.ADDITIONAL):
+        if self.types in ({DmgType.NORMAL}, {DmgType.ADDITIONAL}):
             for factor in (
                 DamageFactorType.DMG_BOOST,
                 DamageFactorType.WEAKEN,
@@ -134,8 +137,9 @@ class Damage:
             from characters import base as character  # TODO: Python 3.15 lazy import
             if isinstance(self.dealer, character.Character):
                 self.new_factor(DamageFactorType.CRIT)
-        if self.has_types(DmgType.BREAK):
+        elif self.types == {DmgType.BREAK}:
             for factor in (
+                DamageFactorType.MAX_TOUGHNESS,
                 DamageFactorType.MULTIPLIER,
                 DamageFactorType.DEFENCE,
                 DamageFactorType.DEF_BOOST,
@@ -146,10 +150,17 @@ class Damage:
                 DamageFactorType.BREAK_DMG_BOOST
             ):
                 self.new_factor(factor)
-    
-    def has_types(self, *types):
-        # 只要有相同的伤害类型即可
-        return any(t in self.types for t in types)
+        elif self.types == {DmgType.ADDITIONAL, DmgType.BREAK}:  # 击破造成的附加伤害
+            for factor in (
+                DamageFactorType.DEFENCE,
+                DamageFactorType.DEF_BOOST,
+                DamageFactorType.RESISTANCE,
+                DamageFactorType.VULNERABILITY,
+                DamageFactorType.MITIGATION,
+                DamageFactorType.BREAK_EFF,
+                DamageFactorType.BREAK_DMG_BOOST
+            ):
+                self.new_factor(factor)
 
     def new_factor(self, factor):
         if factor in self.factors:

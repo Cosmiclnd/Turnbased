@@ -177,8 +177,6 @@ class Herta(base.Character):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types = {}
-
         names = self.config.get_skill_name("eidolon2")
         mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon2", "crt_rate_boost"))))
         self.effect_types["eidolon2"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT,

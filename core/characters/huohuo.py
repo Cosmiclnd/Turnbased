@@ -171,8 +171,6 @@ class Huohuo(base.Character):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types = {}
-
         self.effect_types["divine_provision"] = self.DivineProvisionEffect()
 
         names = self.config.get_skill_name("ultimate")
