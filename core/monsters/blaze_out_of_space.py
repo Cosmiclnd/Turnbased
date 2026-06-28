@@ -82,8 +82,8 @@ class BlazeOutOfSpace(base.Monster):
         def get_num_actions(self):
             return 2 if self.target.can_act() else 1
 
-    def __init__(self, level, moc):
-        super().__init__("blaze_out_of_space", level, moc)
+    def __init__(self, level, moc, stat_scales, stat_flats):
+        super().__init__("blaze_out_of_space", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2, self.Skill3, self.Skill4))
         self.skills.selector = self.skill_selector
         self.next_skill = None

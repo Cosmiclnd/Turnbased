@@ -27,6 +27,6 @@ class Antibaryon(base.Monster):
             await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
 
-    def __init__(self, level, moc):
-        super().__init__("antibaryon", level, moc)
+    def __init__(self, level, moc, stat_scales, stat_flats):
+        super().__init__("antibaryon", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill,))

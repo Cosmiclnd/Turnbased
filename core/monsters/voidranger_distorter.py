@@ -75,8 +75,8 @@ class VoidrangerDistorter(base.Monster):
             super().__init__("lock_on", "Lock On", effect.Effect.Type.OTHERS, effect.Effect.DurationType.PERMANENT, 1)
             self.target = t
 
-    def __init__(self, level, moc):
-        super().__init__("voidranger_distorter", level, moc)
+    def __init__(self, level, moc, stat_scales, stat_flats):
+        super().__init__("voidranger_distorter", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2))
         self.skills.selector = self.skill_selector
         battle.current.event_bus.add_member_listener(self.reset_lock_on, self)

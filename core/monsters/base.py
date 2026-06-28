@@ -20,10 +20,12 @@ class Monster(target.Target):
     Tier.init()
 
     class MonsterConfig(target.Target.TargetConfig):
-        __slots__ = ()
+        __slots__ = ("base_stat_scales", "base_stat_flats")
 
-        def __init__(self, data, t):
+        def __init__(self, data, stat_scales, stat_flats, t):
             super().__init__(data, t)
+            self.base_stat_scales = stat_scales
+            self.base_stat_flats = stat_flats
         
         def init(self):
             self.target.tier = Monster.Tier.dict_nameid[self.data["tier"]]
@@ -42,6 +44,10 @@ class Monster(target.Target):
             for debuff in effect.Debuff.ALL:
                 self.target.stats[f"{debuff.nameid}_res"].base_value = self.data["base_debuff_res"][debuff.nameid]
             self.target.stats["toughness"].base_value = self.data["toughness"]
+            for stat, value in self.base_stat_scales.items():
+                self.target.stats[stat].base_value *= value
+            for stat, value in self.base_stat_flats.items():
+                self.target.stats[stat].base_value += value
     
         @classmethod
         def get_base_stat(cls, name, level, moc):
@@ -64,8 +70,8 @@ class Monster(target.Target):
         def get_value(self, name):
             return self.target.config.get_skill_value(self.skill_name, name)
 
-    def __init__(self, nameid, level, moc):
-        self.config = self.MonsterConfig(config.load_config_data("monsters", nameid), self)
+    def __init__(self, nameid, level, moc, stat_scales, stat_flats):
+        self.config = self.MonsterConfig(config.load_config_data("monsters", nameid), stat_scales, stat_flats, self)
         if nameid != self.config.nameid:
             logging.warning(f"Monster nameid mismatch: {nameid} != {self.config['nameid']}")
 
@@ -161,7 +167,8 @@ class Group:
     
     def set_record(self, record):
         for monster in record["monsters"]:
-            self.monsters.append(config.load_class("monsters", monster["name"])(monster["level"], monster["moc"]))
+            self.monsters.append(config.load_class("monsters", monster["name"])(monster["level"], monster["moc"],
+                monster.get("stat_scales", {}), monster.get("stat_flats", {})))
         self.condition = record["condition"]
     
     def all_cleared(self):

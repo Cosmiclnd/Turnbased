@@ -80,8 +80,8 @@ class VoidrangerEliminator(base.Monster):
             self.trigger_count = trigger_count
             self.dmg_desc = dmg_desc
 
-    def __init__(self, level, moc):
-        super().__init__("voidranger_eliminator", level, moc)
+    def __init__(self, level, moc, stat_scales, stat_flats):
+        super().__init__("voidranger_eliminator", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2))
         self.skills.selector = self.skill_selector
 
