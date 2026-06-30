@@ -93,6 +93,10 @@
             "name": "Banner: Stormcaller",
             "category": "basic_atk",
             "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
             "delta_skillpoints": 1,
             "desc": "Deals Wind DMG equal to {percentage:.2%} of Huohuo's Max HP to one designated enemy.",
             "values": {
@@ -116,6 +120,10 @@
             "name": "Tailsman: Protection",
             "category": "skill",
             "type": "restore",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "delta_skillpoints": -1,
             "desc": "Dispels {num_debuffs} debuff(s) from one designated ally and immediately restores this ally's HP by an amount equal to {main_percentage:.2%} of Huohuo's Max HP plus {main_flat}. At the same time, restores HP for allies that are adjacent to this target ally by an amount equal to {sub_percentage:.2%} of Huohuo's Max HP plus {sub_flat}.",
             "values": {
@@ -154,6 +162,10 @@
             "name": "Tail: Spiritual Domination",
             "category": "ultimate",
             "type": "support",
+            "target": {
+                "type": "character",
+                "selection": "all"
+            },
             "delta_skillpoints": 0,
             "desc": "Regenerates Energy for all teammates (i.e., excluding this unit) by an amount equal to {energy_regen_rate:.2%} of their respective Max Energy. At the same time, increases their ATK by {atk_boost:.2%} for {duration} turn(s).",
             "values": {

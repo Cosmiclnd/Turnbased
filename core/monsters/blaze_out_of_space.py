@@ -22,7 +22,7 @@ class BlazeOutOfSpace(base.Monster):
                 return
             t = await battle.current.event_bus.query("get_monster_target", self.target)
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = damage.Damage(self.target, t,
+            dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             await battle.current.event_bus.dispatch("hit", dmg)
@@ -57,7 +57,7 @@ class BlazeOutOfSpace(base.Monster):
                 t = await battle.current.event_bus.query("get_monster_target", self.target)
                 if t is None:
                     break
-                dmg = damage.Damage(self.target, t,
+                dmg = await damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
                 await battle.current.event_bus.dispatch("hit", dmg)
@@ -82,8 +82,8 @@ class BlazeOutOfSpace(base.Monster):
         def get_num_actions(self):
             return 2 if self.target.can_act() else 1
 
-    def __init__(self, level, moc, stat_scales, stat_flats):
-        super().__init__("blaze_out_of_space", level, moc, stat_scales, stat_flats)
+    def __init__(self, uuid, level, moc, stat_scales, stat_flats):
+        super().__init__(uuid, "blaze_out_of_space", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2, self.Skill3, self.Skill4))
         self.skills.selector = self.skill_selector
         self.next_skill = None

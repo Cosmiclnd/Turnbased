@@ -23,7 +23,7 @@ class Huohuo(base.Character):
                 return
             t = self.get_main_target()
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = damage.Damage(self.target, t,
+            dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)

@@ -5,35 +5,46 @@ import json
 import os
 import sys
 import io
+import uuid
 
 import battle
 import target
 import config
 
 port = 55716
-websocket = None
+handler = None
 shutdown_event = asyncio.Event()
 
-async def handle_message(message):
+async def handle_message_outbattle(message):
     type = message["type"]
     if type == "init_battle":
         battle.current = battle.Battle()
     elif type == "start_battle":
         await battle.current.start()
     elif type == "add_character":
-        character = config.load_class("characters", message["name"])(message["record"])
+        character = config.load_class("characters", message["record"]["name"])(message["record"])
         battle.current.characters.append(character)
     elif type == "setup_monsters":
         battle.current.monster_setup.set_record(message["record"])
+    elif type == "setup_random":
+        battle.current.random = battle.Random(message["config"])
+    elif type == "set_initial_state":
+        t = target.from_uuid(uuid.UUID(message["target"]))
+        if t is None:
+            return
+        t.initial_state = message["state"]
 
-async def handle(w):
-    global websocket
-    websocket = w
+class CloseServer(Exception):
+    pass
+
+async def handle(websocket):
+    global handler
+    handler = InbattleHandler(websocket)
     while True:
         try:
             message = await websocket.recv()
-            await handle_message(json.loads(message))
-        except websockets.ConnectionClosedOK:
+            await handle_message_outbattle(json.loads(message))
+        except (CloseServer, websockets.ConnectionClosedOK):
             logging.info("connection closed")
             break
         except Exception as e:
@@ -42,68 +53,68 @@ async def handle(w):
             await websocket.close()
             shutdown_event.set()
 
-async def handle_command(message):
-    type = message["type"]
-    if type == "query_characters":
-        subtype = message["subtype"]
-        if subtype == "base":
-            message["characters"] = [c.get_info() | {
-                "cur_hp": c.cur_hp, "hp": c.stats["hp"].calculate(),
-                "cur_energy": c.cur_energy, "energy": c.stats["energy"].calculate()
-            } for c in battle.current.characters]
-        elif subtype == "stats":
-            c = battle.current.characters[message["character"]]
-            message["character"] = c.get_info() | {"stats": c.get_stats_info()}
-        elif subtype == "skills":
-            c = battle.current.characters[message["character"]]
-            message["character"] = c.get_info() | {"skills": c.get_skills_info()}
-        await websocket.send(json.dumps(message))
-    elif type == "query_monsters":
-        subtype = message["subtype"]
-        if subtype == "base":
-            message["monsters"] = [m.get_info() | {"cur_hp": m.cur_hp, "hp": m.stats["hp"].calculate()} for m in battle.current.monsters]
-        elif subtype == "stats":
-            m = battle.current.monsters[message["monster"]]
-            message["monster"] = m.get_info() | {"stats": m.get_stats_info()}
-        await websocket.send(json.dumps(message))
-    elif type == "exec":  # 暂时用来调试
-        code = message["code"]
-        logging.info(f"exec: \"{code}\"")
-        stdout = sys.stdout
-        sys.stdout = io.StringIO()
-        try:
-            message["result"] = str(eval(code))
-        except Exception as e:
-            message["result"] = str(e)
-        message["output"] = sys.stdout.getvalue()
-        sys.stdout = stdout
-        await websocket.send(json.dumps(message))
-    else:
-        return False
-    return True
+# 服务端的战斗内通信分为以下三种
+# ANSWER: 回复客户端的请求
+# ASK: 要求客户端操作
+# UPDATE: 通知客户端更新
+# 只要客户端发出QUERY就要ANSWER
+class InbattleHandler:
+    def __init__(self, websocket):
+        self.websocket = websocket
+        self.answer_handlers = {}
+    
+    def add_answer_handler(self, name, handler):
+        self.answer_handlers[name] = handler
+    
+    async def send_and_recv(self, message):
+        await self.websocket.send(json.dumps(message))
+        return json.loads(await self.websocket.recv())
+    
+    async def check_client_query(self, message):
+        if message["type"] != "query":
+            return
+        if message["name"] in self.answer_handlers:
+            try:
+                response = {"info": "ok"}
+                response |= await self.answer_handlers[message["name"]](message)
+            except Exception:
+                response = {"info": "internal_error"}
+            response["type"] = "answer"
+            return response
+    
+    async def ask_client(self, message, handler):
+        logging.info(f"Calling ask_client {message}")
+        message["type"] = "ask"
+        message["info"] = None
+        while True:
+            temp = message
+            while True:
+                response = await self.send_and_recv(temp)
+                if (answer := await self.check_client_query(response)) is not None:
+                    temp = answer
+                else:
+                    break
+            try:
+                message["info"] = await handler(response)
+            except Exception:
+                message["info"] = "internal_error"
+            if message["info"] == "ok":
+                return response
+            else:
+                logging.warning(f"Handler returned {message['info']}")
+    
+    async def update_client(self, message):
+        logging.info(f"Calling update_client {message}")
+        message["type"] = "update"
+        while True:
+            response = await self.send_and_recv(message)
+            if (answer := await self.check_client_query(response)) is not None:
+                message = answer
+            else:
+                break
+    
+    def close(self):
+        raise CloseServer
 
-async def send_and_recv(message):
-    await websocket.send(json.dumps(message))
-    while True:
-        response = json.loads(await websocket.recv())
-        if not await handle_command(response):
-            break
-    return response
-
-def request_validator(func):
-    def validator(*args):
-        result = func(*args)
-        if type(result) is not str:
-            return "internal_error"
-        return result
-    return validator
-
-async def request_option(message, validator):
-    type = message["type"]
-    message["info"] = None
-    while True:
-        response = await send_and_recv(message)
-        message["info"] = validator(response)
-        if message["info"] == "ok":
-            break
-    return response
+def server_handler(func):  # 提示功能
+    return func

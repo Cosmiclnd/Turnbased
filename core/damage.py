@@ -29,10 +29,10 @@ class DamageFactorType:
         self.func = func
         self.base_func = base_func
 
-def max_toughness_base_func(dmg):
+async def max_toughness_base_func(dmg):
     return dmg.target.stats["toughness"].calculate(damage=dmg) / 40 + 0.5
 
-def multiplier_base_func(dmg):
+async def multiplier_base_func(dmg):
     if dmg.element in (enums.Element.FIRE, enums.Element.PHYSICAL):
         return 2
     elif dmg.element is enums.Element.WIND:
@@ -42,56 +42,62 @@ def multiplier_base_func(dmg):
     else:
         return 1
 
-def crit_factor_func(dmg, value):
-    if battle.current.random.random() < dmg.dealer.stats["crt_rate"].calculate(damage=dmg):
+async def crit_factor_func(dmg, value):
+    if await battle.current.random.rate(dmg.dealer.stats["crt_rate"].calculate(damage=dmg)):
+        dmg.crit = True
         return 1 + value
     return 1
 
-def crit_factor_base_func(dmg):
+async def crit_factor_base_func(dmg):
     return dmg.dealer.stats["crt_dmg"].calculate(damage=dmg)
 
-def dmg_boost_base_func(dmg):
+async def dmg_boost_base_func(dmg):
     value = dmg.dealer.stats["dmg_boost"].calculate(damage=dmg)
     if dmg.element is not None:
         value += dmg.dealer.stats[f"{dmg.element.nameid}_dmg_boost"].calculate(damage=dmg)
     return value
 
-def defence_factor_func(dmg, value):
+async def defence_factor_func(dmg, value):
     value += dmg.target.stats["def"].calculate(modifier.ModifierFilter.BASE) * dmg.factors[DamageFactorType.DEF_BOOST]
     value = max(0, value)
     return 1 - value / (value + 200 + 10 * dmg.dealer.level)
 
-def defence_factor_base_func(dmg):
+async def defence_factor_base_func(dmg):
     return dmg.target.stats["def"].calculate(damage=dmg)
 
-def resistance_base_func(dmg):
+async def resistance_base_func(dmg):
     value = -dmg.dealer.stats["res_pen"].calculate(damage=dmg)
     if dmg.element is not None:
         value += dmg.target.stats[f"{dmg.element.nameid}_res"].calculate(damage=dmg)
         value -= dmg.dealer.stats[f"{dmg.element.nameid}_res_pen"].calculate(damage=dmg)
     return value
 
-def mitigation_factor_base_func(dmg):
+async def mitigation_factor_base_func(dmg):
     from monsters import base as monster  # TODO: Python 3.15 lazy import
     if isinstance(dmg.target, monster.Monster) and not dmg.target.weakness_broken:
         return 0.9
     return 1
 
-def break_eff_base_func(dmg):
+async def break_eff_base_func(dmg):
     return dmg.dealer.stats["break_eff"].calculate(damage=dmg)
 
-DamageFactorType.MAX_TOUGHNESS = DamageFactorType(lambda dmg, value: value, max_toughness_base_func)
-DamageFactorType.MULTIPLIER = DamageFactorType(lambda dmg, value: value, multiplier_base_func)  # 指击破的倍率
+def async_func(func):
+    async def wrapper(*args):
+        return func(*args)
+    return wrapper
+
+DamageFactorType.MAX_TOUGHNESS = DamageFactorType(async_func(lambda dmg, value: value), max_toughness_base_func)
+DamageFactorType.MULTIPLIER = DamageFactorType(async_func(lambda dmg, value: value), multiplier_base_func)  # 指击破的倍率
 DamageFactorType.CRIT = DamageFactorType(crit_factor_func, crit_factor_base_func)
-DamageFactorType.DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, dmg_boost_base_func)
-DamageFactorType.WEAKEN = DamageFactorType(lambda dmg, value: 1 - value, lambda dmg: 0)
+DamageFactorType.DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), dmg_boost_base_func)
+DamageFactorType.WEAKEN = DamageFactorType(async_func(lambda dmg, value: 1 - value), async_func(lambda dmg: 0))
 DamageFactorType.DEFENCE = DamageFactorType(defence_factor_func, defence_factor_base_func)
-DamageFactorType.DEF_BOOST = DamageFactorType(lambda dmg, value: 1, lambda dmg: 0)
-DamageFactorType.RESISTANCE = DamageFactorType(lambda dmg, value: min(max(1 - value, 0.1), 2), resistance_base_func)
-DamageFactorType.VULNERABILITY = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
-DamageFactorType.MITIGATION = DamageFactorType(lambda dmg, value: max(value, 0.01), mitigation_factor_base_func)
-DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, break_eff_base_func)
-DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
+DamageFactorType.DEF_BOOST = DamageFactorType(async_func(lambda dmg, value: 1), async_func(lambda dmg: 0))
+DamageFactorType.RESISTANCE = DamageFactorType(async_func(lambda dmg, value: min(max(1 - value, 0.1), 2)), resistance_base_func)
+DamageFactorType.VULNERABILITY = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
+DamageFactorType.MITIGATION = DamageFactorType(async_func(lambda dmg, value: max(value, 0.01)), mitigation_factor_base_func)
+DamageFactorType.BREAK_EFF = DamageFactorType(async_func(lambda dmg, value: 1 + value), break_eff_base_func)
+DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
 
 class DamageDesc:
     __slots__ = ("dealer", "stat_desc", "element", "types", "source")
@@ -103,12 +109,12 @@ class DamageDesc:
         self.types = types
         self.source = source
     
-    def summon(self, t):
-        return Damage(self.dealer, t, self.stat_desc, self.element, self.types, self.source)
+    async def summon(self, t):
+        return await Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.source)
 
 class Damage:
     __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split_ratio",
-        "energy_regen", "damage")
+        "energy_regen", "damage", "crit")
 
     def __init__(self, dealer, t, stat_desc, element, types, source):
         self.dealer = dealer
@@ -122,7 +128,15 @@ class Damage:
         self.hit_split_ratio = 1
         self.energy_regen = None
         self.damage = None
+        self.crit = False
+    
+    @classmethod
+    async def create(cls, dealer, t, stat_desc, element, types, source):
+        dmg = cls(dealer, t, stat_desc, element, types, source)
+        await dmg.init()
+        return dmg
 
+    async def init(self):
         if self.types in ({DmgType.NORMAL}, {DmgType.ADDITIONAL}):
             for factor in (
                 DamageFactorType.DMG_BOOST,
@@ -133,10 +147,10 @@ class Damage:
                 DamageFactorType.VULNERABILITY,
                 DamageFactorType.MITIGATION
             ):
-                self.new_factor(factor)
+                await self.new_factor(factor)
             from characters import base as character  # TODO: Python 3.15 lazy import
             if isinstance(self.dealer, character.Character):
-                self.new_factor(DamageFactorType.CRIT)
+                await self.new_factor(DamageFactorType.CRIT)
         elif self.types == {DmgType.BREAK}:
             for factor in (
                 DamageFactorType.MAX_TOUGHNESS,
@@ -149,7 +163,7 @@ class Damage:
                 DamageFactorType.BREAK_EFF,
                 DamageFactorType.BREAK_DMG_BOOST
             ):
-                self.new_factor(factor)
+                await self.new_factor(factor)
         elif self.types == {DmgType.ADDITIONAL, DmgType.BREAK}:  # 击破造成的附加伤害
             for factor in (
                 DamageFactorType.DEFENCE,
@@ -160,17 +174,17 @@ class Damage:
                 DamageFactorType.BREAK_EFF,
                 DamageFactorType.BREAK_DMG_BOOST
             ):
-                self.new_factor(factor)
+                await self.new_factor(factor)
 
-    def new_factor(self, factor):
+    async def new_factor(self, factor):
         if factor in self.factors:
             return
-        self.factors[factor] = factor.base_func(self)
+        self.factors[factor] = await factor.base_func(self)
     
-    def calculate(self):
+    async def calculate(self):
         damage = self.stat_desc.calculate(damage=self)
         for factor, value in self.factors.items():
-            damage *= factor.func(self, value)
+            damage *= await factor.func(self, value)
         self.damage = damage
         return damage
     
@@ -195,6 +209,9 @@ class Damage:
         if self.energy_regen is not None:
             dmg.energy_regen = self.energy_regen * scale
         return dmg
+    
+    def get_info(self):
+        return {"amount": self.damage, "crit": self.crit, "types": [t.nameid for t in self.types]}
 
 class ToughnessReduction:
     __slots__ = ("dealer", "target", "base_amount", "element", "reduction_increase")

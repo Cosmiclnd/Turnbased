@@ -43,6 +43,10 @@
             "nameid": "bellowing_inferno",
             "name": "Bellowing Inferno",
             "type": "single",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "powerful": false,
             "desc": "Deals Fire DMG equal to {percentage:.2%} of Blaze Out of Space's ATK to one designated target.",
             "values": {
@@ -60,6 +64,10 @@
             "nameid": "blazing_absorption",
             "name": "Blazing Absorption",
             "type": "enhance",
+            "target": {
+                "type": "monster",
+                "selection": "self"
+            },
             "powerful": false,
             "desc": "Enters the Spontaneous Combustion state. Rain of Purifying Flames can be used in subsequent attacks.",
             "values": {}
@@ -68,6 +76,10 @@
             "nameid": "rain_of_purifying_flames",
             "name": "Rain of Purifying Flames",
             "type": "bounce",
+            "target": {
+                "type": "character",
+                "selection": "all"
+            },
             "powerful": true,
             "desc": "Deals {times} instances of DMG, with each instance dealing Fire DMG equal to {percentage:.2%} of Blaze Out of Space's ATK to a random target.",
             "values": {
@@ -85,6 +97,10 @@
             "nameid": "molten_fusion",
             "name": "Molten Fusion",
             "type": "enhance",
+            "target": {
+                "type": "monster",
+                "selection": "self"
+            },
             "powerful": false,
             "desc": "Increase Blaze Out of Space's ATK by {atk_boost:.2%}, lasting for {duration} turn(s). This effect can stack up to {max_stacks} time(s) and is dispelled upon Weakness Break.",
             "values": {

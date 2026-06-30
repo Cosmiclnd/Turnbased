@@ -1,20 +1,31 @@
+import uuid
+
 import item
 import battle
 import server
+import target
 
-order = 0
+order = -1
+add_order = 0
 
 def next_order():
     global order
-    order += 1
+    order -= 1
     return order
+
+def next_add_order():
+    global add_order
+    add_order += 1
+    return add_order
 
 class NormalTurn(item.Item):
     def __init__(self, t):
         super().__init__(f"{t.nameid}_normal_turn", f"{t.name}'s Normal Turn", item.DeadToggle(t))
         self.target = t
         self.cur_action = None
-        self.next_run()
+        self.spd = self.target.stats["spd"].calculate()
+        self.action_value = self.base_action_value()
+        self.order = next_add_order()
     
     def get_num_actions(self):
         return 1
@@ -51,7 +62,7 @@ class NormalTurn(item.Item):
         cls.advance_target(t, -scale)
     
     def sort_key(self):
-        return (self.action_value, -self.order)
+        return (self.action_value, self.order)
     
     @classmethod
     def next_order(cls):
@@ -67,7 +78,7 @@ class ExtraTurn(item.Item):
         super().__init__(f"{t.nameid}_extra_turn", f"{t.name}'s Extra Turn", item.DeadToggle(t))
         self.target = t
         self.priority = priority
-        self.order = next_order()
+        self.order = next_add_order()
     
     def sort_key(self):
         return (-self.priority, self.order)
@@ -90,30 +101,47 @@ class ActionList:
         self.normals.sort(key=NormalTurn.sort_key)
         self.extras.refresh()
         self.extras.sort(key=ExtraTurn.sort_key)
-        return await battle.current.check_targets()
+        await battle.current.check_targets()
     
     async def check_extra_turns(self):
         while self.extras:
             extra = self.extras.pop(0)
             await battle.current.event_bus.dispatch("extra_turn", extra)
             await self.ask_ultimate()
-            if await self.refresh_targets():
-                return True
-        return False
+            await self.refresh_targets()
+    
+    @server.server_handler
+    async def ultimate_handler(self, message):
+        if message.get("type") == "empty":
+            return "ok"
+        if message.get("type") != "ask" or message.get("name") != "ultimate":
+            return "invalid_message_type"
+        try:
+            id = uuid.UUID(message["character"])
+            c = target.from_uuid(id)
+            if c is None:
+                return "target_not_found"
+            from characters import base as character  # TODO: Python 3.15 lazy import
+            if not isinstance(c, character.Character):
+                return "target_not_character"
+            info = await c.check_ultimate(message)
+            if info == "ok":
+                await battle.current.event_bus.dispatch("prepare_ultimate", c)
+                return "ok"
+            else:
+                return info
+        except KeyError:
+            return "invalid_message"
+        return "internal_error"
     
     async def ask_ultimate(self):
         while True:
-            message = await server.send_and_recv({"type": "ask_ultimate"})
-            if message["type"] == "ask_ultimate":
-                c = battle.current.characters[message["index"]]
-                if c.ultimate_available():
-                    await battle.current.event_bus.dispatch("prepare_ultimate", c)
-            elif message["type"] == "empty":
+            response = await server.handler.ask_client({"name": "ultimate"}, self.ultimate_handler)
+            if response["type"] == "empty":
                 break
     
     async def next_normal_turn(self):
-        if await self.refresh_targets():
-            return
+        await self.refresh_targets()
         current = self.normals[0]
         delta = current.action_value
         for turn in self.normals:
@@ -125,11 +153,9 @@ class ActionList:
                     current.next_run()
                 current.cur_action = i - 1
                 await battle.current.event_bus.dispatch("normal_turn", current)
-            if await self.refresh_targets():
-                return
+            await self.refresh_targets()
             await self.ask_ultimate()
-            if await self.check_extra_turns():
-                return
+            await self.check_extra_turns()
         current.cur_action = None
         await battle.current.event_bus.dispatch("normal_turn_end", current)
     

@@ -1,4 +1,5 @@
 import random
+import uuid
 
 import event
 import action
@@ -27,16 +28,53 @@ class Skillpoints:
         self.current += delta_skillpoints
         self.refresh()
 
+class Random:
+    def __init__(self, config):
+        self.use_random = config["use_random"]
+        if self.use_random:
+            self.random = random.Random(config.get("seed"))
+    
+    @server.server_handler
+    async def rate_handler(self, message):
+        try:
+            if type(message["result"]) is not bool:
+                return "invalid_message"
+            return "ok"
+        except KeyError:
+            return "invalid_message"
+    
+    async def rate(self, rate):
+        if self.use_random:
+            return self.random.random() < rate
+        response = await server.handler.ask_client({"name": "random_rate"}, self.rate_handler)
+        return response["result"]
+    
+    @server.server_handler
+    async def monster_target_handler(self, message):
+        try:
+            self.temp_target = target.from_uuid(uuid.UUID(message["result"]))
+            if self.temp_target is None:
+                return "target_not_found"
+            return "ok"
+        except KeyError:
+            return "invalid_message"
+    
+    async def monster_target(self, choices, weights):
+        if self.use_random:
+            return self.random.choices(choices, weights=weights)[0]
+        response = await server.handler.ask_client({"name": "random_monster_target"}, self.monster_target_handler)
+        return self.temp_target
+
 class Battle:
-    def __init__(self, seed=None):
-        self.random = random.Random(seed)
+    def __init__(self):
+        self.random = None
         self.event_bus = event.EventBus()
         self.action_list = action.ActionList()
         self.skillpoints = Skillpoints()
         self.characters = item.ItemList()
         self.monsters = item.ItemList()
         self.monster_setup = monster.Setup()
-        self.target_index = 0
+        self.cur_main_target = None
         self.suspended = False
 
         self.event_bus.add_member_listener(self.battle_start, nameid="battle", name="Battle")
@@ -54,12 +92,11 @@ class Battle:
     
     async def check_targets(self):
         if await self.monster_setup.check():
-            await server.send_and_recv({"type": "battle_win"})
-            return True
+            await server.handler.update_client({"name": "battle_win"})
+            server.handler.close()
         if not self.characters:
-            await server.send_and_recv({"type": "battle_lose"})
-            return True
-        return False
+            await server.handler.update_client({"name": "battle_lose"})
+            server.handler.close()
     
     async def start(self):
         await self.event_bus.dispatch("battle_start")

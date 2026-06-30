@@ -38,6 +38,10 @@
             "nameid": "dummy",
             "name": "Dummy",
             "type": "single",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "powerful": false,
             "desc": "Deals DMG equal to {percentage:.2%} of Dummy's ATK to one designated target.",
             "values": {

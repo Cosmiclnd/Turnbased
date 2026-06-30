@@ -109,7 +109,7 @@ class FrozenEffect(Effect):
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
                 if self.effect.dmg_desc is not None:
-                    self.dmg = self.effect.dmg_desc.summon(self.target)
+                    self.dmg = await self.effect.dmg_desc.summon(self.target)
                 battle.current.event_bus.add_member_listener(self.normal_turn_start, self.listener_dead)
             elif self.old_stacks != 0 and stacks == 0:
                 self.listener_dead.dead_toggle = True
@@ -139,7 +139,7 @@ class DotEffect(Effect):
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
                 battle.current.event_bus.add_member_listener(self.tick_dot, self.listener_dead)
-                self.dmg = self.effect.dmg_desc.summon(self.target)
+                self.dmg = await self.effect.dmg_desc.summon(self.target)
             elif self.old_stacks != 0 and stacks == 0:
                 self.listener_dead.dead_toggle = True
             self.old_stacks = stacks
@@ -261,7 +261,8 @@ class EffectList:
             effects = list(filter(lambda eff: eff.dispellable and (f is None or f(eff)), self.effects.keys()))
             if not effects:
                 return i
-            eff = battle.current.random.choice(effects)
+            import random  # TODO: battle.current.random
+            eff = random.choice(effects)
             await self.remove(eff, 1)
         return count
     

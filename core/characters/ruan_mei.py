@@ -23,7 +23,7 @@ class RuanMei(base.Character):
                 return
             t = self.get_main_target()
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = damage.Damage(self.target, t,
+            dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
@@ -147,7 +147,7 @@ class RuanMei(base.Character):
                 ))
                 action.NormalTurn.advance_target(self.target, 1)  # 回退1回合
                 action.NormalTurn.delay_target(self.target, stat_desc.calculate())
-                dmg = damage.Damage(self.effect.target, self.target,
+                dmg = await damage.Damage.create(self.effect.target, self.target,
                     modifier.StatDesc((self.effect.target.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED,
                         ultimate.get_value("percentage"))),
                     self.effect.target.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
@@ -247,7 +247,7 @@ class RuanMei(base.Character):
         mult = self.get_current_skill("talent").get_value("percentage")
         if self.eidolons >= 6:
             mult += self.config.get_skill_value("eidolon6", "percentage")
-        dmg = damage.Damage(self, tr.target,
+        dmg = await damage.Damage.create(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, mult)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
         await battle.current.event_bus.dispatch("additional_damage", dmg)

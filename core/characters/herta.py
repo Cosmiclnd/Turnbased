@@ -7,6 +7,7 @@ import modifier
 import enums
 import effect
 import action
+import server
 from monsters import base as monster
 
 from characters import base
@@ -24,20 +25,20 @@ class Herta(base.Character):
                 return
             t = self.get_main_target()
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = damage.Damage(self.target, t,
+            dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("hit", dmg)
-            await battle.current.event_bus.dispatch("attack_end", self.target)
             if self.target.eidolons >= 1:
                 hp = t.stats["hp"].calculate()
                 if t.cur_hp <= hp * self.target.config.get_skill_value("eidolon1", "hp_threshold"):
-                    dmg = damage.Damage(self.target, t,
+                    dmg = await damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon1", "percentage"))),
                         self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATTACK)
                     await battle.current.event_bus.dispatch("additional_damage", dmg)
+            await battle.current.event_bus.dispatch("attack_end", self.target)
 
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
@@ -51,7 +52,7 @@ class Herta(base.Character):
                 return
             await battle.current.event_bus.dispatch("attack_start", self.target)
             for t in battle.current.monsters[:]:
-                dmg = damage.Damage(self.target, t,
+                dmg = await damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
@@ -79,7 +80,7 @@ class Herta(base.Character):
             self.target.ultimate_activated = False
             await battle.current.event_bus.dispatch("attack_start", self.target)
             for t in battle.current.monsters[:]:
-                dmg = damage.Damage(self.target, t,
+                dmg = await damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
@@ -114,6 +115,7 @@ class Herta(base.Character):
             async def extra_turn(self, turn):
                 if self is not turn:
                     return
+                await server.handler.update_client({"name": "herta.follow_up", "target": self.target.get_info()})
                 self.master.dead_toggle = True
                 self.skill.follow_up_launched = False
                 await self.skill.trigger_follow_up()
@@ -142,7 +144,7 @@ class Herta(base.Character):
             i = 0
             while i < self.attacks:
                 for t in battle.current.monsters[:]:
-                    dmg = damage.Damage(self.target, t,
+                    dmg = await damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
                     dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)

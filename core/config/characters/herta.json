@@ -93,6 +93,10 @@
             "name": "What Are You Looking At?",
             "category": "basic_atk",
             "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
             "delta_skillpoints": 1,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to one designated enemy.",
             "values": {
@@ -116,6 +120,10 @@
             "name": "One-Time Offer",
             "category": "skill",
             "type": "aoe",
+            "target": {
+                "type": "monster",
+                "selection": "all"
+            },
             "delta_skillpoints": -1,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies. If the enemy's HP percentage is {hp_threshold:.2%} or higher, DMG dealt to this target increases by {dmg_boost:.2%}.",
             "values": {
@@ -147,6 +155,10 @@
             "name": "It's Magic, I Added Some Magic",
             "category": "ultimate",
             "type": "aoe",
+            "target": {
+                "type": "monster",
+                "selection": "all"
+            },
             "delta_skillpoints": 0,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Herta's ATK to all enemies.",
             "values": {

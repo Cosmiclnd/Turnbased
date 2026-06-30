@@ -1,5 +1,6 @@
 import collections
 import json
+import uuid
 
 import target
 import skill
@@ -93,6 +94,9 @@ class Character(target.Target):
             super().__init__(nameid, name, type, t)
             self.category = config_data["category"]
             self.delta_skillpoints = config_data["delta_skillpoints"]
+            self.target_info = None
+            if "target" in config_data:
+                self.target_info = config_data["target"]
             self.bonus_level = 0
             battle.current.event_bus.add_member_listener(self.skill_trigger_pre, t)
         
@@ -100,31 +104,30 @@ class Character(target.Target):
             level = self.level + self.bonus_level
             return self.target.config.get_skill_value(self.skill_name, name, level=level)
         
-        @classmethod
-        def get_target(cls, list, idx):
-            if 0 <= idx < len(list):
-                return list[idx]
-            return None
-
         def get_main_target(self):
-            if self.type in (skill.SkillType.SINGLE, skill.SkillType.BLAST, skill.SkillType.BOUNCE, skill.SkillType.AOE):
-                list = battle.current.monsters
-            elif self.type in (skill.SkillType.RESTORE, skill.SkillType.SUPPORT):
-                list = battle.current.characters
-            return self.get_target(list, battle.current.target_index)
+            return battle.current.cur_main_target
         
-        def get_blast_targets(self, n=1):
-            if self.type in (skill.SkillType.SINGLE, skill.SkillType.BLAST, skill.SkillType.BOUNCE, skill.SkillType.AOE):
-                list = battle.current.monsters
-            elif self.type in (skill.SkillType.RESTORE, skill.SkillType.SUPPORT):
-                list = battle.current.characters
-            result = []
-            for i in range(-n, n + 1):
-                if i != 0:
-                    t = self.get_target(list, battle.current.target_index + i)
-                    if t is not None:
-                        result.append(t)
-            return result
+        @server.server_handler
+        async def target_validator(self, target):
+            if self.target_info is None:
+                return "internal_error"
+            type = self.target_info["type"]
+            selection = self.target_info["selection"]
+            if type == "monster":
+                if isinstance(target, Character):
+                    return "bad_target"
+                if selection == "all" and target is not None:
+                    return "bad_target"
+                return "ok"
+            elif type == "character":
+                if not isinstance(target, Character):
+                    return "bad_target"
+                if selection == "self" and target is not self.target:
+                    return "bad_target"
+                if selection == "all" and target is not None:
+                    return "bad_target"
+                return "ok"
+            return "internal_error"
         
         @event.member_listener(event.ListenerPriority.PRE_PROCESS, "skill_trigger")
         async def skill_trigger_pre(self, skill):
@@ -137,7 +140,7 @@ class Character(target.Target):
         if nameid != self.config.nameid:
             logging.warning(f"Character nameid mismatch: {nameid} != {self.config['nameid']}")
         
-        super().__init__(nameid, self.config.name, None)
+        super().__init__(uuid.UUID(record["uuid"]), nameid, self.config.name, None)
         self.config.init()
         # break_eff = Break Effect
         # wb_eff = Weakness Break Efficiency
@@ -147,7 +150,6 @@ class Character(target.Target):
         self.eidolons = None
         self.traces_stats_unlocked = None
         self.traces_unlocked = None
-        self.selected_skill = None
         self.lightcone = None
         self.relics = {}
         for type in relic.RelicType.ALL:
@@ -264,34 +266,68 @@ class Character(target.Target):
             result[category].append(info)
         return result
 
-    def ultimate_available(self):
-        return not self.ultimate_activated and self.cur_energy >= self.stats["energy"].calculate()
-        
-    @server.request_validator
-    def normal_turn_option_validator(self, response):
-        if response.get("type") != "character_normal_turn_option":
-            return "bad_message_type"
-        option = response.get("option")
-        if option not in ("basic_atk", "skill"):
-            return "bad_option"
-        battle.current.target_index = response.get("index")
-        if battle.current.target_index is None:
-            return "bad_index"
-        self.selected_skill = self.skills[option]
-        skill = self.selected_skill.current_skill()
-        if not battle.current.skillpoints.available(skill.delta_skillpoints):
-            return "not_enough_skillpoints"
-        try:
-            skill.get_main_target()
-        except IndexError:
-            return "bad_index"
-        return "ok"
-
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
         # 这个listener在Target类中已经被添加
         await super().battle_start()
-        self.cur_energy = 0.5 * self.stats["energy"].calculate()
+        if "cur_energy" in self.initial_state:
+            self.cur_energy = self.initial_state["cur_energy"]
+        elif "cur_energy_rate" in self.initial_state:
+            self.cur_energy = self.initial_state["cur_energy_rate"] * self.stats["energy"].calculate()
+        else:
+            self.cur_energy = 0.5 * self.stats["energy"].calculate()
+    
+    def check_ultimate_energy(self):
+        return self.cur_energy >= self.stats["energy"].calculate()
+    
+    def ultimate_available(self):
+        return True
+
+    @server.server_handler
+    async def check_ultimate(self, message):
+        if self.ultimate_activated:
+            return "ultimate_activated"
+        if not self.check_ultimate_energy():
+            return "not_enough_energy"
+        if not self.ultimate_available():
+            return "ultimate_not_available"
+        skill = self.get_current_skill("ultimate")
+        if "target" in message:
+            battle.current.cur_main_target = target.from_uuid(message["target"])
+            if battle.current.cur_main_target is None:
+                return "target_not_found"
+        else:
+            battle.current.cur_main_target = None
+        info = await skill.target_validator(battle.current.cur_main_target)
+        if info != "ok":
+            return info
+        return "ok"
+    
+    @server.server_handler
+    async def character_skill_option_handler(self, message):
+        if message.get("type") != "ask" or message.get("name") != "character_skill_option":
+            return "invalid_message_type"
+        try:
+            option = message["option"]
+            if option not in ("basic_atk", "skill"):
+                return "bad_option"
+            if "target" in message:
+                battle.current.cur_main_target = target.from_uuid(uuid.UUID(message["target"]))
+                if battle.current.cur_main_target is None:
+                    return "target_not_found"
+            else:
+                battle.current.cur_main_target = None
+            skill_group = self.skills[option]
+            skill = skill_group.current_skill()
+            info = await skill.target_validator(battle.current.cur_main_target)
+            if info != "ok":
+                return info
+            if not battle.current.skillpoints.available(skill.delta_skillpoints):
+                return "not_enough_skillpoints"
+            self.selected_skill_group = skill_group
+            return "ok"
+        except KeyError:
+            return "invalid_message"
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def normal_turn(self, turn):
@@ -299,15 +335,14 @@ class Character(target.Target):
             return
         if not self.can_act():
             return
-        message = {"type": "character_normal_turn_option"} | self.get_info()
-        await server.request_option(message, self.normal_turn_option_validator)
-        await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill)
+        await server.handler.ask_client({"name": "character_skill_option", "target": self.get_info()}, self.character_skill_option_handler)
+        await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
     async def break_weakness(self, tr):
         if self is not tr.dealer:
             return
-        dmg = damage.Damage(self, tr.target,
+        dmg = await damage.Damage.create(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
@@ -339,6 +374,5 @@ class Character(target.Target):
     async def ultimate_turn(self, turn):
         if self is not turn.target:
             return
-        message = {"type": "start_ultimate_turn"} | self.get_info()
-        await server.send_and_recv(message)
+        await server.handler.update_client({"name": "ultimate_turn", "target": self.get_info()})
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])

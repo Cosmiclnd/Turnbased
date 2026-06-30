@@ -8,6 +8,8 @@ import event
 import battle
 import server
 
+all_targets = {}
+
 class DeathState:
     def __init__(self, t):
         self.target = t
@@ -44,8 +46,10 @@ class Target(item.Item):
                     values[name] = self.get_skill_value(skill_name, name)
             return desc.format(**values)
 
-    def __init__(self, nameid, name, level):
+    def __init__(self, uuid, nameid, name, level):
         super().__init__(nameid, name, None)
+        self.uuid = uuid
+        all_targets[uuid] = self
         self.level = level
         self.stats = modifier.StatDict()
         stat_names = ["hp", "atk", "def", "spd", "dmg_boost", "res_pen"]
@@ -61,6 +65,7 @@ class Target(item.Item):
         self.death_state = DeathState(self)
         self.effects = effect.EffectList(self)
         self.effect_types = {}
+        self.initial_state = {}
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
         battle.current.event_bus.add_member_listener(self.normal_turn_message, self)
@@ -77,8 +82,8 @@ class Target(item.Item):
     def dead(self):
         return self.death_state.need_clean
     
-    def get_stats_info(self):
-        return {name: (stat.calculate(modifier.ModifierFilter.BASE), stat.calculate()) for name, stat in self.stats.items()}
+    def get_info(self):
+        return {"uuid": str(self.uuid)}
     
     def new_normal_turn(self):
         return action.NormalTurn(self)
@@ -102,20 +107,25 @@ class Target(item.Item):
         for debuff in effect.Debuff.ALL:
             debuff_res += eff_add.target.stats[f"{debuff.nameid}_res"].calculate(effect=eff_add.effect)
         chance *= max(1 - debuff_res, 0)
-        if battle.current.random.random() < chance:
+        import random  # TODO: battle.current.random
+        if random.random() < chance:
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
-        self.cur_hp = self.stats["hp"].calculate()
+        if "cur_hp" in self.initial_state:
+            self.cur_hp = self.initial_state["cur_hp"]
+        elif "cur_hp_rate" in self.initial_state:
+            self.cur_hp = self.initial_state["cur_hp_rate"] * self.stats["hp"].calculate()
+        else:
+            self.cur_hp = self.stats["hp"].calculate()
         self.death_state.clear()
     
     @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
     async def normal_turn_message(self, turn):
         if self is not turn.target:
             return
-        message = {"type": "start_normal_turn"} | self.get_info()  # TODO: better message
-        await server.send_and_recv(message)
+        await server.handler.update_client({"name": "normal_turn_start", "target": self.get_info()})
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
     async def check_frozen(self, turn):
@@ -149,10 +159,9 @@ class Target(item.Item):
     async def receive_damage(self, damage):
         if self is not damage.target:
             return
-        dmg = damage.calculate()
-        message = {"type": "deal_damage", "dealer": damage.dealer.get_info(), "target": self.get_info(), "amount": dmg,
-            "dmg_types": [t.get_info() for t in sorted(damage.types, key=lambda t: t.nameid)]}
-        await server.send_and_recv(message)
+        dmg = await damage.calculate()
+        await server.handler.update_client({"name": "damage", "dealer": damage.dealer.get_info(), "target": self.get_info(),
+            "damage": damage.get_info()})
         await battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
         if self.cur_hp <= 0 and self.death_state.alive:
             self.death_state.alive = False
@@ -172,8 +181,7 @@ class Target(item.Item):
         if self is not t:
             return
         if not self.death_state.alive:
-            message = {"type": "die"} | self.get_info()
-            await server.send_and_recv(message)
+            await server.handler.update_client({"name": "die", "target": self.get_info()})
             self.death_state.need_clean = True
             await self.effects.die()
             battle.current.refresh()
@@ -183,8 +191,7 @@ class Target(item.Item):
         if self is not heal.target:
             return
         amount = heal.calculate()
-        message = {"type": "heal", "healer": heal.healer.get_info(), "target": self.get_info(), "amount": amount}
-        await server.send_and_recv(message)
+        await server.handler.update_client({"name": "heal", "healer": heal.healer.get_info(), "target": self.get_info(), "amount": amount})
         await battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -195,3 +202,6 @@ class Target(item.Item):
 
 def lerp(a, b, t):
     return a + (b - a) * t
+
+def from_uuid(id):
+    return all_targets.get(id)

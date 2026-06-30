@@ -42,6 +42,10 @@
             "nameid": "obliterate",
             "name": "Obliterate",
             "type": "single",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "powerful": false,
             "desc": "Deals Quantum DMG equal to {percentage:.2%} of Baryon's ATK to one designated target.",
             "values": {

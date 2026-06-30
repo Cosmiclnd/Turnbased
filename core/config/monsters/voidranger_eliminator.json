@@ -13,7 +13,7 @@
         "hp": 2.1,
         "atk": 18,
         "def": 1,
-        "spd": 120
+        "spd": 100
     },
     "base_stat_flats": {
         "eff_hr": 0,
@@ -43,8 +43,12 @@
             "nameid": "void_cannon",
             "name": "Void Cannon",
             "type": "single",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "powerful": false,
-            "desc": "Deals Imaginary DMG equal to {percentage:.2%} of Voidranger: Eliminator's ATK to one designated target, with a {base_chance:.2%} base chance to inflict Detonated. Targets inflicted with Detonated will take Imaginary Additional DMG equal to {additional_percentage:.2%} of Voidranger: Eliminator's ATK after being attacked. This effect can be triggered {trigger_count} time(s). Voidranger: Eliminator becomes Overloaded.",
+            "desc": "Deals Imaginary DMG equal to {percentage:.2%} of Voidranger: Eliminator's ATK to one designated target in 3 instances, with each instance inflicting 1 stack of Detonated. Targets inflicted with Detonated will take Imaginary Additional DMG equal to {additional_percentage:.2%} of Voidranger: Eliminator's ATK after being hit. Voidranger: Eliminator becomes Overloaded.",
             "values": {
                 "energy_regen": {
                     "is_dynamic": false,
@@ -54,17 +58,9 @@
                     "is_dynamic": false,
                     "value": 4
                 },
-                "base_chance": {
-                    "is_dynamic": false,
-                    "value": 0.75
-                },
                 "additional_percentage": {
                     "is_dynamic": false,
-                    "value": 0.4
-                },
-                "trigger_count": {
-                    "is_dynamic": false,
-                    "value": 3
+                    "value": 0.75
                 }
             }
         },
@@ -72,6 +68,10 @@
             "nameid": "thermal_barrier",
             "name": "Thermal Barrier",
             "type": "others",
+            "target": {
+                "type": "monster",
+                "selection": "self"
+            },
             "powerful": false,
             "desc": "Dispels Voidranger: Eliminator's Overloaded state.",
             "values": {}

@@ -1,4 +1,5 @@
 import json
+import uuid
 
 import target
 import skill
@@ -70,12 +71,12 @@ class Monster(target.Target):
         def get_value(self, name):
             return self.target.config.get_skill_value(self.skill_name, name)
 
-    def __init__(self, nameid, level, moc, stat_scales, stat_flats):
+    def __init__(self, uuid, nameid, level, moc, stat_scales, stat_flats):
         self.config = self.MonsterConfig(config.load_config_data("monsters", nameid), stat_scales, stat_flats, self)
         if nameid != self.config.nameid:
             logging.warning(f"Monster nameid mismatch: {nameid} != {self.config['nameid']}")
 
-        super().__init__(nameid, self.config.name, level)
+        super().__init__(uuid, nameid, self.config.name, level)
         self.config.init()
         self.moc = moc
         self.additional_weakness = []
@@ -155,7 +156,7 @@ class Monster(target.Target):
         if not targets:
             return
         taunts = [c.stats["taunt"].calculate() for c in targets]
-        return event.QueryResult(battle.current.random.choices(targets, weights=taunts)[0])
+        return event.QueryResult(await battle.current.random.monster_target(targets, taunts))
 
 class Group:
     def __init__(self, name, record):
@@ -167,7 +168,7 @@ class Group:
     
     def set_record(self, record):
         for monster in record["monsters"]:
-            self.monsters.append(config.load_class("monsters", monster["name"])(monster["level"], monster["moc"],
+            self.monsters.append(config.load_class("monsters", monster["name"])(uuid.UUID(monster["uuid"]), monster["level"], monster["moc"],
                 monster.get("stat_scales", {}), monster.get("stat_flats", {})))
         self.condition = record["condition"]
     
@@ -229,7 +230,7 @@ class Setup:
             self.cur_wave += 1
             if self.cur_wave >= len(self.waves):
                 return True
-            await server.send_and_recv({"type": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
+            await server.handler.update_client({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
             await battle.current.event_bus.dispatch("new_wave_start")
             await self.check_add_monsters()
         return False

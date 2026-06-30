@@ -6,9 +6,6 @@ class Item:
     
     def dead(self):
         return self.master.dead() if self.master else False
-    
-    def get_info(self):
-        return {"nameid": self.nameid, "name": self.name}
 
 class DeadToggle(Item):
     def __init__(self, master=None):

@@ -20,13 +20,13 @@ class Dummy(base.Monster):
                 return
             t = await battle.current.event_bus.query("get_monster_target", self.target)
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = damage.Damage(self.target, t,
+            dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 None, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
 
-    def __init__(self, level, moc, stat_scales, stat_flats):
-        super().__init__("dummy", level, moc, stat_scales, stat_flats)
+    def __init__(self, uuid, level, moc, stat_scales, stat_flats):
+        super().__init__(uuid, "dummy", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill,))

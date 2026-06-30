@@ -93,6 +93,10 @@
             "name": "Threading Fragrance",
             "category": "basic_atk",
             "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
             "delta_skillpoints": 1,
             "desc": "Deals Ice DMG equal to {percentage:.2%} of Ruan Mei's ATK to one designated enemy target.",
             "values": {
@@ -116,6 +120,10 @@
             "name": "String Sings Slow Swirls",
             "category": "skill",
             "type": "support",
+            "target": {
+                "type": "character",
+                "selection": "self"
+            },
             "delta_skillpoints": -1,
             "desc": "After using her Skill, Ruan Mei gains Overtone, lasting for {duration} turn(s). This duration decreases by 1 at the start of Ruan Mei's every turn. When Ruan Mei has Overtone, all allies' DMG increases by {dmg_boost:.2%} and Weakness Break Efficiency increases by {wb_eff_boost:.2%}.",
             "values": {
@@ -143,6 +151,10 @@
             "name": "Petals to Stream, Repose in Dream",
             "category": "ultimate",
             "type": "support",
+            "target": {
+                "type": "character",
+                "selection": "self"
+            },
             "delta_skillpoints": 0,
             "desc": "Ruan Mei deploys a Zone that lasts for 2 turns. The Zone's duration decreases by 1 at the start of her turn. While inside the Zone, all allies' All-Type RES PEN increases by {res_pen_boost:.2%} and their attacks apply Thanatoplum Rebloom to the enemies hit. When these enemies attempt to recover from Weakness Break, Thanatoplum Rebloom is triggered, extending the duration of their Weakness Break, delaying their action by an amount equal to {delay_percentage:.2%} of Ruan Mei's Break Effect plus {delay_flat:.2%}, and dealing Break DMG equal to {percentage:.2%} of Ruan Mei's Ice Break DMG. Enemy targets cannot have Thanatoplum Rebloom re-applied to them until they recover from Weakness Break.",
             "values": {

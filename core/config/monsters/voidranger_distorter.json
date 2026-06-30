@@ -42,6 +42,10 @@
             "nameid": "nihilitys_command",
             "name": "Nihility's Command",
             "type": "lock_on",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "powerful": false,
             "desc": "Inflicts \"Lock On\" on one designated target, making them the target for incoming attacks from all of their enemies and increasing their DMG received by {vulnerability:.2%}.",
             "values": {
@@ -55,6 +59,10 @@
             "nameid": "shadowless_void_strike",
             "name": "Shadowless Void Strike",
             "type": "single",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
             "powerful": false,
             "desc": "Deals Quantum DMG equal to {percentage:.2%} of Voidranger: Distorter's ATK to one designated target.",
             "values": {

@@ -38,7 +38,7 @@ class VoidrangerDistorter(base.Monster):
                 return
             t = await battle.current.event_bus.query("get_monster_target", self.target)
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = damage.Damage(self.target, t,
+            dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.QUANTUM, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
@@ -75,8 +75,8 @@ class VoidrangerDistorter(base.Monster):
             super().__init__("lock_on", "Lock On", effect.Effect.Type.OTHERS, effect.Effect.DurationType.PERMANENT, 1)
             self.target = t
 
-    def __init__(self, level, moc, stat_scales, stat_flats):
-        super().__init__("voidranger_distorter", level, moc, stat_scales, stat_flats)
+    def __init__(self, uuid, level, moc, stat_scales, stat_flats):
+        super().__init__(uuid, "voidranger_distorter", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2))
         self.skills.selector = self.skill_selector
         battle.current.event_bus.add_member_listener(self.reset_lock_on, self)
