@@ -82,7 +82,7 @@ class Huohuo(base.Character):
                 if t is self.target:
                     continue
                 await battle.current.event_bus.dispatch("regen_energy", t, t.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"), True)
-                eff_add = effect.EffectAddition(self.target, t, self.target.effect_types["ultimate"], self.get_value("duration"))
+                eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "ultimate"), self.get_value("duration"))
                 await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
@@ -171,44 +171,44 @@ class Huohuo(base.Character):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types["divine_provision"] = self.DivineProvisionEffect()
+        self.effect_types.add_unique(self.DivineProvisionEffect())
 
         names = self.config.get_skill_name("ultimate")
         mod = modifier.Modifier(*names,
             modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.get_current_skill("ultimate").get_value("atk_boost"))))
-        self.effect_types["ultimate"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "atk", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "atk", mod), "ultimate")
 
         if self.traces_unlocked[1]:
             mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
                 modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.config.get_skill_value("bonus_trace2", "atk_boost"))),
                 self.validator_trace2, self)
-            self.effect_types["ultimate"].modifiers.append(mod)
+            self.effect_types.get(self.nameid, "ultimate").modifiers.append(mod)
         
         names = self.config.get_skill_name("eidolon1")
         mod = modifier.Modifier(*names,
             modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon1", "spd_boost"))))
-        self.effect_types["eidolon1"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod), "eidolon1")
         
         names = self.config.get_skill_name("eidolon6")
         mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon6", "percentage"))))
-        self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "dmg_boost", mod)
-    
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "dmg_boost", mod), "eidolon6")
+
     def validator_trace2(self, stat, **kwargs):
         return stat.target.stats["max_energy"].calculate() >= self.config.get_skill_value("bonus_trace2", "energy_threshold")
     
     async def gain_divine_provision(self, duration):
-        eff_add = effect.EffectAddition(self, self, self.effect_types["divine_provision"], duration)
+        eff_add = effect.EffectAddition(self, self, self.effect_types.get(self.nameid, "divine_provision"), duration)
         await battle.current.event_bus.dispatch("add_effect", eff_add)
         self.dispel_count = self.config.get_skill_value("talent", "trigger_count")
         
     def has_divine_provision(self):
-        return self.effects.has_effect(self.effect_types["divine_provision"])
+        return self.effects.has_effect(self.effect_types.get(self.nameid, "divine_provision"))
     
     async def heal_by_skill(self, heal):
         if self.eidolons >= 4:
             heal.multiplier += 0.8 * (1 - heal.target.cur_hp / heal.target.stats["hp"].calculate())
         if self.eidolons >= 6:
-            eff_add = effect.EffectAddition(self, heal.target, self.effect_types["eidolon6"], self.config.get_skill_value("eidolon6", "duration"))
+            eff_add = effect.EffectAddition(self, heal.target, self.effect_types.get(self.nameid, "eidolon6"), self.config.get_skill_value("eidolon6", "duration"))
             await battle.current.event_bus.dispatch("add_effect", eff_add)
         await battle.current.event_bus.dispatch("heal", heal)
     

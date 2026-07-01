@@ -2,6 +2,7 @@ import item
 import config
 import enums
 import target
+import effect
 
 class LightCone(item.Item):
     class LightConeConfig(config.SkillsConfig):
@@ -36,6 +37,7 @@ class LightCone(item.Item):
         self.valid = None
         self.level = None
         self.stacks = None
+        self.effect_types = effect.EffectTypes(self)
 
         self.set_record(record)
     

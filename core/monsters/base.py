@@ -124,6 +124,8 @@ class Monster(target.Target):
     async def reduce_toughness(self, tr):
         if self is not tr.target:
             return
+        await server.handler.update_client({"name": "reduce_toughness", "dealer": str(tr.dealer.uuid), "target": str(self.uuid),
+            "amount": tr.calculate()})
         self.cur_toughness -= tr.calculate()
 
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "reduce_toughness")
@@ -139,6 +141,7 @@ class Monster(target.Target):
     async def weakness_break(self, tr):
         if self is not tr.target:
             return
+        await server.handler.update_client({"name": "weakness_break", "target": str(self.uuid)})
         self.weakness_broken = True
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

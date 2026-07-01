@@ -90,7 +90,7 @@ class Herta(base.Character):
                 await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
             if self.target.eidolons >= 6:
-                eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["eidolon6"],
+                eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "eidolon6"),
                     self.target.config.get_skill_value("eidolon6", "duration"))
                 await battle.current.event_bus.dispatch("add_effect", eff_add)
     
@@ -115,31 +115,24 @@ class Herta(base.Character):
             async def extra_turn(self, turn):
                 if self is not turn:
                     return
-                await server.handler.update_client({"name": "herta.follow_up", "target": str(self.target.uuid)})
+                await server.handler.update_client({"name": f"{self.target.nameid}.follow_up", "target": str(self.target.uuid)})
                 self.master.dead_toggle = True
                 self.skill.follow_up_launched = False
-                await self.skill.trigger_follow_up()
+                await battle.current.event_bus.dispatch("skill_trigger", self.skill)
 
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
             self.attacks = 0
             self.follow_up_launched = False
 
+            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
             battle.current.event_bus.add_member_listener(self.cur_hp_modify, t)
             battle.current.event_bus.add_member_listener(self.new_wave_start, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-        async def cur_hp_modify(self, t, amount):
-            if not isinstance(t, monster.Monster):
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def skill_trigger(self, skill):
+            if self is not skill:
                 return
-            hp_threshold = t.stats["hp"].calculate() * self.get_value("hp_threshold")
-            if t.cur_hp <= hp_threshold and t.cur_hp - amount > hp_threshold:
-                self.attacks += 1
-                if not self.follow_up_launched:
-                    self.follow_up_launched = True
-                    battle.current.action_list.extras.append(Herta.Talent.FollowUp(self.target, self))
-        
-        async def trigger_follow_up(self):
             await battle.current.event_bus.dispatch("attack_start", self.target)
             i = 0
             while i < self.attacks:
@@ -153,11 +146,22 @@ class Herta(base.Character):
                         dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("eidolon4", "dmg_boost")
                     await battle.current.event_bus.dispatch("hit", dmg)
                 if self.target.eidolons >= 2:
-                    eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["eidolon2"], -1)
+                    eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "eidolon2"), -1)
                     await battle.current.event_bus.dispatch("add_effect", eff_add)
                 i += 1
             await battle.current.event_bus.dispatch("attack_end", self.target)
             self.attacks = 0
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE - 1)
+        async def cur_hp_modify(self, t, amount):
+            if not isinstance(t, monster.Monster):
+                return
+            hp_threshold = t.stats["hp"].calculate() * self.get_value("hp_threshold")
+            if t.cur_hp <= hp_threshold and t.cur_hp - amount > hp_threshold:
+                self.attacks += 1
+                if not self.follow_up_launched:
+                    self.follow_up_launched = True
+                    battle.current.action_list.extras.append(Herta.Talent.FollowUp(self.target, self))
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def new_wave_start(self):
@@ -181,14 +185,14 @@ class Herta(base.Character):
     def set_effect_types(self):
         names = self.config.get_skill_name("eidolon2")
         mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon2", "crt_rate_boost"))))
-        self.effect_types["eidolon2"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT,
-            self.config.get_skill_value("eidolon2", "max_stacks"), "crt_rate", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT,
+            self.config.get_skill_value("eidolon2", "max_stacks"), "crt_rate", mod), "eidolon2")
         
         names = self.config.get_skill_name("eidolon6")
         mod = modifier.Modifier(*names,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon6", "atk_boost"))))
-        self.effect_types["eidolon6"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
-            1, "atk", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
+            1, "atk", mod), "eidolon6")
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):

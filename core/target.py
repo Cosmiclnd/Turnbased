@@ -64,11 +64,10 @@ class Target(item.Item):
         self.cur_hp = 0
         self.death_state = DeathState(self)
         self.effects = effect.EffectList(self)
-        self.effect_types = {}
+        self.effect_types = effect.EffectTypes(self)
         self.initial_state = {}
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
-        battle.current.event_bus.add_member_listener(self.normal_turn_message, self)
         battle.current.event_bus.add_member_listener(self.check_frozen, self)
         battle.current.event_bus.add_member_listener(self.attack_end, self)
         battle.current.event_bus.add_member_listener(self.hit, self)
@@ -117,12 +116,6 @@ class Target(item.Item):
         else:
             self.cur_hp = self.stats["hp"].calculate()
         self.death_state.clear()
-    
-    @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
-    async def normal_turn_message(self, turn):
-        if self is not turn.target:
-            return
-        await server.handler.update_client({"name": "normal_turn_start", "target": str(self.uuid)})
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
     async def check_frozen(self, turn):
@@ -195,6 +188,8 @@ class Target(item.Item):
     async def add_effect(self, eff_add):
         if self is not eff_add.target:
             return
+        await server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
+            "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
         await self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
 
 def lerp(a, b, t):

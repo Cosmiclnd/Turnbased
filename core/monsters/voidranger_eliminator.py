@@ -29,10 +29,10 @@ class VoidrangerEliminator(base.Monster):
             for ratio in (0.33, 0.33, 0.34):
                 dmg.hit_split_ratio = ratio
                 await battle.current.event_bus.dispatch("hit", dmg)
-            eff_add = effect.EffectAddition(self.target, t, self.target.effect_types["detonated"], -1, 3)
+            eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "detonated"), -1, 3)
             await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("attack_end", self.target)
-            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["overloaded"], -1)
+            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "overloaded"), -1)
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Skill2(base.Monster.MonsterSkill):
@@ -44,7 +44,7 @@ class VoidrangerEliminator(base.Monster):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            await self.target.effects.delete(self.target.effect_types["overloaded"])
+            await self.target.effects.delete(self.target.effect_types.get(self.target.nameid, "overloaded"))
     
     class DetonatedEffect(effect.Effect):
         class Instance(effect.Effect.Instance):
@@ -81,12 +81,12 @@ class VoidrangerEliminator(base.Monster):
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.CALCULATED,
                 self.config.get_skill_value("skill1", "additional_percentage"))),
             enums.Element.IMAGINARY, damage.DmgType.ADDITIONAL, damage.DmgSource.MONSTER)
-        self.effect_types["detonated"] = self.DetonatedEffect(dmg_desc)
+        self.effect_types.add_unique(self.DetonatedEffect(dmg_desc))
 
-        self.effect_types["overloaded"] = effect.Effect("overloaded", "Overloaded", effect.Effect.Type.OTHERS,
-            effect.Effect.DurationType.PERMANENT, 1)
+        self.effect_types.add_unique(effect.Effect("overloaded", "Overloaded", effect.Effect.Type.OTHERS,
+            effect.Effect.DurationType.PERMANENT, 1), "overloaded")
     
     def skill_selector(self, group):
-        if self.effects.has_effect(self.effect_types["overloaded"]):
+        if self.effects.has_effect(self.effect_types.get(self.nameid, "overloaded")):
             return group.skills[1]
         return group.skills[0]

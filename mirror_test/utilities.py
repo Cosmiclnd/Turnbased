@@ -49,6 +49,9 @@ class Tester:
         uuid_name = test["uuid"]
         assert message[name] == self.uuids[uuid_name]
     
+    def assert_skill_name(self, test, message):
+        assert message["skill"] == test["name"]
+    
     def assert_damage_types(self, test, message):
         assert message["damage"]["types"] == test["types"]
     
@@ -57,6 +60,12 @@ class Tester:
     
     def assert_damage_amount(self, test, message):
         assert pytest.approx(message["damage"]["amount"], abs=2) == test["amount"]  # TODO: error too high
+    
+    def assert_toughness_amount(self, test, message):
+        assert pytest.approx(message["amount"], abs=1e-6) == test["amount"]
+    
+    def assert_effect_name(self, test, message):
+        assert message["effect"] == test["name"]
     
     def respond_ask_ultimate(self, response):
         response["character"] = self.uuids[response["character"]]

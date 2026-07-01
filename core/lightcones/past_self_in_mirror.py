@@ -19,8 +19,8 @@ class PastSelfInMirror(base.LightCone):
                 modifier.StatDesc((None, None, self.get_value("break_eff_boost"))), None, t)
             t.stats["break_eff"].modifiers.append(mod1)
             mod2 = modifier.Modifier(self.nameid, self.name, modifier.StatDesc((None, None, self.get_value("dmg_boost"))))
-            self.effect = effect.ModifierEffect(self.nameid, self.name, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
-                1, "dmg_boost", mod2)
+            self.effect_types.add_unique(effect.ModifierEffect("effect", self.name, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
+                1, "dmg_boost", mod2), "eff")
             battle.current.event_bus.add_member_listener(self.ultimate_turn, self.target)
             self.init_class()
     
@@ -36,7 +36,7 @@ class PastSelfInMirror(base.LightCone):
         if self.target is not t:
             return
         for c in battle.current.characters:
-            eff_add = effect.EffectAddition(self.target, c, self.effect, self.get_value("duration"))
+            eff_add = effect.EffectAddition(self.target, c, self.effect_types.get(self.nameid, "eff"), self.get_value("duration"))
             await battle.current.event_bus.dispatch("add_effect", eff_add)
         if self.target.stats["break_eff"].calculate() >= self.get_value("break_eff_threshold"):
             battle.current.skillpoints.modify(1)

@@ -41,7 +41,8 @@ class RuanMei(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["overtone"], self.get_value("duration"))
+            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "overtone"),
+                self.get_value("duration"))
             await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
@@ -61,7 +62,7 @@ class RuanMei(base.Character):
             duration = self.get_value("duration")
             if self.target.eidolons >= 6:
                 duration += self.target.config.get_skill_value("eidolon6", "duration")
-            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["zone"], duration)
+            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "zone"), duration)
             await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
         
@@ -69,8 +70,9 @@ class RuanMei(base.Character):
         async def hit(self, dmg):
             if not isinstance(dmg.target, monster.Monster):
                 return
-            if self.target.effects.has_effect(self.target.effect_types["zone"]) and dmg.target.weakness_broken:
-                eff_add = effect.EffectAddition(self.target, dmg.target, self.target.effect_types["thanatoplum_rebloom"], -1)
+            if self.target.effects.has_effect(self.target.effect_types.get(self.target.nameid, "zone")) and dmg.target.weakness_broken:
+                eff_add = effect.EffectAddition(self.target, dmg.target, self.target.effect_types.get(self.target.nameid, "thanatoplum_rebloom"),
+                    -1)
                 await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Talent(base.Character.CharacterSkill):
@@ -189,19 +191,21 @@ class RuanMei(base.Character):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types["overtone"] = self.OvertoneEffect()
-        self.effect_types["zone"] = self.ZoneEffect()
-        self.effect_types["thanatoplum_rebloom"] = self.ThanatoplumRebloomEffect(self)
+        self.effect_types.add_unique(self.OvertoneEffect())
+        self.effect_types.add_unique(self.ZoneEffect())
+        self.effect_types.add_unique(self.ThanatoplumRebloomEffect(self))
 
         names = self.config.get_skill_name("talent")
         mod = modifier.Modifier(*names,
             modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, self.get_current_skill("talent").get_value("spd_boost"))))
-        self.effect_types["talent"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT, 1, "spd", mod),
+            "talent")
 
         names = self.config.get_skill_name("eidolon4")
         mod = modifier.Modifier(*names,
             modifier.StatDesc((None, None, self.config.get_skill_value("eidolon4", "break_eff_boost"))))
-        self.effect_types["eidolon4"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1, "break_eff", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END, 1,
+            "break_eff", mod), "eidolon4")
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
@@ -209,7 +213,7 @@ class RuanMei(base.Character):
 
         for c in battle.current.characters:
             if self is not c:
-                eff_add = effect.EffectAddition(self, c, self.effect_types["talent"], -1)
+                eff_add = effect.EffectAddition(self, c, self.effect_types.get(self.nameid, "talent"), -1)
                 await battle.current.event_bus.dispatch("add_effect", eff_add)
 
         if self.traces_unlocked[0]:

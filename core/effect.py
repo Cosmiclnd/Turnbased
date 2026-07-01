@@ -60,10 +60,14 @@ class Effect(item.Item):
         # max_stacks=0表示无限制
         self.max_stacks = max_stacks
         self.dispellable = dispellable
+        self.group_name = None
     
     def print(self, indent=0):
         print(" " * indent + f"{self.name} ({self.nameid}) "
             f"<type={self.type.name}, duration_type={self.duration_type.name}, max_stacks={self.max_stacks}, dispellable={self.dispellable}>")
+    
+    def full_name(self):
+        return f"{self.group_name}.{self.nameid}" if self.group_name is not None else self.nameid
     
     def new_instance(self, t):
         return self.Instance(self, t)
@@ -160,6 +164,32 @@ class DotEffect(Effect):
     
     def is_debuff_type(self, type):
         return type is self.debuff_type
+
+class EffectTypes:
+    def __init__(self, t=None):
+        self.target = t
+        self.groups = {}
+    
+    def add(self, group_name, eff, alias=None):
+        if group_name not in self.groups:
+            self.groups[group_name] = {}
+        if alias is not None:
+            self.groups[group_name][alias] = eff
+        else:
+            self.groups[group_name][eff.nameid] = eff
+        eff.group_name = group_name
+    
+    def add_unique(self, eff, alias=None):
+        self.add(self.target.nameid, eff, alias)
+    
+    def get(self, group_name, nameid):
+        master = self.target.__class__
+        if hasattr(master, "effect_types"):
+            try:
+                return master.effect_types.groups[group_name][nameid]
+            except KeyError:
+                pass
+        return self.groups[group_name][nameid]
 
 class EffectList:
     def __init__(self, t):

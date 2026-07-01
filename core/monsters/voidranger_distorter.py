@@ -24,7 +24,7 @@ class VoidrangerDistorter(base.Monster):
             if self is not skill:
                 return
             t = await battle.current.event_bus.query("get_monster_target", self.target)
-            eff_add = effect.EffectAddition(self.target, t, self.target.effect_types["lock_on"], -1)
+            eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "lock_on"), -1)
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Skill2(base.Monster.MonsterSkill):
@@ -85,7 +85,7 @@ class VoidrangerDistorter(base.Monster):
         self.set_effect_types()
     
     def set_effect_types(self):
-        self.effect_types["lock_on"] = self.LockOnEffect(self)
+        self.effect_types.add_unique(self.LockOnEffect(self))
     
     def skill_selector(self, group):
         if len(battle.current.characters) == 0:
@@ -98,10 +98,10 @@ class VoidrangerDistorter(base.Monster):
     async def reset_lock_on(self, t):
         if self is not t or self.has_lock_on is None or self is not self.has_lock_on[0]:
             return
-        await self.has_lock_on[1].effects.delete(self.effect_types["lock_on"])
+        await self.has_lock_on[1].effects.delete(self.effect_types.get(self.nameid, "lock_on"))
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "die")
     async def check_lock_on(self, t):
         if self is not t or self.has_lock_on is None or self is not self.has_lock_on[0]:
             return
-        await self.has_lock_on[1].effects.delete(self.effect_types["lock_on"])
+        await self.has_lock_on[1].effects.delete(self.effect_types.get(self.nameid, "lock_on"))

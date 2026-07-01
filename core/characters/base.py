@@ -249,7 +249,7 @@ class Character(target.Target):
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             enums.Element.ICE, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
-        self.effect_types["break.frozen"] = effect.FrozenEffect(dmg_desc)
+        self.effect_types.add("break", effect.FrozenEffect(dmg_desc))
     
     def get_skills_info(self):
         result = {"basic_atk": [], "skill": [], "ultimate": [], "talent": [], "trace": [], "eidolon": []}
@@ -348,7 +348,7 @@ class Character(target.Target):
         await battle.current.event_bus.dispatch("additional_damage", dmg)
         action.NormalTurn.delay_target(tr.target, 0.25)
         if self.element is enums.Element.ICE:
-            eff_add = effect.EffectAddition(self, tr.target, self.effect_types["break.frozen"], 1)
+            eff_add = effect.EffectAddition(self, tr.target, self.effect_types.get("break", "frozen"), 1)
             await self.try_apply_debuff(eff_add, 1.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

@@ -17,8 +17,8 @@ class ForgeOfTheKalpagniLantern(base.RelicSet):
                 t.stats["spd"].modifiers.append(mod1)
                 mod2 = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                     modifier.StatDesc((None, None, relic_set.config.get_skill_value("2pc", "break_eff_boost"))))
-                self.effect = effect.ModifierEffect(self.relic_set.nameid, self.relic_set.name, effect.Effect.Type.BUFF,
-                    effect.Effect.DurationType.TURN_END_CHECK_START, 1, "break_eff", mod2)
+                self.effect_types.add_unique(effect.ModifierEffect("2pc_effect", self.relic_set.name, effect.Effect.Type.BUFF,
+                    effect.Effect.DurationType.TURN_END_CHECK_START, 1, "break_eff", mod2), "2pc")
                 battle.current.event_bus.add_member_listener(self.hit, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE + 1)
@@ -26,7 +26,8 @@ class ForgeOfTheKalpagniLantern(base.RelicSet):
             if self.target is not dmg.dealer:
                 return
             if dmg.target.has_weakness(enums.Element.FIRE):
-                eff_add = effect.EffectAddition(self.target, self.target, self.effect, self.relic_set.config.get_skill_value("2pc", "duration"))
+                eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.relic_set.nameid, "2pc"),
+                    self.relic_set.config.get_skill_value("2pc", "duration"))
                 await battle.current.event_bus.dispatch("add_effect", eff_add)
 
     def __init__(self):

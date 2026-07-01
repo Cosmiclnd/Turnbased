@@ -201,6 +201,24 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "skill_trigger"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_skill_name",
+                    "name": "one_time_offer"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -246,6 +264,29 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "baryon"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 3
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -284,6 +325,29 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 2015
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "baryon"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 7
                 }
             ]
         },
@@ -322,6 +386,43 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "baryon"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "break.frozen"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "weakness_break"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "baryon"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -367,6 +468,29 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 3
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -405,6 +529,29 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 2015
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 7
                 }
             ]
         },
@@ -450,6 +597,29 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 1703
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 3
                 }
             ]
         },
@@ -502,6 +672,29 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 7
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "ultimate"
                 }
@@ -518,6 +711,24 @@
                     "$type": "assert_target",
                     "name": "target",
                     "uuid": "herta"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "skill_trigger"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_skill_name",
+                    "name": "fine_i_ll_do_it_myself"
                 }
             ]
         },
@@ -570,6 +781,29 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "baryon"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -615,6 +849,29 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -653,6 +910,52 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 1331
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "herta.keep_the_ball_rolling"
                 }
             ]
         },
@@ -706,6 +1009,24 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "skill_trigger"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_skill_name",
+                    "name": "void_cannon"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_monster_target"
                 }
@@ -794,6 +1115,52 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 199
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "voidranger_eliminator.detonated"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "voidranger_eliminator.overloaded"
                 }
             ]
         },
@@ -833,6 +1200,24 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "skill_trigger"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_skill_name",
+                    "name": "void_cannon"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_monster_target"
                 }
@@ -1002,6 +1387,52 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 109
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "voidranger_eliminator.detonated"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "voidranger_eliminator.overloaded"
                 }
             ]
         },
@@ -1069,6 +1500,47 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "hunter_of_glacial_forest.4pc_effect"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "skill_trigger"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_skill_name",
+                    "name": "its_magic_i_added_some_magic"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -1115,6 +1587,29 @@
                 {
                     "$type": "assert_message_name",
                     "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 20
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
                     "name": "damage"
                 },
                 {
@@ -1138,6 +1633,43 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 2721
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "break.frozen"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "weakness_break"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
                 }
             ]
         },
@@ -1191,6 +1723,29 @@
                 {
                     "$type": "assert_message_name",
                     "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 20
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
                     "name": "damage"
                 },
                 {
@@ -1214,6 +1769,66 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 2721
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "break.frozen"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "weakness_break"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "herta.no_one_can_betray_me"
                 }
             ]
         },
@@ -1244,89 +1859,17 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
                     "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
+                    "name": "skill_trigger"
                 },
                 {
                     "$type": "assert_target",
                     "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 4332
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
                     "uuid": "herta"
                 },
                 {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1948
+                    "$type": "assert_skill_name",
+                    "name": "fine_i_ll_do_it_myself"
                 }
             ]
         },
@@ -1379,6 +1922,29 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -1417,6 +1983,211 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 1948
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "herta.keep_the_ball_rolling"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "ask",
+                    "name": "random_rate"
+                }
+            ],
+            "response": {
+                "type": "ask",
+                "name": "random_rate",
+                "result": true
+            }
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "damage"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_damage_types",
+                    "types": ["normal"]
+                },
+                {
+                    "$type": "assert_damage_crit",
+                    "crit": true
+                },
+                {
+                    "$type": "assert_damage_amount",
+                    "amount": 4332
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator1"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "ask",
+                    "name": "random_rate"
+                }
+            ],
+            "response": {
+                "type": "ask",
+                "name": "random_rate",
+                "result": false
+            }
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "damage"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_damage_types",
+                    "types": ["normal"]
+                },
+                {
+                    "$type": "assert_damage_crit",
+                    "crit": false
+                },
+                {
+                    "$type": "assert_damage_amount",
+                    "amount": 1948
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 5
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "add_effect"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "adder",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_effect_name",
+                    "name": "herta.keep_the_ball_rolling"
                 }
             ]
         },
@@ -1467,6 +2238,24 @@
             "tests": [
                 {
                     "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "skill_trigger"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_skill_name",
+                    "name": "what_are_you_looking_at"
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
                     "type": "ask",
                     "name": "random_rate"
                 }
@@ -1505,6 +2294,29 @@
                 {
                     "$type": "assert_damage_amount",
                     "amount": 2655
+                }
+            ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "update",
+                    "name": "reduce_toughness"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "dealer",
+                    "uuid": "herta"
+                },
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": "voidranger_eliminator2"
+                },
+                {
+                    "$type": "assert_toughness_amount",
+                    "amount": 10
                 }
             ]
         },

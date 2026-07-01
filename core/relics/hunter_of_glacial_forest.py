@@ -17,15 +17,16 @@ class HunterOfGlacialForest(base.RelicSet):
             if self.pieces >= 4:
                 mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                     modifier.StatDesc((None, None, relic_set.config.get_skill_value("4pc", "crt_dmg_boost"))))
-                self.effect = effect.ModifierEffect(self.relic_set.nameid, self.relic_set.name, effect.Effect.Type.BUFF,
-                    effect.Effect.DurationType.TURN_END, 1, "crt_dmg", mod)
+                self.effect_types.add_unique(effect.ModifierEffect("4pc_effect", self.relic_set.name, effect.Effect.Type.BUFF,
+                    effect.Effect.DurationType.TURN_END, 1, "crt_dmg", mod), "4pc")
                 battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE + 1)
         async def skill_group_trigger(self, skill_group):
             if self.target.skills["ultimate"] is not skill_group:
                 return
-            eff_add = effect.EffectAddition(self.target, self.target, self.effect, self.relic_set.config.get_skill_value("4pc", "duration"))
+            eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.relic_set.nameid, "4pc"),
+                self.relic_set.config.get_skill_value("4pc", "duration"))
             await battle.current.event_bus.dispatch("add_effect", eff_add)
 
     def __init__(self):

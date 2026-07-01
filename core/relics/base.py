@@ -2,6 +2,7 @@ import item
 import enums
 import modifier
 import config
+import effect
 
 class RelicType(enums.Enum):
     HEAD = item.Item("head", "Head")
@@ -162,6 +163,7 @@ class RelicSet(item.Item):
             self.target = t
             self.relic_set = relic_set
             self.pieces = pieces
+            self.effect_types = effect.EffectTypes(relic_set)
     
     def __init__(self, nameid):
         self.config = self.RelicSetConfig(config.load_config_data("relics", nameid), self)

@@ -79,6 +79,8 @@ class Battle:
 
         self.event_bus.add_member_listener(self.battle_start, nameid="battle", name="Battle")
         self.event_bus.add_member_listener(self.add_monster, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener(self.normal_turn_start_message, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener(self.skill_trigger_message, nameid="battle", name="Battle")
     
     def refresh(self):
         self.characters.refresh()
@@ -115,5 +117,13 @@ class Battle:
         turn = m.new_normal_turn()
         self.action_list.normals.append(turn)
         turn.advance(1 - m.first_turn_delay)
+    
+    @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
+    async def normal_turn_start_message(self, turn):
+        await server.handler.update_client({"name": "normal_turn_start", "target": str(turn.target.uuid)})
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE + 2, "skill_trigger")
+    async def skill_trigger_message(self, skill):
+        await server.handler.update_client({"name": "skill_trigger", "target": str(skill.target.uuid), "skill": skill.nameid})
 
 current = None

@@ -26,7 +26,7 @@ class BlazeOutOfSpace(base.Monster):
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             await battle.current.event_bus.dispatch("hit", dmg)
-            eff_add = effect.EffectAddition(self.target, t, self.target.effect_types["enkindle"],
+            eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "enkindle"),
                 self.target.config.get_skill_value("talent", "duration"))
             await self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
             await battle.current.event_bus.dispatch("attack_end", self.target)
@@ -40,7 +40,8 @@ class BlazeOutOfSpace(base.Monster):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["spontaneous_combustion"], -1)
+            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "spontaneous_combustion"),
+                -1)
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Skill3(base.Monster.MonsterSkill):
@@ -61,7 +62,7 @@ class BlazeOutOfSpace(base.Monster):
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
                 await battle.current.event_bus.dispatch("hit", dmg)
-                eff_add = effect.EffectAddition(self.target, t, self.target.effect_types["enkindle"],
+                eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "enkindle"),
                     self.target.config.get_skill_value("talent", "duration"))
                 await self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
             await battle.current.event_bus.dispatch("attack_end", self.target)
@@ -75,7 +76,8 @@ class BlazeOutOfSpace(base.Monster):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types["atk_boost"], self.get_value("duration"))
+            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "atk_boost"),
+                self.get_value("duration"))
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class NormalTurn(action.NormalTurn):
@@ -96,16 +98,16 @@ class BlazeOutOfSpace(base.Monster):
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.CALCULATED, self.config.get_skill_value("talent", "percentage"))),
             enums.Element.FIRE, damage.DmgType.DOT, damage.DmgSource.MONSTER)
-        self.effect_types["enkindle"] = effect.DotEffect("enkindle", "Enkindle", dmg_desc, effect.Debuff.BURN, 0)
+        self.effect_types.add_unique(effect.DotEffect("enkindle", "Enkindle", dmg_desc, effect.Debuff.BURN, 0))
 
-        self.effect_types["spontaneous_combustion"] = effect.Effect("spontaneous_combustion", "Spontaneous Combustion",
-            effect.Effect.Type.OTHERS, effect.Effect.DurationType.PERMANENT, 1, False)
-        
+        self.effect_types.add_unique(effect.Effect("spontaneous_combustion", "Spontaneous Combustion",
+            effect.Effect.Type.OTHERS, effect.Effect.DurationType.PERMANENT, 1, False))
+
         names = self.config.get_skill_name("skill4")
         mod = modifier.Modifier(*names,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("skill4", "atk_boost"))))
-        self.effect_types["atk_boost"] = effect.ModifierEffect(*names, effect.Effect.Type.BUFF,
-            effect.Effect.DurationType.TURN_END_CHECK_START, self.config.get_skill_value("skill4", "max_stacks"), "atk", mod)
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF,
+            effect.Effect.DurationType.TURN_END_CHECK_START, self.config.get_skill_value("skill4", "max_stacks"), "atk", mod), "atk_boost")
     
     def new_normal_turn(self):
         return self.NormalTurn(self)
