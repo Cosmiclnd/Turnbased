@@ -50,14 +50,10 @@ class Monster(target.Target):
             for stat, value in self.base_stat_flats.items():
                 self.target.stats[stat].base_value += value
     
-        @classmethod
-        def get_base_stat(cls, name, level, moc):
+        def get_base_stat(self, name, level, moc):
             if name == "def":
                 return 200 + min(level, 100) * 10
-            if not hasattr(cls, "level_curve"):
-                with open("core/config/monsters/level_curve.json", "r") as f:
-                    cls.level_curve = json.load(f)
-            curve = cls.level_curve["3" if moc else "1"]
+            curve = config.load_config_data("monsters", "level_curve")["3" if moc else "1"]
             return curve[name][level - 1]
 
     class MonsterSkill(skill.Skill):

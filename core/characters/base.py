@@ -55,12 +55,8 @@ class Character(target.Target):
                     mod = modifier.Modifier(stat["nameid"], stat["name"], stat_desc, None, self.target)
                     self.target.stats[stat["stat_name"]].modifiers.append(mod)
     
-        @classmethod
-        def get_base_stat(cls, name, level):
-            if not hasattr(cls, "level_curve"):
-                with open("core/config/characters/level_curve.json", "r") as f:
-                    cls.level_curve = json.load(f)
-            return cls.level_curve[name][level - 1]
+        def get_base_stat(self, name, level):
+            return config.load_config_data("characters", "level_curve")[name][level - 1]
 
     class UltimateTurn(action.ExtraTurn):
         def __init__(self, t):
