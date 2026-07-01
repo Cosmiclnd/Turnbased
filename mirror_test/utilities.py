@@ -47,7 +47,7 @@ class Tester:
     def assert_target(self, test, message):
         name = test["name"]
         uuid_name = test["uuid"]
-        assert message[name]["uuid"] == self.uuids[uuid_name]
+        assert message[name] == self.uuids[uuid_name]
     
     def assert_damage_types(self, test, message):
         assert message["damage"]["types"] == test["types"]

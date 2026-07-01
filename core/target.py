@@ -82,9 +82,6 @@ class Target(item.Item):
     def dead(self):
         return self.death_state.need_clean
     
-    def get_info(self):
-        return {"uuid": str(self.uuid)}
-    
     def new_normal_turn(self):
         return action.NormalTurn(self)
     
@@ -125,7 +122,7 @@ class Target(item.Item):
     async def normal_turn_message(self, turn):
         if self is not turn.target:
             return
-        await server.handler.update_client({"name": "normal_turn_start", "target": self.get_info()})
+        await server.handler.update_client({"name": "normal_turn_start", "target": str(self.uuid)})
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
     async def check_frozen(self, turn):
@@ -160,7 +157,7 @@ class Target(item.Item):
         if self is not damage.target:
             return
         dmg = await damage.calculate()
-        await server.handler.update_client({"name": "damage", "dealer": damage.dealer.get_info(), "target": self.get_info(),
+        await server.handler.update_client({"name": "damage", "dealer": str(damage.dealer.uuid), "target": str(self.uuid),
             "damage": damage.get_info()})
         await battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
         if self.cur_hp <= 0 and self.death_state.alive:
@@ -181,7 +178,7 @@ class Target(item.Item):
         if self is not t:
             return
         if not self.death_state.alive:
-            await server.handler.update_client({"name": "die", "target": self.get_info()})
+            await server.handler.update_client({"name": "die", "target": str(self.uuid)})
             self.death_state.need_clean = True
             await self.effects.die()
             battle.current.refresh()
@@ -191,7 +188,7 @@ class Target(item.Item):
         if self is not heal.target:
             return
         amount = heal.calculate()
-        await server.handler.update_client({"name": "heal", "healer": heal.healer.get_info(), "target": self.get_info(), "amount": amount})
+        await server.handler.update_client({"name": "heal", "healer": str(heal.healer.uuid), "target": str(self.uuid), "amount": amount})
         await battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

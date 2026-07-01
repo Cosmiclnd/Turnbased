@@ -335,7 +335,7 @@ class Character(target.Target):
             return
         if not self.can_act():
             return
-        await server.handler.ask_client({"name": "character_skill_option", "target": self.get_info()}, self.character_skill_option_handler)
+        await server.handler.ask_client({"name": "character_skill_option", "target": str(self.uuid)}, self.character_skill_option_handler)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
@@ -374,5 +374,5 @@ class Character(target.Target):
     async def ultimate_turn(self, turn):
         if self is not turn.target:
             return
-        await server.handler.update_client({"name": "ultimate_turn", "target": self.get_info()})
+        await server.handler.update_client({"name": "ultimate_turn", "target": str(self.uuid)})
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])

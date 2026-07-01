@@ -115,7 +115,7 @@ class Herta(base.Character):
             async def extra_turn(self, turn):
                 if self is not turn:
                     return
-                await server.handler.update_client({"name": "herta.follow_up", "target": self.target.get_info()})
+                await server.handler.update_client({"name": "herta.follow_up", "target": str(self.target.uuid)})
                 self.master.dead_toggle = True
                 self.skill.follow_up_launched = False
                 await self.skill.trigger_follow_up()
