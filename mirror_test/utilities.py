@@ -18,8 +18,9 @@ async def start(name):
         await send_message(websocket, {"type": "setup_monsters", "record": data["monsters"]})
         for record in data["characters"]:
             await send_message(websocket, {"type": "add_character", "record": record})
-        for uuid, state in data["initial_state"].items():
-            await send_message(websocket, {"type": "set_initial_state", "target": uuid, "state": state})
+        uuids = data["uuids"]
+        for name, state in data["initial_state"].items():
+            await send_message(websocket, {"type": "set_initial_state", "target": uuids[name], "state": state})
         await send_message(websocket, {"type": "setup_random", "config": {"use_random": False}})
         await send_message(websocket, {"type": "start_battle"})
         await main(websocket, data)
@@ -31,6 +32,13 @@ class Tester:
     def test(self, type, test, message):
         method = getattr(self, type)
         method(test, message)
+    
+    def respond(self, response):
+        name = f"respond_{response['type']}_{response['name']}"
+        if hasattr(self, name):
+            return getattr(self, name)(response)
+        else:
+            return response
     
     def assert_message_name(self, test, message):
         assert message["type"] == test["type"]
@@ -49,6 +57,21 @@ class Tester:
     
     def assert_damage_amount(self, test, message):
         assert pytest.approx(message["damage"]["amount"], abs=2) == test["amount"]  # TODO: error too high
+    
+    def respond_ask_ultimate(self, response):
+        response["character"] = self.uuids[response["character"]]
+        if "target" in response:
+            response["target"] = self.uuids[response["target"]]
+        return response
+    
+    def respond_ask_character_skill_option(self, response):
+        if "target" in response:
+            response["target"] = self.uuids[response["target"]]
+        return response
+    
+    def respond_ask_random_monster_target(self, response):
+        response["result"] = self.uuids[response["result"]]
+        return response
 
 async def main(websocket, data):
     tester = Tester(data["uuids"])
@@ -58,4 +81,7 @@ async def main(websocket, data):
         for test in step["tests"]:
             type = test["$type"]
             tester.test(type, test, message)
-        await send_message(websocket, step["response"])
+        if "response" in step:
+            await send_message(websocket, tester.respond(step["response"]))
+        else:
+            await send_message(websocket, {"type": "empty"})
