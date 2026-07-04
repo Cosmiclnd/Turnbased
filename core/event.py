@@ -40,8 +40,12 @@ class EventBus:
             self.listeners[event_name] = item.ItemList()
         self.listeners[event_name].append(listener)
     
-    def add_member_listener(self, member_func, master=None, nameid=None, name=None):
+    def add_member_listener(self, member_func, master=None, nameid=None, name=None, unique=False):
         # member_func必须是被@member_listener装饰的成员函数
+        if unique:
+            for listener in self.listeners[member_func.name]:
+                if listener.callback.__func__ is member_func.__func__:
+                    return
         nameid = nameid or master.nameid
         name = name or master.name
         self.add_listener(member_func.name, Listener(nameid, name, member_func, master, member_func.priority))

@@ -71,6 +71,7 @@ class NormalTurn(item.Item):
 
 class ExtraTurn(item.Item):
     class Priority:
+        NORMAL = 0
         ULTIMATE = 0
         FOLLOW_UP = 1
 
@@ -142,6 +143,7 @@ class ActionList:
     
     async def next_normal_turn(self):
         await self.refresh_targets()
+        await self.check_extra_turns()
         current = self.normals[0]
         delta = current.action_value
         for turn in self.normals:

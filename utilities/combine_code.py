@@ -24,4 +24,4 @@ def combine(dir, output_filename, ext):
         f.write(output)
 
 combine("core", "utilities\\output\\combined_code.py", ".py")
-combine("core", "utilities\\output\\combined_config.txt", ".json")
+combine("config", "utilities\\output\\combined_config.txt", ".json")

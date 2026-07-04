@@ -67,7 +67,7 @@ class Target(item.Item):
         self.effect_types = effect.EffectTypes(self)
         self.initial_state = {}
 
-        battle.current.event_bus.add_member_listener(self.battle_start, self)
+        battle.current.event_bus.add_member_listener(self.set_initial_state, self)
         battle.current.event_bus.add_member_listener(self.check_frozen, self)
         battle.current.event_bus.add_member_listener(self.attack_end, self)
         battle.current.event_bus.add_member_listener(self.hit, self)
@@ -75,6 +75,7 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.receive_damage, self)
         battle.current.event_bus.add_member_listener(self.cur_hp_modify, self)
         battle.current.event_bus.add_member_listener(self.die, self)
+        battle.current.event_bus.add_member_listener(self.clean, self)
         battle.current.event_bus.add_member_listener(self.receive_heal, self)
         battle.current.event_bus.add_member_listener(self.add_effect, self)
     
@@ -91,6 +92,17 @@ class Target(item.Item):
             return False
         return True
     
+    def add_modifier_hp(self, mod):
+        # 生命上限变化同时改变生命值
+        # 如不需要生命值变化的逻辑则不需要调用此方法
+        old_hp = self.stats["hp"].calculate()
+        self.stats["hp"].modifiers.append(mod)
+        new_hp = self.stats["hp"].calculate()
+        if new_hp > old_hp:
+            self.cur_hp *= new_hp / old_hp
+        elif new_hp < old_hp:
+            self.cur_hp = min(self.cur_hp, new_hp)
+    
     async def check_death(self):
         if not self.death_state.alive:
             await battle.current.event_bus.dispatch("die", self)
@@ -101,14 +113,14 @@ class Target(item.Item):
         chance *= max(1 - eff_add.target.stats["eff_res"].calculate(effect=eff_add.effect), 0)
         debuff_res = 0
         for debuff in effect.Debuff.ALL:
-            debuff_res += eff_add.target.stats[f"{debuff.nameid}_res"].calculate(effect=eff_add.effect)
+            if eff_add.effect.is_debuff_type(debuff):
+                debuff_res += eff_add.target.stats[f"{debuff.nameid}_res"].calculate(effect=eff_add.effect)
         chance *= max(1 - debuff_res, 0)
-        import random  # TODO: battle.current.random
-        if random.random() < chance:
+        if await battle.current.random.rate(chance):
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def battle_start(self):
+    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    async def set_initial_state(self):
         if "cur_hp" in self.initial_state:
             self.cur_hp = self.initial_state["cur_hp"]
         elif "cur_hp_rate" in self.initial_state:
@@ -172,9 +184,15 @@ class Target(item.Item):
             return
         if not self.death_state.alive:
             await server.handler.update_client({"name": "die", "target": str(self.uuid)})
-            self.death_state.need_clean = True
-            await self.effects.die()
-            battle.current.refresh()
+            await battle.current.event_bus.dispatch("clean", self)
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def clean(self, t):
+        if self is not t:
+            return
+        self.death_state.need_clean = True
+        await self.effects.die()
+        battle.current.refresh()
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "heal")
     async def receive_heal(self, heal):

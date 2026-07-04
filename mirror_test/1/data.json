@@ -141,10 +141,10 @@
     },
     "initial_state": {
         "herta": {
-            "cur_hp_rate": 1,
             "cur_energy": 60
         }
     },
+    "techniques": [],
     "process": [
         {
             "tests": [
@@ -373,14 +373,24 @@
                     "types": ["break"]
                 },
                 {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
                     "$type": "assert_damage_amount",
                     "amount": 1633
                 }
             ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "ask",
+                    "name": "random_rate"
+                }
+            ],
+            "response": {
+                "type": "ask",
+                "name": "random_rate",
+                "result": true
+            }
         },
         {
             "tests": [
@@ -705,7 +715,7 @@
                 {
                     "$type": "assert_message_name",
                     "type": "update",
-                    "name": "herta.follow_up"
+                    "name": "herta.follow_up_turn"
                 },
                 {
                     "$type": "assert_target",
@@ -1627,14 +1637,24 @@
                     "types": ["break"]
                 },
                 {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
                     "$type": "assert_damage_amount",
                     "amount": 2721
                 }
             ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "ask",
+                    "name": "random_rate"
+                }
+            ],
+            "response": {
+                "type": "ask",
+                "name": "random_rate",
+                "result": true
+            }
         },
         {
             "tests": [
@@ -1763,14 +1783,24 @@
                     "types": ["break"]
                 },
                 {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
                     "$type": "assert_damage_amount",
                     "amount": 2721
                 }
             ]
+        },
+        {
+            "tests": [
+                {
+                    "$type": "assert_message_name",
+                    "type": "ask",
+                    "name": "random_rate"
+                }
+            ],
+            "response": {
+                "type": "ask",
+                "name": "random_rate",
+                "result": true
+            }
         },
         {
             "tests": [
@@ -1846,7 +1876,7 @@
                 {
                     "$type": "assert_message_name",
                     "type": "update",
-                    "name": "herta.follow_up"
+                    "name": "herta.follow_up_turn"
                 },
                 {
                     "$type": "assert_target",

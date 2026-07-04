@@ -1,0 +1,107 @@
+new_wave
+
+add_effect huohuo huohuo huohuo.divine_provision
+add_effect huohuo herta huohuo.anchored_to_vessel_specters_nestled
+add_effect huohuo huohuo huohuo.anchored_to_vessel_specters_nestled
+add_effect huohuo ruan_mei huohuo.anchored_to_vessel_specters_nestled
+add_effect ruan_mei herta ruan_mei.somatotypical_helix
+add_effect ruan_mei huohuo ruan_mei.somatotypical_helix
+
+skill_trigger huohuo fiend_impeachment_of_evil
+ask random_rate true
+add_effect huohuo baryon1 huohuo.fiend_impeachment_of_evil
+ask random_rate true
+add_effect huohuo voidranger_eliminator huohuo.fiend_impeachment_of_evil
+ask random_rate true
+add_effect huohuo voidranger_distorter huohuo.fiend_impeachment_of_evil
+
+skill_trigger ruan_mei silken_serenade
+extra_turn ruan_mei.technique_turn ruan_mei
+skill_trigger ruan_mei string_sings_slow_swirls
+add_effect ruan_mei ruan_mei ruan_mei.overtone
+ask ultimate
+
+normal_turn_start ruan_mei
+add_effect huohuo ruan_mei huohuo.woven_together_cohere_forever
+add_effect huohuo ruan_mei night_of_fright.effect
+heal huohuo ruan_mei 814
+add_effect huohuo herta huohuo.woven_together_cohere_forever
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 814
+ask ultimate
+ask character_skill_option basic_atk baryon1
+skill_trigger ruan_mei threading_fragrance
+character_damage ruan_mei baryon1 normal 2303 false 15
+character_damage ruan_mei baryon1 break 3987
+ask random_rate true
+add_effect ruan_mei baryon1 break.frozen
+weakness_break baryon1
+character_damage ruan_mei baryon1 break 5317
+ask ultimate
+
+extra_turn herta.follow_up_turn herta
+skill_trigger herta fine_i_ll_do_it_myself
+character_damage herta baryon1 normal 1429 false 7.5
+character_damage herta voidranger_eliminator normal 2529 true 7.5
+character_damage herta voidranger_distorter normal 2023 true
+add_effect herta herta herta.keep_the_ball_rolling
+die baryon1
+ask ultimate ruan_mei
+ask ultimate
+
+add_effect ruan_mei herta messenger_traversing_hakerspace.4pc_effect
+add_effect ruan_mei huohuo messenger_traversing_hakerspace.4pc_effect
+add_effect ruan_mei ruan_mei messenger_traversing_hakerspace.4pc_effect
+add_effect huohuo ruan_mei huohuo.woven_together_cohere_forever
+add_effect huohuo ruan_mei night_of_fright.effect
+heal huohuo ruan_mei 814
+add_effect huohuo herta huohuo.woven_together_cohere_forever
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 814
+add_effect huohuo ruan_mei night_of_fright.effect
+heal huohuo ruan_mei 544
+extra_turn ultimate_turn ruan_mei
+skill_trigger ruan_mei petals_to_stream_repose_in_dream
+add_effect ruan_mei ruan_mei ruan_mei.zone
+add_effect ruan_mei herta past_self_in_mirror.effect
+add_effect ruan_mei huohuo past_self_in_mirror.effect
+add_effect ruan_mei ruan_mei past_self_in_mirror.effect
+ask ultimate
+
+normal_turn_start voidranger_distorter
+ask ultimate
+skill_trigger voidranger_distorter nihilitys_command
+ask random_monster_target huohuo
+add_effect voidranger_distorter huohuo voidranger_distorter.lock_on
+ask ultimate
+
+normal_turn_start herta
+add_effect huohuo herta huohuo.woven_together_cohere_forever
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 814
+add_effect huohuo herta huohuo.woven_together_cohere_forever
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 814
+ask ultimate
+ask character_skill_option skill
+skill_trigger herta one_time_offer
+character_damage herta voidranger_eliminator normal 2508 true 4.5
+character_damage herta voidranger_eliminator normal 5852 true 10.5
+character_damage herta voidranger_distorter normal 2106 true
+character_damage herta voidranger_distorter normal 4915 true
+ask ultimate herta
+ask ultimate
+
+add_effect huohuo herta huohuo.woven_together_cohere_forever
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 814
+add_effect huohuo herta huohuo.woven_together_cohere_forever
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 814
+add_effect huohuo herta night_of_fright.effect
+heal huohuo herta 467
+add_effect herta herta hunter_of_glacial_forest.4pc_effect
+extra_turn ultimate_turn herta
+skill_trigger herta its_magic_i_added_some_magic
+character_damage herta voidranger_eliminator normal 16972 true 30
+#character_damage herta voidranger_distorter normal 14256 true

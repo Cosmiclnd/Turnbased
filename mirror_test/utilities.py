@@ -21,6 +21,8 @@ async def start(name):
         uuids = data["uuids"]
         for name, state in data["initial_state"].items():
             await send_message(websocket, {"type": "set_initial_state", "target": uuids[name], "state": state})
+        for name in data["techniques"]:
+            await send_message(websocket, {"type": "use_technique", "target": uuids[name]})
         await send_message(websocket, {"type": "setup_random", "config": {"use_random": False}})
         await send_message(websocket, {"type": "start_battle"})
         await main(websocket, data)
@@ -40,10 +42,6 @@ class Tester:
         else:
             return response
     
-    def assert_message_name(self, test, message):
-        assert message["type"] == test["type"]
-        assert message["name"] == test["name"]
-    
     def assert_target(self, test, message):
         name = test["name"]
         uuid_name = test["uuid"]
@@ -59,10 +57,13 @@ class Tester:
         assert message["damage"]["crit"] == test["crit"]
     
     def assert_damage_amount(self, test, message):
-        assert pytest.approx(message["damage"]["amount"], abs=2) == test["amount"]  # TODO: error too high
+        assert pytest.approx(message["damage"]["amount"], abs=1) == test["amount"]
     
     def assert_toughness_amount(self, test, message):
         assert pytest.approx(message["amount"], abs=1e-6) == test["amount"]
+    
+    def assert_heal_amount(self, test, message):
+        assert pytest.approx(message["amount"], abs=1) == test["amount"]
     
     def assert_effect_name(self, test, message):
         assert message["effect"] == test["name"]

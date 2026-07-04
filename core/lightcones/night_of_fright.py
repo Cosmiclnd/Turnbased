@@ -18,7 +18,7 @@ class NightOfFright(base.LightCone):
             mod2 = modifier.Modifier(self.nameid, self.name,
                 modifier.StatDesc(("atk", modifier.ModifierFilter.BASE, self.get_value("atk_boost"))))
             self.effect_types.add_unique(effect.ModifierEffect("effect", self.name, effect.Effect.Type.BUFF,
-                effect.Effect.DurationType.TURN_END, 1, "atk", mod2), "eff")
+                effect.Effect.DurationType.TURN_END, self.get_value("max_stacks"), "atk", mod2), "eff")
             battle.current.event_bus.add_member_listener(self.ultimate_turn, t)
             battle.current.event_bus.add_member_listener(self.heal, t)
     
@@ -28,7 +28,7 @@ class NightOfFright(base.LightCone):
             self.get_value("percentage"))))
         await battle.current.event_bus.dispatch("heal", heal)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener(event.ListenerPriority.EXECUTE + 1)
     async def heal(self, heal):
         if self.target is not heal.healer:
             return

@@ -11,9 +11,10 @@ class SkillType(enums.Enum):
     RESTORE = item.Item("restore", "Restore")
     SUPPORT = item.Item("support", "Support")
     ENHANCE = item.Item("enhance", "Enhance")
+    IMPAIR = item.Item("impair", "Impair")
     LOCK_ON = item.Item("lock_on", "Lock On")
     OTHERS = item.Item("others", "Others")
-    ALL = (SINGLE, BLAST, BOUNCE, AOE, RESTORE, SUPPORT, ENHANCE, LOCK_ON, OTHERS)
+    ALL = (SINGLE, BLAST, BOUNCE, AOE, RESTORE, SUPPORT, ENHANCE, IMPAIR, LOCK_ON, OTHERS)
 SkillType.init()
 
 class Skill(item.Item):

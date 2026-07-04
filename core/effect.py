@@ -183,12 +183,6 @@ class EffectTypes:
         self.add(self.target.nameid, eff, alias)
     
     def get(self, group_name, nameid):
-        master = self.target.__class__
-        if hasattr(master, "effect_types"):
-            try:
-                return master.effect_types.groups[group_name][nameid]
-            except KeyError:
-                pass
         return self.groups[group_name][nameid]
 
 class EffectList:
@@ -293,7 +287,7 @@ class EffectList:
                 return i
             import random  # TODO: battle.current.random
             eff = random.choice(effects)
-            await self.remove(eff, 1)
+            await self.delete(eff)
         return count
     
     async def die(self):

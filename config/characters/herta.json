@@ -204,6 +204,24 @@
                 }
             }
         },
+        "technique": {
+            "nameid": "it_can_still_be_optimized",
+            "name": "It Can Still Be Optimized",
+            "category": "technique",
+            "type": "enhance",
+            "desc": "After using her Technique, Herta's ATK increases by {atk_boost:.2%} for {duration} turn(s) at the beginning of the next battle.",
+            "delta_skillpoints": 0,
+            "values": {
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 0.4
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 3
+                }
+            }
+        },
         "bonus_trace1": {
             "nameid": "efficiency",
             "name": "Efficiency",

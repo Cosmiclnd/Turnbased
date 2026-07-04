@@ -96,6 +96,9 @@ class Character(target.Target):
             self.bonus_level = 0
             battle.current.event_bus.add_member_listener(self.skill_trigger_pre, t)
         
+        def is_character_target(self):
+            return self.target_info["type"] == "character"
+        
         def get_value(self, name):
             level = self.level + self.bonus_level
             return self.target.config.get_skill_value(self.skill_name, name, level=level)
@@ -110,13 +113,13 @@ class Character(target.Target):
             type = self.target_info["type"]
             selection = self.target_info["selection"]
             if type == "monster":
-                if isinstance(target, Character):
+                if target is not None and isinstance(target, Character):
                     return "bad_target"
                 if selection == "all" and target is not None:
                     return "bad_target"
                 return "ok"
             elif type == "character":
-                if not isinstance(target, Character):
+                if target is not None and not isinstance(target, Character):
                     return "bad_target"
                 if selection == "self" and target is not self.target:
                     return "bad_target"
@@ -151,9 +154,11 @@ class Character(target.Target):
         for type in relic.RelicType.ALL:
             self.relics[type.nameid] = None
         self.relic_effects = []
+        self.use_technique = False
         self.cur_energy = 0
         self.ultimate_activated = False
 
+        battle.current.event_bus.add_member_listener(self.check_technique, self)
         battle.current.event_bus.add_member_listener(self.normal_turn, self)
         battle.current.event_bus.add_member_listener(self.break_weakness, self)
         battle.current.event_bus.add_member_listener(self.regen_energy, self)
@@ -175,6 +180,7 @@ class Character(target.Target):
         self.skills["skill"].add(self.Skill(self, "skill"))
         self.skills["ultimate"].add(self.Ultimate(self, "ultimate"))
         self.skills["talent"].add(self.Talent(self, "talent"))
+        self.skills["technique"].add(self.Technique(self, "technique"))
     
     def get_current_skill(self, name):
         return self.skills[name].current_skill()
@@ -262,16 +268,21 @@ class Character(target.Target):
             result[category].append(info)
         return result
 
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def battle_start(self):
+    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    async def set_initial_state(self):
         # 这个listener在Target类中已经被添加
-        await super().battle_start()
+        await super().set_initial_state()
         if "cur_energy" in self.initial_state:
             self.cur_energy = self.initial_state["cur_energy"]
         elif "cur_energy_rate" in self.initial_state:
             self.cur_energy = self.initial_state["cur_energy_rate"] * self.stats["energy"].calculate()
         else:
             self.cur_energy = 0.5 * self.stats["energy"].calculate()
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE - 1, "battle_start")
+    async def check_technique(self):
+        if self.use_technique:
+            await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["technique"])
     
     def check_ultimate_energy(self):
         return self.cur_energy >= self.stats["energy"].calculate()

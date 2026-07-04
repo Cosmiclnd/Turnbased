@@ -94,6 +94,11 @@ class VoidrangerDistorter(base.Monster):
             return group.skills[0]
         return group.skills[1]
     
+    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    async def set_initial_state(self):
+        await super().set_initial_state()
+        VoidrangerDistorter.has_lock_on = None
+    
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "attack_end")
     async def reset_lock_on(self, t):
         if self is not t or self.has_lock_on is None or self is not self.has_lock_on[0]:

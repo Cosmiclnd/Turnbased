@@ -102,7 +102,6 @@ class Battle:
     
     async def start(self):
         await self.event_bus.dispatch("battle_start")
-        await self.monster_setup.check()
         while True:
             await self.action_list.next_normal_turn()
     
@@ -110,8 +109,9 @@ class Battle:
     async def battle_start(self):
         for t in self.characters[::-1]:
             self.action_list.normals.append(t.new_normal_turn())
+        await self.monster_setup.check()
     
-    @event.member_listener(event.ListenerPriority.PRE_PROCESS)
+    @event.member_listener(event.ListenerPriority.EXECUTE)
     async def add_monster(self, m):
         self.monsters.append(m)
         turn = m.new_normal_turn()

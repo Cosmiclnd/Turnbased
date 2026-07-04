@@ -48,7 +48,7 @@
             "nameid": "huohuo_trace5",
             "name": "Effect RES Boost",
             "stat_name": "eff_res",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.06
         },
         {
@@ -69,7 +69,7 @@
             "nameid": "huohuo_trace8",
             "name": "Effect RES Boost",
             "stat_name": "eff_res",
-            "is_percentage": true,
+            "is_percentage": false,
             "value": 0.08
         },
         {
@@ -222,6 +222,32 @@
                 "trigger_count": {
                     "is_dynamic": false,
                     "value": 6
+                }
+            }
+        },
+        "technique": {
+            "nameid": "fiend_impeachment_of_evil",
+            "name": "Fiend Impeachment of Evil",
+            "category": "technique",
+            "type": "impair",
+            "delta_skillpoints": 0,
+            "desc": "Huohuo terrorizes surrounding enemies, inflicting \"Horror-Struck\" on them. Enemies in \"Horror-Struck\" will flee away from Huohuo for {seconds} second(s). When entering combat with enemies in \"Horror-Struck,\" there is a {base_chance:.2%} base chance of reducing every single enemy's ATK by {atk_reduction:.2%} for {duration} turn(s).",
+            "values": {
+                "seconds": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "atk_reduction": {
+                    "is_dynamic": false,
+                    "value": 0.25
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
                 }
             }
         },

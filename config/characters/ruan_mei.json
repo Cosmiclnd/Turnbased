@@ -153,7 +153,7 @@
             "type": "support",
             "target": {
                 "type": "character",
-                "selection": "self"
+                "selection": "all"
             },
             "delta_skillpoints": 0,
             "desc": "Ruan Mei deploys a Zone that lasts for 2 turns. The Zone's duration decreases by 1 at the start of her turn. While inside the Zone, all allies' All-Type RES PEN increases by {res_pen_boost:.2%} and their attacks apply Thanatoplum Rebloom to the enemies hit. When these enemies attempt to recover from Weakness Break, Thanatoplum Rebloom is triggered, extending the duration of their Weakness Break, delaying their action by an amount equal to {delay_percentage:.2%} of Ruan Mei's Break Effect plus {delay_flat:.2%}, and dealing Break DMG equal to {percentage:.2%} of Ruan Mei's Ice Break DMG. Enemy targets cannot have Thanatoplum Rebloom re-applied to them until they recover from Weakness Break.",
@@ -205,6 +205,15 @@
                     "values": [0.6, 0.66, 0.72, 0.78, 0.84, 0.9, 0.975, 1.05, 1.125, 1.2, 1.26, 1.32, 1.38, 1.44, 1.5]
                 }
             }
+        },
+        "technique": {
+            "nameid": "silken_serenade",
+            "name": "Silken Serenade",
+            "category": "technique",
+            "type": "enhance",
+            "delta_skillpoints": 0,
+            "desc": "After using the Technique, gains Silken Serenade. At the start of the next battle, automatically triggers the Skill for 1 time(s) without consuming Skill Points.",
+            "values": {}
         },
         "bonus_trace1": {
             "nameid": "inert_respiration",

@@ -33,6 +33,12 @@ async def handle_message_outbattle(message):
         if t is None:
             return
         t.initial_state = message["state"]
+    elif type == "use_technique":
+        t = target.from_uuid(uuid.UUID(message["target"]))
+        from characters import base as character  # TODO: Python 3.15 lazy import
+        if t is None or not isinstance(t, character.Character):
+            return
+        t.use_technique = True
 
 class CloseServer(Exception):
     pass

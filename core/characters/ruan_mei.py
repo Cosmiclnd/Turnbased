@@ -6,6 +6,7 @@ import modifier
 import damage
 import effect
 import action
+import server
 from monsters import base as monster
 
 from characters import base
@@ -66,7 +67,7 @@ class RuanMei(base.Character):
             await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
+        @event.member_listener(event.ListenerPriority.EXECUTE - 1)
         async def hit(self, dmg):
             if not isinstance(dmg.target, monster.Monster):
                 return
@@ -77,6 +78,35 @@ class RuanMei(base.Character):
     
     class Talent(base.Character.CharacterSkill):
         pass
+    
+    class Technique(base.Character.CharacterSkill):
+        class ExtraTurn(action.ExtraTurn):
+            def __init__(self, t, skill):
+                super().__init__(t, action.ExtraTurn.Priority.NORMAL)
+                self.skill = skill
+                battle.current.event_bus.add_member_listener(self.extra_turn, self)
+            
+            @event.member_listener(event.ListenerPriority.EXECUTE)
+            async def extra_turn(self, turn):
+                if self is not turn:
+                    return
+                await server.handler.update_client({"name": f"{self.target.nameid}.technique_turn", "target": str(self.target.uuid)})
+                self.master.dead_toggle = True
+                delta_skillpoints = self.skill.delta_skillpoints
+                self.skill.delta_skillpoints = 0
+                await battle.current.event_bus.dispatch("skill_trigger", self.skill)
+                self.skill.delta_skillpoints = delta_skillpoints
+
+        def __init__(self, t, skill_name):
+            super().__init__(t, skill_name)
+
+            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def skill_trigger(self, skill):
+            if self is not skill:
+                return
+            battle.current.action_list.extras.append(self.ExtraTurn(self.target, self.target.get_current_skill("skill")))
     
     class OvertoneEffect(effect.Effect):
         class Instance(effect.Effect.Instance):
@@ -123,7 +153,7 @@ class RuanMei(base.Character):
                 dmg.factors[damage.DamageFactorType.DEF_BOOST] -= self.target.config.get_skill_value("eidolon1", "def_ignore")
 
         def __init__(self):
-            super().__init__("ruan_mei_zone", "Zone", effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_START, 1)
+            super().__init__("zone", "Zone", effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_START, 1)
     
     class ThanatoplumRebloomEffect(effect.Effect):
         class Instance(effect.Effect.Instance):
@@ -172,6 +202,7 @@ class RuanMei(base.Character):
     def __init__(self, record):
         super().__init__("ruan_mei", record)
 
+        battle.current.event_bus.add_member_listener(self.battle_start, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
         if self.traces_unlocked[1]:
             battle.current.event_bus.add_member_listener(self.turn_start, self)
@@ -209,8 +240,6 @@ class RuanMei(base.Character):
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
-        await super().battle_start()
-
         for c in battle.current.characters:
             if self is not c:
                 eff_add = effect.EffectAddition(self, c, self.effect_types.get(self.nameid, "talent"), -1)

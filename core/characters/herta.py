@@ -50,6 +50,8 @@ class Herta(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
+            for name in ("atk", "crt_dmg", "dmg_boost", "ice_dmg_boost"):
+                self.target.stats[name].print()
             await battle.current.event_bus.dispatch("attack_start", self.target)
             for t in battle.current.monsters[:]:
                 dmg = await damage.Damage.create(self.target, t,
@@ -115,7 +117,7 @@ class Herta(base.Character):
             async def extra_turn(self, turn):
                 if self is not turn:
                     return
-                await server.handler.update_client({"name": f"{self.target.nameid}.follow_up", "target": str(self.target.uuid)})
+                await server.handler.update_client({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
                 self.master.dead_toggle = True
                 self.skill.follow_up_launched = False
                 await battle.current.event_bus.dispatch("skill_trigger", self.skill)
@@ -148,6 +150,7 @@ class Herta(base.Character):
                 if self.target.eidolons >= 2:
                     eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "eidolon2"), -1)
                     await battle.current.event_bus.dispatch("add_effect", eff_add)
+                print(self.target.cur_energy)
                 i += 1
             await battle.current.event_bus.dispatch("attack_end", self.target)
             self.attacks = 0
@@ -166,9 +169,25 @@ class Herta(base.Character):
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def new_wave_start(self):
             self.attacks = 0
+    
+    class Technique(base.Character.CharacterSkill):
+        def __init__(self, t, skill_name):
+            super().__init__(t, skill_name)
+
+            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def skill_trigger(self, skill):
+            if self is not skill:
+                return
+            eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "technique"),
+                self.get_value("duration"))
+            await battle.current.event_bus.dispatch("add_effect", eff_add)
         
     def __init__(self, record):
         super().__init__("herta", record)
+
+        battle.current.event_bus.add_member_listener(self.battle_start, self)
     
     def set_record(self, record):
         super().set_record(record)
@@ -183,6 +202,12 @@ class Herta(base.Character):
         self.set_effect_types()
     
     def set_effect_types(self):
+        names = self.config.get_skill_name("technique")
+        mod = modifier.Modifier(*names,
+            modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("technique", "atk_boost"))))
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
+            1, "atk", mod), "technique")
+
         names = self.config.get_skill_name("eidolon2")
         mod = modifier.Modifier(*names, modifier.StatDesc((None, None, self.config.get_skill_value("eidolon2", "crt_rate_boost"))))
         self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.PERMANENT,
@@ -196,8 +221,6 @@ class Herta(base.Character):
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def battle_start(self):
-        await super().battle_start()
-        
         if self.traces_unlocked[1]:
             mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
                 modifier.StatDesc((None, None, self.config.get_skill_value("bonus_trace2", "control_res"))),

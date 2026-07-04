@@ -1,0 +1,130 @@
+{
+    "main": {
+        "spd": {
+            "base": 4.032,
+            "step": 1.4
+        },
+        "hp": {
+            "base": 112.896,
+            "step": 39.5136
+        },
+        "atk": {
+            "base": 56.448,
+            "step": 19.7568
+        },
+        "hp%": {
+            "base": 0.06912,
+            "step": 0.024192
+        },
+        "atk%": {
+            "base": 0.06912,
+            "step": 0.024192
+        },
+        "def%": {
+            "base": 0.0864,
+            "step": 0.03024
+        },
+        "break_eff": {
+            "base": 0.10368,
+            "step": 0.036288
+        },
+        "eff_hr": {
+            "base": 0.06912,
+            "step": 0.024192
+        },
+        "energy_regen_rate": {
+            "base": 0.031104,
+            "step": 0.010886
+        },
+        "outgoing_healing_boost": {
+            "base": 0.055296,
+            "step": 0.019354
+        },
+        "physical_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "fire_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "ice_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "wind_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "lightning_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "quantum_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "imaginary_dmg_boost": {
+            "base": 0.062208,
+            "step": 0.021773
+        },
+        "crt_rate": {
+            "base": 0.05184,
+            "step": 0.018144
+        },
+        "crt_dmg": {
+            "base": 0.10368,
+            "step": 0.036288
+        }
+    },
+    "sub": {
+        "spd": {
+            "base": 2,
+            "step": 0.3
+        },
+        "hp": {
+            "base": 33.87004,
+            "step": 4.233755
+        },
+        "atk": {
+            "base": 16.935019,
+            "step": 2.116877
+        },
+        "def": {
+            "base": 16.935019,
+            "step": 2.116877
+        },
+        "hp%": {
+            "base": 0.034560002,
+            "step": 0.0043200003
+        },
+        "atk%": {
+            "base": 0.034560002,
+            "step": 0.0043200003
+        },
+        "def%": {
+            "base": 0.0432,
+            "step": 0.0054
+        },
+        "break_eff": {
+            "base": 0.05184,
+            "step": 0.0064800004
+        },
+        "eff_hr": {
+            "base": 0.034560002,
+            "step": 0.0043200003
+        },
+        "eff_res": {
+            "base": 0.034560002,
+            "step": 0.0043200003
+        },
+        "crt_rate": {
+            "base": 0.02592,
+            "step": 0.0032400002
+        },
+        "crt_dmg": {
+            "base": 0.05184,
+            "step": 0.0064800004
+        }
+    }
+}

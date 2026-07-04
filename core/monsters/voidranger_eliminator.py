@@ -58,7 +58,7 @@ class VoidrangerEliminator(base.Monster):
                     self.listener_dead.dead_toggle = True
                 self.old_stacks = stacks
             
-            @event.member_listener(event.ListenerPriority.EXECUTE)
+            @event.member_listener(event.ListenerPriority.POST_PROCESS)
             async def hit(self, dmg):
                 if self.target is not dmg.target:
                     return

@@ -1,0 +1,2981 @@
+{
+  "desc": "Custom Battle",
+  "monsters": [
+    {
+      "1": {
+        "monsters": [
+          {
+            "uuid": "7ad4519e-c110-44dc-929c-963dbf7868d8",
+            "name": "baryon",
+            "level": 88,
+            "moc": false
+          },
+          {
+            "uuid": "07cdddb3-144b-4f02-af98-f9a1b4bbd2f1",
+            "name": "voidranger_eliminator",
+            "level": 88,
+            "moc": false
+          },
+          {
+            "uuid": "d525af97-334c-48a0-847d-7b8d93957db1",
+            "name": "voidranger_distorter",
+            "level": 88,
+            "moc": false
+          }
+        ],
+        "condition": []
+      }
+    },
+    {
+      "1": {
+        "monsters": [
+          {
+            "uuid": "e966e9d9-099c-4db1-a31b-384985e21682",
+            "name": "baryon",
+            "level": 76,
+            "moc": false
+          },
+          {
+            "uuid": "ba113b6f-758a-435f-825f-57cf92c520f5",
+            "name": "baryon",
+            "level": 76,
+            "moc": false
+          },
+          {
+            "uuid": "77c8af05-062d-4503-bca3-86c78be4cb07",
+            "name": "blaze_out_of_space",
+            "level": 76,
+            "moc": false
+          },
+          {
+            "uuid": "019a9bb2-1ceb-484b-9e9d-d415d024d644",
+            "name": "baryon",
+            "level": 76,
+            "moc": false
+          },
+          {
+            "uuid": "699a300d-e191-4df3-9ba4-128f169f3207",
+            "name": "baryon",
+            "level": 76,
+            "moc": false
+          }
+        ],
+        "condition": []
+      }
+    }
+  ],
+  "characters": [
+    {
+      "uuid": "092cda29-80ed-4162-9661-93d7ad183d34",
+      "name": "herta",
+      "level": 80,
+      "eidolons": 6,
+      "basic_atk_level": 6,
+      "skill_level": 10,
+      "ultimate_level": 10,
+      "talent_level": 10,
+      "technique_level": 1,
+      "traces_stats_unlocked": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "traces_unlocked": [
+        true,
+        true,
+        true
+      ],
+      "lightcone": {
+        "name": "the_birth_of_the_self",
+        "level": 80,
+        "stacks": 5
+      },
+      "relics": {
+        "head": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "hp",
+          "sub_stat_types": [
+            "break_eff",
+            "spd",
+            "eff_hr",
+            "def%"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              0,
+              1,
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "hands": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "atk",
+          "sub_stat_types": [
+            "atk%",
+            "eff_hr",
+            "def%",
+            "crt_dmg"
+          ],
+          "enhancements": [
+            [
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              2
+            ]
+          ]
+        },
+        "body": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "crt_rate",
+          "sub_stat_types": [
+            "atk%",
+            "eff_hr",
+            "def%",
+            "crt_dmg"
+          ],
+          "enhancements": [
+            [
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1,
+              2
+            ]
+          ]
+        },
+        "feet": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "spd",
+          "sub_stat_types": [
+            "def",
+            "crt_rate",
+            "hp%",
+            "atk%"
+          ],
+          "enhancements": [
+            [
+              0
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        },
+        "planar_sphere": {
+          "name": "inert_salsotto",
+          "level": 15,
+          "main_stat_type": "ice_dmg_boost",
+          "sub_stat_types": [
+            "eff_hr",
+            "crt_rate",
+            "break_eff",
+            "crt_dmg"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2
+            ]
+          ]
+        },
+        "link_rope": {
+          "name": "inert_salsotto",
+          "level": 15,
+          "main_stat_type": "energy_regen_rate",
+          "sub_stat_types": [
+            "eff_hr",
+            "crt_rate",
+            "break_eff",
+            "crt_dmg"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              2,
+              2
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "uuid": "afc9fe20-4932-4234-9bdb-b7e41429c5cc",
+      "name": "huohuo",
+      "level": 80,
+      "eidolons": 6,
+      "basic_atk_level": 6,
+      "skill_level": 10,
+      "ultimate_level": 10,
+      "talent_level": 10,
+      "technique_level": 1,
+      "traces_stats_unlocked": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "traces_unlocked": [
+        true,
+        true,
+        true
+      ],
+      "lightcone": {
+        "name": "night_of_fright",
+        "level": 80,
+        "stacks": 1
+      },
+      "relics": {
+        "head": {
+          "name": "passerby_of_wandering_cloud",
+          "level": 15,
+          "main_stat_type": "hp",
+          "sub_stat_types": [
+            "hp%",
+            "def%",
+            "spd",
+            "break_eff"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              2
+            ],
+            [
+              2,
+              2,
+              2
+            ],
+            [
+              2,
+              2,
+              2,
+              2
+            ]
+          ]
+        },
+        "hands": {
+          "name": "passerby_of_wandering_cloud",
+          "level": 15,
+          "main_stat_type": "atk",
+          "sub_stat_types": [
+            "hp%",
+            "atk%",
+            "spd",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              2,
+              2,
+              2
+            ],
+            [
+              2
+            ],
+            [
+              2,
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ]
+          ]
+        },
+        "body": {
+          "name": "passerby_of_wandering_cloud",
+          "level": 15,
+          "main_stat_type": "outgoing_healing_boost",
+          "sub_stat_types": [
+            "hp",
+            "hp%",
+            "def%",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0
+            ]
+          ]
+        },
+        "feet": {
+          "name": "passerby_of_wandering_cloud",
+          "level": 15,
+          "main_stat_type": "hp%",
+          "sub_stat_types": [
+            "def%",
+            "spd",
+            "eff_res",
+            "break_eff"
+          ],
+          "enhancements": [
+            [
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              1
+            ]
+          ]
+        },
+        "planar_sphere": {
+          "name": "fleet_of_the_ageless",
+          "level": 15,
+          "main_stat_type": "hp%",
+          "sub_stat_types": [
+            "def%",
+            "atk%",
+            "crt_rate",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              0,
+              1,
+              1,
+              2
+            ],
+            [
+              0
+            ],
+            [
+              1
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "link_rope": {
+          "name": "fleet_of_the_ageless",
+          "level": 15,
+          "main_stat_type": "energy_regen_rate",
+          "sub_stat_types": [
+            "hp%",
+            "hp",
+            "break_eff",
+            "spd"
+          ],
+          "enhancements": [
+            [
+              0,
+              1,
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              2
+            ],
+            [
+              0,
+              0,
+              1
+            ]
+          ]
+        }
+      }
+    },
+    {
+      "uuid": "a83159db-4fda-4b6c-9c5f-cf06f0c9dd0e",
+      "name": "ruan_mei",
+      "level": 80,
+      "eidolons": 0,
+      "basic_atk_level": 6,
+      "skill_level": 10,
+      "ultimate_level": 10,
+      "talent_level": 10,
+      "technique_level": 1,
+      "traces_stats_unlocked": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "traces_unlocked": [
+        true,
+        true,
+        true
+      ],
+      "lightcone": {
+        "name": "past_self_in_mirror",
+        "level": 80,
+        "stacks": 1
+      },
+      "relics": {
+        "head": {
+          "name": "messenger_traversing_hakerspace",
+          "level": 15,
+          "main_stat_type": "hp",
+          "sub_stat_types": [
+            "hp%",
+            "crt_dmg",
+            "eff_hr",
+            "break_eff"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              1,
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              1
+            ]
+          ]
+        },
+        "hands": {
+          "name": "messenger_traversing_hakerspace",
+          "level": 12,
+          "main_stat_type": "atk",
+          "sub_stat_types": [
+            "hp",
+            "def",
+            "crt_dmg",
+            "eff_hr"
+          ],
+          "enhancements": [
+            [
+              0
+            ],
+            [
+              1,
+              1,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              2
+            ]
+          ]
+        },
+        "body": {
+          "name": "messenger_traversing_hakerspace",
+          "level": 15,
+          "main_stat_type": "crt_rate",
+          "sub_stat_types": [
+            "atk",
+            "atk%",
+            "spd",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              1,
+              2
+            ],
+            [
+              1,
+              1
+            ],
+            [
+              0
+            ],
+            [
+              1,
+              1,
+              1,
+              2
+            ]
+          ]
+        },
+        "feet": {
+          "name": "messenger_traversing_hakerspace",
+          "level": 15,
+          "main_stat_type": "spd",
+          "sub_stat_types": [
+            "hp%",
+            "atk%",
+            "crt_rate",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              0,
+              0
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "planar_sphere": {
+          "name": "forge_of_the_kalpagni_lantern",
+          "level": 15,
+          "main_stat_type": "atk%",
+          "sub_stat_types": [
+            "hp%",
+            "spd",
+            "eff_res",
+            "break_eff"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2
+            ],
+            [
+              2,
+              2,
+              2,
+              2,
+              2
+            ]
+          ]
+        },
+        "link_rope": {
+          "name": "forge_of_the_kalpagni_lantern",
+          "level": 15,
+          "main_stat_type": "break_eff",
+          "sub_stat_types": [
+            "hp%",
+            "atk%",
+            "spd",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2,
+              2
+            ],
+            [
+              2
+            ]
+          ]
+        }
+      }
+    }
+  ],
+  "uuids": {
+    "baryon1": "7ad4519e-c110-44dc-929c-963dbf7868d8",
+    "voidranger_eliminator": "07cdddb3-144b-4f02-af98-f9a1b4bbd2f1",
+    "voidranger_distorter": "d525af97-334c-48a0-847d-7b8d93957db1",
+    "baryon2": "e966e9d9-099c-4db1-a31b-384985e21682",
+    "baryon3": "ba113b6f-758a-435f-825f-57cf92c520f5",
+    "blaze_out_of_space": "77c8af05-062d-4503-bca3-86c78be4cb07",
+    "baryon4": "019a9bb2-1ceb-484b-9e9d-d415d024d644",
+    "baryon5": "699a300d-e191-4df3-9ba4-128f169f3207",
+    "herta": "092cda29-80ed-4162-9661-93d7ad183d34",
+    "huohuo": "afc9fe20-4932-4234-9bdb-b7e41429c5cc",
+    "ruan_mei": "a83159db-4fda-4b6c-9c5f-cf06f0c9dd0e"
+  },
+  "initial_state": {
+    "herta": {
+      "cur_energy_rate": 0.5
+    },
+    "huohuo": {
+      "cur_energy_rate": 0.5
+    },
+    "ruan_mei": {
+      "cur_energy_rate": 0.5
+    }
+  },
+  "techniques": [
+    "huohuo",
+    "ruan_mei"
+  ],
+  "process": [
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "new_wave"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.divine_provision"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.anchored_to_vessel_specters_nestled"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.anchored_to_vessel_specters_nestled"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.anchored_to_vessel_specters_nestled"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "ruan_mei.somatotypical_helix"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "ruan_mei.somatotypical_helix"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "fiend_impeachment_of_evil"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.fiend_impeachment_of_evil"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.fiend_impeachment_of_evil"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_distorter"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.fiend_impeachment_of_evil"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "silken_serenade"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "ruan_mei.technique_turn"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "string_sings_slow_swirls"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "ruan_mei.overtone"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "character_skill_option"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "character_skill_option",
+        "option": "basic_atk",
+        "target": "baryon1"
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "threading_fragrance"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": false
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 2303.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": false
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_toughness_amount",
+          "amount": 15.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "break"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 3987.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "break.frozen"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "weakness_break"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "break"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 5317.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "herta.follow_up_turn"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "fine_i_ll_do_it_myself"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": false
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 1429.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": false
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        },
+        {
+          "$type": "assert_toughness_amount",
+          "amount": 7.5
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 2529.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_toughness_amount",
+          "amount": 7.5
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_distorter"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 2023.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "herta.keep_the_ball_rolling"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "die"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "baryon1"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "ultimate",
+        "character": "ruan_mei"
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "messenger_traversing_hakerspace.4pc_effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "messenger_traversing_hakerspace.4pc_effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "messenger_traversing_hakerspace.4pc_effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 544.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "ultimate_turn"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "petals_to_stream_repose_in_dream"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "ruan_mei.zone"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "past_self_in_mirror.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "past_self_in_mirror.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "ruan_mei"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "past_self_in_mirror.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_distorter"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_distorter"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "nihilitys_command"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_monster_target"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_monster_target",
+        "result": "huohuo"
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "voidranger_distorter"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "voidranger_distorter.lock_on"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "character_skill_option"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "character_skill_option",
+        "option": "skill"
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "one_time_offer"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 2508.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_toughness_amount",
+          "amount": 4.5
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 5852.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_toughness_amount",
+          "amount": 10.5
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_distorter"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 2106.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_distorter"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 4915.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "ultimate",
+        "character": "herta"
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "ultimate"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "huohuo.woven_together_cohere_forever"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 814.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "night_of_fright.effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "heal"
+        },
+        {
+          "$type": "assert_target",
+          "name": "healer",
+          "uuid": "huohuo"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_heal_amount",
+          "amount": 467.0
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "add_effect"
+        },
+        {
+          "$type": "assert_target",
+          "name": "adder",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_effect_name",
+          "name": "hunter_of_glacial_forest.4pc_effect"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "ultimate_turn"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_skill_name",
+          "name": "its_magic_i_added_some_magic"
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "ask",
+          "name": "random_rate"
+        }
+      ],
+      "response": {
+        "type": "ask",
+        "name": "random_rate",
+        "result": true
+      }
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "damage"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_damage_types",
+          "types": [
+            "normal"
+          ]
+        },
+        {
+          "$type": "assert_damage_amount",
+          "amount": 16972.0
+        },
+        {
+          "$type": "assert_damage_crit",
+          "crit": true
+        }
+      ]
+    },
+    {
+      "tests": [
+        {
+          "$type": "assert_message_name",
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        {
+          "$type": "assert_target",
+          "name": "dealer",
+          "uuid": "herta"
+        },
+        {
+          "$type": "assert_target",
+          "name": "target",
+          "uuid": "voidranger_eliminator"
+        },
+        {
+          "$type": "assert_toughness_amount",
+          "amount": 30.0
+        }
+      ]
+    }
+  ]
+}

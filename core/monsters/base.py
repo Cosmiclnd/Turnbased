@@ -86,6 +86,7 @@ class Monster(target.Target):
         battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_recover, self)
+        battle.current.event_bus.add_member_listener(self.killed_energy_regen, self)
         battle.current.event_bus.add_member_resolver(self.get_monster_target, self)
 
         self.config.set_base_stats()
@@ -100,10 +101,10 @@ class Monster(target.Target):
     def has_weakness(self, elem):
         return elem in self.base_weakness or elem in self.additional_weakness
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def battle_start(self):
+    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    async def set_initial_state(self):
         # 这个listener在Target类中已经被添加
-        await super().battle_start()
+        await super().set_initial_state()
         self.cur_toughness = self.stats["toughness"].calculate()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -146,6 +147,12 @@ class Monster(target.Target):
             return
         self.cur_toughness = self.stats["toughness"].calculate()
         self.weakness_broken = False
+    
+    @event.member_listener(event.ListenerPriority.PRE_PROCESS, "clean")
+    async def killed_energy_regen(self, t):
+        if self is not t:
+            return
+        await battle.current.event_bus.dispatch("regen_energy", self.death_state.killing_dmg.dealer, 10)
 
     @event.member_resolver(event.ListenerPriority.EXECUTE)
     async def get_monster_target(self, t):
