@@ -80,7 +80,7 @@ class VoidrangerEliminator(base.Monster):
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.CALCULATED,
                 self.config.get_skill_value("skill1", "additional_percentage"))),
-            enums.Element.IMAGINARY, damage.DmgType.ADDITIONAL, damage.DmgSource.MONSTER)
+            enums.Element.IMAGINARY, damage.DmgType.ADDITIONAL, damage.DmgSource.MONSTER, False)
         self.effect_types.add_unique(self.DetonatedEffect(dmg_desc))
 
         self.effect_types.add_unique(effect.Effect("overloaded", "Overloaded", effect.Effect.Type.OTHERS,

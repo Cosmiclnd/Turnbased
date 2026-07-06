@@ -26,7 +26,7 @@ class RuanMei(base.Character):
             await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
-                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
+                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("hit", dmg)
@@ -52,7 +52,6 @@ class RuanMei(base.Character):
             super().__init__(t, skill_name)
 
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
-            battle.current.event_bus.add_member_listener(self.hit, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def skill_trigger(self, skill):
@@ -66,15 +65,6 @@ class RuanMei(base.Character):
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "zone"), duration)
             await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
-        
-        @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-        async def hit(self, dmg):
-            if not isinstance(dmg.target, monster.Monster):
-                return
-            if self.target.effects.has_effect(self.target.effect_types.get(self.target.nameid, "zone")) and dmg.target.weakness_broken:
-                eff_add = effect.EffectAddition(self.target, dmg.target, self.target.effect_types.get(self.target.nameid, "thanatoplum_rebloom"),
-                    -1)
-                await battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Talent(base.Character.CharacterSkill):
         pass
@@ -94,6 +84,7 @@ class RuanMei(base.Character):
                 self.master.dead_toggle = True
                 delta_skillpoints = self.skill.delta_skillpoints
                 self.skill.delta_skillpoints = 0
+                battle.current.cur_main_target = self.target
                 await battle.current.event_bus.dispatch("skill_trigger", self.skill)
                 self.skill.delta_skillpoints = delta_skillpoints
 
@@ -140,11 +131,21 @@ class RuanMei(base.Character):
                         modifier.StatDesc((None, None, self.target.get_current_skill("ultimate").get_value("res_pen_boost"))), None, self.eff_dead)
                     for c in battle.current.characters:
                         c.stats["res_pen"].modifiers.append(mod_res_pen)
+                    battle.current.event_bus.add_member_listener(self.hit, self.eff_dead)
                     if self.target.eidolons >= 1:
                         battle.current.event_bus.add_member_listener(self.deal_damage, self.eff_dead)
                 elif self.old_stacks != 0 and stacks == 0:
                     self.eff_dead.dead_toggle = True
                 self.old_stacks = stacks
+        
+            @event.member_listener(event.ListenerPriority.EXECUTE + 1)
+            async def hit(self, dmg):
+                if not isinstance(dmg.target, monster.Monster):
+                    return
+                if not dmg.target.effects.has_effect(self.target.effect_types.get(self.target.nameid, "thanatoplum_rebloom")):
+                    eff_add = effect.EffectAddition(self.target, dmg.target,
+                        self.target.effect_types.get(self.target.nameid, "thanatoplum_rebloom"), -1)
+                    await battle.current.event_bus.dispatch("add_effect", eff_add)
             
             @event.member_listener(event.ListenerPriority.PRE_PROCESS)
             async def deal_damage(self, dmg):
@@ -277,12 +278,14 @@ class RuanMei(base.Character):
     
     @event.member_listener(event.ListenerPriority.EXECUTE - 1)
     async def weakness_break(self, tr):
+        if not tr.target.death_state.alive:
+            return
         mult = self.get_current_skill("talent").get_value("percentage")
         if self.eidolons >= 6:
             mult += self.config.get_skill_value("eidolon6", "percentage")
         dmg = await damage.Damage.create(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, mult)),
-            self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+            self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK, False)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")

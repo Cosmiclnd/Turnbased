@@ -17,7 +17,7 @@ class HunterOfGlacialForest(base.RelicSet):
             mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                 modifier.StatDesc((None, None, self.get_value_4pc("crt_dmg_boost"))))
             self.effect_types.add_unique(effect.ModifierEffect("4pc_effect", self.relic_set.name, effect.Effect.Type.BUFF,
-                effect.Effect.DurationType.TURN_END, 1, "crt_dmg", mod), "4pc")
+                effect.Effect.DurationType.TURN_END_CHECK_START, 1, "crt_dmg", mod), "4pc")
             battle.current.event_bus.add_member_listener(self.ultimate_turn, self.target)
         
         @event.member_listener(event.ListenerPriority.EXECUTE + 1)

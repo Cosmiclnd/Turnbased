@@ -106,6 +106,15 @@ class Character(target.Target):
         def get_main_target(self):
             return battle.current.cur_main_target
         
+        def get_adjacent_targets(self, k=1):
+            targets = battle.current.characters if self.is_character_target() else battle.current.monsters
+            idx = targets.index(self.get_main_target())
+            result = []
+            for i in range(-k, k + 1):
+                if i != 0 and 0 <= idx + i < len(targets):
+                    result.append(targets[idx + i])
+            return result
+        
         @server.server_handler
         async def target_validator(self, target):
             if self.target_info is None:
@@ -158,7 +167,6 @@ class Character(target.Target):
         self.cur_energy = 0
         self.ultimate_activated = False
 
-        battle.current.event_bus.add_member_listener(self.check_technique, self)
         battle.current.event_bus.add_member_listener(self.normal_turn, self)
         battle.current.event_bus.add_member_listener(self.break_weakness, self)
         battle.current.event_bus.add_member_listener(self.regen_energy, self)
@@ -250,7 +258,7 @@ class Character(target.Target):
     def set_break_effect_types(self):
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
-            enums.Element.ICE, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+            enums.Element.ICE, (damage.DmgType.BREAK, damage.DmgType.ADDITIONAL), damage.DmgSource.WEAKNESS_BREAK)
         self.effect_types.add("break", effect.FrozenEffect(dmg_desc))
     
     def get_skills_info(self):
@@ -279,7 +287,6 @@ class Character(target.Target):
         else:
             self.cur_energy = 0.5 * self.stats["energy"].calculate()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE - 1, "battle_start")
     async def check_technique(self):
         if self.use_technique:
             await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["technique"])
@@ -340,8 +347,6 @@ class Character(target.Target):
     async def normal_turn(self, turn):
         if self is not turn.target:
             return
-        if not self.can_act():
-            return
         await server.handler.ask_client({"name": "character_skill_option", "target": str(self.uuid)}, self.character_skill_option_handler)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
     
@@ -351,7 +356,7 @@ class Character(target.Target):
             return
         dmg = await damage.Damage.create(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
-            self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK)
+            self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK, False)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
         action.NormalTurn.delay_target(tr.target, 0.25)
         if self.element is enums.Element.ICE:

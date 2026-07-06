@@ -3,6 +3,7 @@ import logging
 import item
 
 MAX_STACKS = 32
+LOG_NO_LISTENER = False
 
 class Listener(item.Item):
     def __init__(self, nameid, name, callback, master=None, priority=0):
@@ -70,7 +71,7 @@ class EventBus:
                         self.stack.pop()
                         raise
                 self.stack.pop()
-        if event_name not in self.listeners or not self.listeners[event_name]:
+        if LOG_NO_LISTENER and (event_name not in self.listeners or not self.listeners[event_name]):
             logging.warning(f"No listener for event {event_name}")
     
     async def query(self, event_name, *args, **kwargs):

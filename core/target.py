@@ -155,7 +155,8 @@ class Target(item.Item):
         if self is not damage.dealer:
             return
         await battle.current.event_bus.dispatch("deal_damage", damage)
-        await damage.target.check_death()
+        if damage.can_kill:
+            await damage.target.check_death()
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "deal_damage")
     async def receive_damage(self, damage):

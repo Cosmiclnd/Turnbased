@@ -27,7 +27,7 @@ class Herta(base.Character):
             await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
-                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
+                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("hit", dmg)
@@ -36,7 +36,7 @@ class Herta(base.Character):
                 if t.cur_hp <= hp * self.target.config.get_skill_value("eidolon1", "hp_threshold"):
                     dmg = await damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon1", "percentage"))),
-                        self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATTACK)
+                        self.target.element, damage.DmgType.ADDITIONAL, damage.DmgSource.BASIC_ATK, False)
                     await battle.current.event_bus.dispatch("additional_damage", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
 
@@ -50,20 +50,18 @@ class Herta(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            for name in ("atk", "crt_dmg", "dmg_boost", "ice_dmg_boost"):
-                self.target.stats[name].print()
             await battle.current.event_bus.dispatch("attack_start", self.target)
-            for t in battle.current.monsters[:]:
-                dmg = await damage.Damage.create(self.target, t,
-                    modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
-                    self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
-                dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
-                if t.cur_hp >= t.stats["hp"].calculate() * self.get_value("hp_threshold"):
-                    dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.get_value("dmg_boost")
-                    if self.target.traces_unlocked[0]:
-                        dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace1", "dmg_boost")
-                for ratio in (0.3, 0.7):
+            for ratio in (0.3, 0.7):
+                for t in battle.current.monsters[:]:
+                    dmg = await damage.Damage.create(self.target, t,
+                        modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
+                        self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
+                    dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+                    dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
+                    if t.cur_hp >= t.stats["hp"].calculate() * self.get_value("hp_threshold"):
+                        dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.get_value("dmg_boost")
+                        if self.target.traces_unlocked[0]:
+                            dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace1", "dmg_boost")
                     dmg.hit_split_ratio = ratio
                     await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
@@ -90,11 +88,11 @@ class Herta(base.Character):
                 if self.target.traces_unlocked[2] and t.effects.has_debuff(effect.Debuff.FROZEN):
                     dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace3", "dmg_boost")
                 await battle.current.event_bus.dispatch("hit", dmg)
-            await battle.current.event_bus.dispatch("attack_end", self.target)
             if self.target.eidolons >= 6:
                 eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "eidolon6"),
                     self.target.config.get_skill_value("eidolon6", "duration"))
                 await battle.current.event_bus.dispatch("add_effect", eff_add)
+            await battle.current.event_bus.dispatch("attack_end", self.target)
     
     class Talent(base.Character.CharacterSkill):
         class FollowUp(action.ExtraTurn):
@@ -150,7 +148,6 @@ class Herta(base.Character):
                 if self.target.eidolons >= 2:
                     eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "eidolon2"), -1)
                     await battle.current.event_bus.dispatch("add_effect", eff_add)
-                print(self.target.cur_energy)
                 i += 1
             await battle.current.event_bus.dispatch("attack_end", self.target)
             self.attacks = 0
@@ -216,7 +213,7 @@ class Herta(base.Character):
         names = self.config.get_skill_name("eidolon6")
         mod = modifier.Modifier(*names,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.BASE, self.config.get_skill_value("eidolon6", "atk_boost"))))
-        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END,
+        self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF, effect.Effect.DurationType.TURN_END_CHECK_START,
             1, "atk", mod), "eidolon6")
     
     @event.member_listener(event.ListenerPriority.EXECUTE)

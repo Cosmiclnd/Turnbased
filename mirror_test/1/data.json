@@ -1,2422 +1,2671 @@
 {
-    "desc": "Calyx (Crimson): Bud of Destruction, Difficulty VI",
-    "monsters": [
-        {
-            "1": {
-                "monsters": [
-                    {
-                        "uuid": "dd58f488-58f9-454d-a569-61c3c526d1bf",
-                        "name": "baryon",
-                        "level": 66,
-                        "moc": false,
-                        "stat_scales": {
-                            "hp": 1.7,
-                            "atk": 0.8
-                        }
-                    },
-                    {
-                        "uuid": "be026e3d-371d-41b0-8394-6663e47099ce",
-                        "name": "voidranger_eliminator",
-                        "level": 66,
-                        "moc": false,
-                        "stat_scales": {
-                            "hp": 1.7,
-                            "atk": 0.8
-                        }
-                    },
-                    {
-                        "uuid": "05c857bd-d64f-49ad-bab8-e3c12290dc21",
-                        "name": "voidranger_eliminator",
-                        "level": 66,
-                        "moc": false,
-                        "stat_scales": {
-                            "hp": 1.7,
-                            "atk": 0.8
-                        }
-                    }
-                ],
-                "condition": []
+  "desc": "Calyx (Crimson): Bud of Destruction, Difficulty VI",
+  "monsters": [
+    {
+      "1": {
+        "monsters": [
+          {
+            "uuid": "dd58f488-58f9-454d-a569-61c3c526d1bf",
+            "name": "baryon",
+            "level": 66,
+            "moc": false,
+            "stat_scales": {
+              "hp": 1.7,
+              "atk": 0.8
             }
+          },
+          {
+            "uuid": "be026e3d-371d-41b0-8394-6663e47099ce",
+            "name": "voidranger_eliminator",
+            "level": 66,
+            "moc": false,
+            "stat_scales": {
+              "hp": 1.7,
+              "atk": 0.8
+            }
+          },
+          {
+            "uuid": "05c857bd-d64f-49ad-bab8-e3c12290dc21",
+            "name": "voidranger_eliminator",
+            "level": 66,
+            "moc": false,
+            "stat_scales": {
+              "hp": 1.7,
+              "atk": 0.8
+            }
+          }
+        ],
+        "condition": []
+      }
+    }
+  ],
+  "characters": [
+    {
+      "uuid": "6279ab17-2230-4c05-952d-f69fd8f11723",
+      "name": "herta",
+      "level": 80,
+      "eidolons": 6,
+      "basic_atk_level": 5,
+      "skill_level": 9,
+      "ultimate_level": 10,
+      "talent_level": 10,
+      "technique_level": 1,
+      "traces_stats_unlocked": [
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true,
+        true
+      ],
+      "traces_unlocked": [
+        true,
+        true,
+        true
+      ],
+      "lightcone": {
+        "name": "the_birth_of_the_self",
+        "level": 80,
+        "stacks": 5
+      },
+      "relics": {
+        "head": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "hp",
+          "sub_stat_types": [
+            "atk%",
+            "crt_rate",
+            "crt_dmg",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              0,
+              0,
+              0,
+              1,
+              2
+            ],
+            [
+              0
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0
+            ]
+          ]
+        },
+        "hands": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "atk",
+          "sub_stat_types": [
+            "hp",
+            "crt_rate",
+            "crt_dmg",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              2,
+              2
+            ],
+            [
+              0,
+              2
+            ],
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              0,
+              2
+            ]
+          ]
+        },
+        "body": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "crt_rate",
+          "sub_stat_types": [
+            "hp",
+            "spd",
+            "crt_dmg",
+            "eff_res"
+          ],
+          "enhancements": [
+            [
+              0,
+              1
+            ],
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ]
+          ]
+        },
+        "feet": {
+          "name": "hunter_of_glacial_forest",
+          "level": 15,
+          "main_stat_type": "atk%",
+          "sub_stat_types": [
+            "atk",
+            "def%",
+            "crt_rate",
+            "eff_hr"
+          ],
+          "enhancements": [
+            [
+              0,
+              2
+            ],
+            [
+              2
+            ],
+            [
+              2
+            ],
+            [
+              0,
+              0,
+              2,
+              2
+            ]
+          ]
+        },
+        "planar_sphere": {
+          "name": "inert_salsotto",
+          "level": 15,
+          "main_stat_type": "ice_dmg_boost",
+          "sub_stat_types": [
+            "hp",
+            "def",
+            "spd",
+            "crt_dmg"
+          ],
+          "enhancements": [
+            [
+              0
+            ],
+            [
+              0,
+              0,
+              1,
+              2
+            ],
+            [
+              0,
+              0,
+              2
+            ],
+            [
+              0
+            ]
+          ]
+        },
+        "link_rope": {
+          "name": "inert_salsotto",
+          "level": 15,
+          "main_stat_type": "atk%",
+          "sub_stat_types": [
+            "hp",
+            "atk",
+            "hp%",
+            "break_eff"
+          ],
+          "enhancements": [
+            [
+              1
+            ],
+            [
+              0,
+              2,
+              2
+            ],
+            [
+              2
+            ],
+            [
+              2,
+              2,
+              2
+            ]
+          ]
         }
+      }
+    }
+  ],
+  "uuids": {
+    "baryon": "dd58f488-58f9-454d-a569-61c3c526d1bf",
+    "voidranger_eliminator1": "be026e3d-371d-41b0-8394-6663e47099ce",
+    "voidranger_eliminator2": "05c857bd-d64f-49ad-bab8-e3c12290dc21",
+    "herta": "6279ab17-2230-4c05-952d-f69fd8f11723"
+  },
+  "initial_state": {
+    "herta": {
+      "cur_energy": 60
+    }
+  },
+  "techniques": [],
+  "battle_config": {
+    "type": "default",
+    "trigger": null
+  },
+  "process": [
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "new_wave"
+        },
+        "tests": []
+      }
     ],
-    "characters": [
-        {
-            "uuid": "6279ab17-2230-4c05-952d-f69fd8f11723",
-            "name": "herta",
-            "level": 80,
-            "eidolons": 6,
-            "basic_atk_level": 5,
-            "skill_level": 9,
-            "ultimate_level": 10,
-            "talent_level": 10,
-            "technique_level": 1,
-            "traces_stats_unlocked": [true, true, true, true, true, true, true, true, true, true],
-            "traces_unlocked": [true, true, true],
-            "lightcone": {
-                "name": "the_birth_of_the_self",
-                "level": 80,
-                "stacks": 5
-            },
-            "relics": {
-                "head": {
-                    "name": "hunter_of_glacial_forest",
-                    "level": 15,
-                    "main_stat_type": "hp",
-                    "sub_stat_types": ["atk%", "crt_rate", "crt_dmg", "eff_res"],
-                    "enhancements": [
-                        [0, 0, 0, 1, 2],
-                        [0],
-                        [0, 2],
-                        [0]
-                    ]
-                },
-                "hands": {
-                    "name": "hunter_of_glacial_forest",
-                    "level": 15,
-                    "main_stat_type": "atk",
-                    "sub_stat_types": ["hp", "crt_rate", "crt_dmg", "eff_res"],
-                    "enhancements": [
-                        [2, 2],
-                        [0, 2],
-                        [0, 2, 2],
-                        [0, 2]
-                    ]
-                },
-                "body": {
-                    "name": "hunter_of_glacial_forest",
-                    "level": 15,
-                    "main_stat_type": "crt_rate",
-                    "sub_stat_types": ["hp", "spd", "crt_dmg", "eff_res"],
-                    "enhancements": [
-                        [0, 1],
-                        [0, 1],
-                        [1, 2],
-                        [0, 1]
-                    ]
-                },
-                "feet": {
-                    "name": "hunter_of_glacial_forest",
-                    "level": 15,
-                    "main_stat_type": "atk%",
-                    "sub_stat_types": ["atk", "def%", "crt_rate", "eff_hr"],
-                    "enhancements": [
-                        [0, 2],
-                        [2],
-                        [2],
-                        [0, 0, 2, 2]
-                    ]
-                },
-                "planar_sphere": {
-                    "name": "inert_salsotto",
-                    "level": 15,
-                    "main_stat_type": "ice_dmg_boost",
-                    "sub_stat_types": ["hp", "def", "spd", "crt_dmg"],
-                    "enhancements": [
-                        [0],
-                        [0, 0, 1, 2], 
-                        [0, 0, 2],
-                        [0]
-                    ]
-                },
-                "link_rope": {
-                    "name": "inert_salsotto",
-                    "level": 15,
-                    "main_stat_type": "atk%",
-                    "sub_stat_types": ["hp", "atk", "hp%", "break_eff"],
-                    "enhancements": [
-                        [1],
-                        [0, 2, 2],
-                        [2],
-                        [2, 2, 2]
-                    ]
-                }
-            }
-        }
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          }
+        ]
+      }
     ],
-    "uuids": {
-        "baryon": "dd58f488-58f9-454d-a569-61c3c526d1bf",
-        "voidranger_eliminator1": "be026e3d-371d-41b0-8394-6663e47099ce",
-        "voidranger_eliminator2": "05c857bd-d64f-49ad-bab8-e3c12290dc21",
-        "herta": "6279ab17-2230-4c05-952d-f69fd8f11723"
-    },
-    "initial_state": {
-        "herta": {
-            "cur_energy": 60
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "character_skill_option"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "character_skill_option",
+          "option": "skill"
         }
-    },
-    "techniques": [],
-    "process": [
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "new_wave"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "normal_turn_start"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "character_skill_option"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "character_skill_option",
-                "option": "skill"
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "one_time_offer"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1703
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 3
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 2015
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 7
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["break"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1633
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "break.frozen"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "weakness_break"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1703
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 3
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 2015
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 7
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1703
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 3
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 3975
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 7
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "herta.follow_up_turn"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "fine_i_ll_do_it_myself"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 3492
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1331
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1331
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "herta.keep_the_ball_rolling"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "die"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "baryon"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "normal_turn_start"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "void_cannon"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_monster_target"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_monster_target",
-                "result": "herta"
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 193
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 193
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 199
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "voidranger_eliminator.detonated"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "voidranger_eliminator.overloaded"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "normal_turn_start"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "void_cannon"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_monster_target"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_monster_target",
-                "result": "herta"
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 193
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["additional"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 109
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 193
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["additional"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 109
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 199
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["additional"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 109
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "voidranger_eliminator.detonated"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "voidranger_eliminator.overloaded"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "normal_turn_start"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "ultimate",
-                "character": "herta"
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "ultimate_turn"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "hunter_of_glacial_forest.4pc_effect"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "its_magic_i_added_some_magic"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 11338
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 20
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["break"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 2721
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "break.frozen"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "weakness_break"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 11338
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 20
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["break"]
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 2721
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "break.frozen"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "weakness_break"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "herta.no_one_can_betray_me"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "herta.follow_up_turn"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "fine_i_ll_do_it_myself"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 4332
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1948
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "herta.keep_the_ball_rolling"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 4332
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 1948
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 5
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "add_effect"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "adder",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_effect_name",
-                    "name": "herta.keep_the_ball_rolling"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "die"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator1"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "ultimate"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "character_skill_option"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "character_skill_option",
-                "option": "basic_atk",
-                "target": "voidranger_eliminator2"
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "skill_trigger"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_skill_name",
-                    "name": "what_are_you_looking_at"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": false
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["normal"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": false
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 2655
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "reduce_toughness"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_toughness_amount",
-                    "amount": 10
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "ask",
-                    "name": "random_rate"
-                }
-            ],
-            "response": {
-                "type": "ask",
-                "name": "random_rate",
-                "result": true
-            }
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "damage"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "dealer",
-                    "uuid": "herta"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                },
-                {
-                    "$type": "assert_damage_types",
-                    "types": ["additional"]
-                },
-                {
-                    "$type": "assert_damage_crit",
-                    "crit": true
-                },
-                {
-                    "$type": "assert_damage_amount",
-                    "amount": 2361
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "die"
-                },
-                {
-                    "$type": "assert_target",
-                    "name": "target",
-                    "uuid": "voidranger_eliminator2"
-                }
-            ]
-        },
-        {
-            "tests": [
-                {
-                    "$type": "assert_message_name",
-                    "type": "update",
-                    "name": "battle_win"
-                }
-            ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "one_time_offer"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
         }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1703.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 3.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1703.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 3.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1703.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 3.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 2015.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 7.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "break"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1633.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "break.frozen"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "weakness_break"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 2015.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 7.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 3975.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 7.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "herta.follow_up_turn"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "fine_i_ll_do_it_myself"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 3492.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1331.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1331.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "herta.keep_the_ball_rolling"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "die"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "void_cannon"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_monster_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_monster_target",
+          "result": "herta"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 193.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 193.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 199.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "voidranger_eliminator.detonated"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "voidranger_eliminator.overloaded"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "void_cannon"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_monster_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_monster_target",
+          "result": "herta"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 193.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "additional"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 109.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 193.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "additional"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 109.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 199.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "additional"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 109.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "voidranger_eliminator.detonated"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "voidranger_eliminator.overloaded"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "normal_turn_start"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate",
+          "character": "herta"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "hunter_of_glacial_forest.4pc_effect"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "ultimate_turn"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "its_magic_i_added_some_magic"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 11338.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 20.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "break"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 2721.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "break.frozen"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "weakness_break"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 11338.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 20.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "break"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 2721.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "break.frozen"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "weakness_break"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "herta.no_one_can_betray_me"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "herta.follow_up_turn"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "fine_i_ll_do_it_myself"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 4332.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1948.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "herta.keep_the_ball_rolling"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 4332.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 1948.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 5.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "add_effect"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "adder",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_effect_name",
+            "name": "herta.keep_the_ball_rolling"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "die"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate"
+        },
+        "tests": []
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "character_skill_option"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "character_skill_option",
+          "option": "basic_atk",
+          "target": "voidranger_eliminator2"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "skill_trigger"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_skill_name",
+            "name": "what_are_you_looking_at"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": false
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "normal"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 2655.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": false
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "reduce_toughness"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_toughness_amount",
+            "amount": 10.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "random_rate"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "random_rate",
+          "result": true
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "damage"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "dealer",
+            "uuid": "herta"
+          },
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_damage_types",
+            "types": [
+              "additional"
+            ]
+          },
+          {
+            "$type": "assert_damage_amount",
+            "amount": 2361.0
+          },
+          {
+            "$type": "assert_damage_crit",
+            "crit": true
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "die"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "battle_win"
+        },
+        "tests": []
+      }
     ]
+  ]
 }

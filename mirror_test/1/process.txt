@@ -1,0 +1,80 @@
+new_wave
+
+normal_turn_start herta
+ask ultimate
+ask character_skill_option skill
+skill_trigger herta one_time_offer
+character_damage herta baryon normal 1703 true 3
+character_damage herta voidranger_eliminator1 normal 1703 true 3
+character_damage herta voidranger_eliminator2 normal 1703 true 3
+character_damage herta baryon normal 2015 false 7
+break_weakness herta baryon 1633 break.frozen
+character_damage herta voidranger_eliminator1 normal 2015 false 7
+character_damage herta voidranger_eliminator2 normal 3975 true 7
+ask ultimate
+
+extra_turn herta.follow_up_turn herta
+skill_trigger herta fine_i_ll_do_it_myself
+character_damage herta baryon normal 3492 true 5
+character_damage herta voidranger_eliminator1 normal 1331 false 5
+character_damage herta voidranger_eliminator2 normal 1331 false 5
+add_effect herta herta herta.keep_the_ball_rolling
+die baryon
+ask ultimate
+
+normal_turn_start voidranger_eliminator1
+ask ultimate
+skill_trigger voidranger_eliminator1 void_cannon
+ask random_monster_target herta
+monster_damage voidranger_eliminator1 herta normal 193
+monster_damage voidranger_eliminator1 herta normal 193
+monster_damage voidranger_eliminator1 herta normal 199
+add_effect voidranger_eliminator1 herta voidranger_eliminator.detonated
+add_effect voidranger_eliminator1 voidranger_eliminator1 voidranger_eliminator.overloaded
+ask ultimate
+
+normal_turn_start voidranger_eliminator2
+ask ultimate
+skill_trigger voidranger_eliminator2 void_cannon
+ask random_monster_target herta
+monster_damage voidranger_eliminator2 herta normal 193
+monster_damage voidranger_eliminator1 herta additional 109
+monster_damage voidranger_eliminator2 herta normal 193
+monster_damage voidranger_eliminator1 herta additional 109
+monster_damage voidranger_eliminator2 herta normal 199
+monster_damage voidranger_eliminator1 herta additional 109
+add_effect voidranger_eliminator2 herta voidranger_eliminator.detonated
+add_effect voidranger_eliminator2 voidranger_eliminator2 voidranger_eliminator.overloaded
+ask ultimate
+
+normal_turn_start herta
+ask ultimate herta
+ask ultimate
+
+  add_effect herta herta hunter_of_glacial_forest.4pc_effect
+  extra_turn ultimate_turn herta
+  skill_trigger herta its_magic_i_added_some_magic
+  character_damage herta voidranger_eliminator1 normal 11338 true 20
+  break_weakness herta voidranger_eliminator1 2721 break.frozen
+  character_damage herta voidranger_eliminator2 normal 11338 true 20
+  break_weakness herta voidranger_eliminator2 2721 break.frozen
+  add_effect herta herta herta.no_one_can_betray_me
+  ask ultimate
+
+  extra_turn herta.follow_up_turn herta
+  skill_trigger herta fine_i_ll_do_it_myself
+  character_damage herta voidranger_eliminator1 normal 4332 true 5
+  character_damage herta voidranger_eliminator2 normal 1948 false 5
+  add_effect herta herta herta.keep_the_ball_rolling
+  character_damage herta voidranger_eliminator1 normal 4332 true 5
+  character_damage herta voidranger_eliminator2 normal 1948 false 5
+  add_effect herta herta herta.keep_the_ball_rolling
+  die voidranger_eliminator1
+  ask ultimate
+
+ask character_skill_option basic_atk voidranger_eliminator2
+skill_trigger herta what_are_you_looking_at
+character_damage herta voidranger_eliminator2 normal 2655 false 10
+character_damage herta voidranger_eliminator2 additional 2361 true
+die voidranger_eliminator2
+battle_win

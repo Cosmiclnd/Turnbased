@@ -25,10 +25,10 @@ def get_modifier(type, name, t, bases, steps):
     data = config.load_config_data("relics", "values")[type][name]
     value = data["base"] * bases + data["step"] * steps
     if name[-1] == "%":
-        return modifier.Modifier(f"relic_{type}_{name}", "Relic Main Stat",
+        return modifier.Modifier(f"relic_{type}_{name}", f"Relic {type.title()} Stat",
             modifier.StatDesc((get_stat(name, t), modifier.ModifierFilter.BASE, value)), None, t)
     else:
-        return modifier.Modifier(f"relic_{type}_{name}", "Relic Main Stat",
+        return modifier.Modifier(f"relic_{type}_{name}", f"Relic {type.title()} Stat",
             modifier.StatDesc((None, None, value)), None, t)
 
 def get_main_modifier(name, t, level):

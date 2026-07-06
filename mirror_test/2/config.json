@@ -369,5 +369,9 @@
     "techniques": [
         "huohuo",
         "ruan_mei"
-    ]
+    ],
+    "battle_config": {
+        "type": "moc",
+        "trigger": null
+    }
 }

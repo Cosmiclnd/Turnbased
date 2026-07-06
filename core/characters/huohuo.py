@@ -25,7 +25,7 @@ class Huohuo(base.Character):
             await battle.current.event_bus.dispatch("attack_start", self.target)
             dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
-                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATTACK)
+                self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.2, 0.2, 0.2, 0.4):
@@ -54,7 +54,7 @@ class Huohuo(base.Character):
                     (None, None, self.get_value("main_flat"))
                 )))
             await self.target.heal_by_skill(main)
-            for t in self.get_blast_targets():
+            for t in self.get_adjacent_targets():
                 sub = healing.Healing(self.target, t,
                     modifier.StatDesc((
                         (self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("sub_percentage")),

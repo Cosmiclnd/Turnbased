@@ -15,13 +15,13 @@ class DmgType(enums.Enum):
 DmgType.init()
 
 class DmgSource(enums.Enum):
-    BASIC_ATTACK = item.Item("basic_attack", "Basic Attack")
+    BASIC_ATK = item.Item("basic_atk", "Basic ATK")
     SKILL = item.Item("skill", "Skill")
     ULTIMATE = item.Item("ultimate", "Ultimate")
     FOLLOW_UP = item.Item("follow_up", "Follow-Up")
     WEAKNESS_BREAK = item.Item("weakness_break", "Weakness Break")
     MONSTER = item.Item("monster", "Monster")
-    ALL = (BASIC_ATTACK, SKILL, ULTIMATE, FOLLOW_UP, WEAKNESS_BREAK, MONSTER)
+    ALL = (BASIC_ATK, SKILL, ULTIMATE, FOLLOW_UP, WEAKNESS_BREAK, MONSTER)
 DmgSource.init()
 
 class DamageFactorType:
@@ -100,29 +100,31 @@ DamageFactorType.BREAK_EFF = DamageFactorType(async_func(lambda dmg, value: 1 + 
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
 
 class DamageDesc:
-    __slots__ = ("dealer", "stat_desc", "element", "types", "source")
+    __slots__ = ("dealer", "stat_desc", "element", "types", "source", "can_kill")
 
-    def __init__(self, dealer, stat_desc, element, types, source):
+    def __init__(self, dealer, stat_desc, element, types, source, can_kill=True):
         self.dealer = dealer
         self.stat_desc = stat_desc
         self.element = element
         self.types = types
         self.source = source
+        self.can_kill = can_kill
     
     async def summon(self, t):
-        return await Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.source)
+        return await Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.source, self.can_kill)
 
 class Damage:
     __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split_ratio",
-        "energy_regen", "damage", "crit")
+        "energy_regen", "damage", "crit", "can_kill")
 
-    def __init__(self, dealer, t, stat_desc, element, types, source):
+    def __init__(self, dealer, t, stat_desc, element, types, source, can_kill=True):
         self.dealer = dealer
         self.target = t
         self.stat_desc = stat_desc
         self.element = element
         self.types = set(types) if isinstance(types, Iterable) else {types}
         self.source = source
+        self.can_kill = can_kill
         self.factors = {}
         self.toughness_reduction = None
         self.hit_split_ratio = 1
@@ -131,8 +133,8 @@ class Damage:
         self.crit = False
     
     @classmethod
-    async def create(cls, dealer, t, stat_desc, element, types, source):
-        dmg = cls(dealer, t, stat_desc, element, types, source)
+    async def create(cls, dealer, t, stat_desc, element, types, source, can_kill=True):
+        dmg = cls(dealer, t, stat_desc, element, types, source, can_kill)
         await dmg.init()
         return dmg
 

@@ -32,5 +32,5 @@ class NightOfFright(base.LightCone):
     async def heal(self, heal):
         if self.target is not heal.healer:
             return
-        eff_add = effect.EffectAddition(self.target, heal.target, self.effect_types.get(self.nameid, "eff"), 1)
+        eff_add = effect.EffectAddition(self.target, heal.target, self.effect_types.get(self.nameid, "eff"), self.get_value("duration"))
         await battle.current.event_bus.dispatch("add_effect", eff_add)

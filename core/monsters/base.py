@@ -111,8 +111,6 @@ class Monster(target.Target):
     async def normal_turn(self, turn):
         if self is not turn.target:
             return
-        if not self.can_act():
-            return
         if self.weakness_broken:
             await battle.current.event_bus.dispatch("weakness_recover", self)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
@@ -236,7 +234,7 @@ class Setup:
             self.cur_wave += 1
             if self.cur_wave >= len(self.waves):
                 return True
+            await self.check_add_monsters()
             await server.handler.update_client({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
             await battle.current.event_bus.dispatch("new_wave_start")
-            await self.check_add_monsters()
         return False

@@ -11,6 +11,8 @@ import battle
 import target
 import config
 
+LOG_MESSAGE = False
+
 port = 55716
 handler = None
 shutdown_event = asyncio.Event()
@@ -39,6 +41,9 @@ async def handle_message_outbattle(message):
         if t is None or not isinstance(t, character.Character):
             return
         t.use_technique = True
+    elif type == "set_battle_config":
+        battle.current.config = battle.BattleConfig(battle.BattleType.dict_nameid[message["config"]["type"]])
+        # TODO: config["trigger"] triggers the battle
 
 class CloseServer(Exception):
     pass
@@ -89,7 +94,8 @@ class InbattleHandler:
             return response
     
     async def ask_client(self, message, handler):
-        logging.info(f"Calling ask_client {message}")
+        if LOG_MESSAGE:
+            logging.info(f"Calling ask_client {message}")
         message["type"] = "ask"
         message["info"] = None
         while True:
@@ -106,11 +112,12 @@ class InbattleHandler:
                 message["info"] = "internal_error"
             if message["info"] == "ok":
                 return response
-            else:
+            elif LOG_MESSAGE:
                 logging.warning(f"Handler returned {message['info']}")
     
     async def update_client(self, message):
-        logging.info(f"Calling update_client {message}")
+        if LOG_MESSAGE:
+            logging.info(f"Calling update_client {message}")
         message["type"] = "update"
         while True:
             response = await self.send_and_recv(message)

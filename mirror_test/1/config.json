@@ -1,0 +1,152 @@
+{
+    "desc": "Calyx (Crimson): Bud of Destruction, Difficulty VI",
+    "monsters": [
+        {
+            "1": {
+                "monsters": [
+                    {
+                        "uuid": "dd58f488-58f9-454d-a569-61c3c526d1bf",
+                        "name": "baryon",
+                        "level": 66,
+                        "moc": false,
+                        "stat_scales": {
+                            "hp": 1.7,
+                            "atk": 0.8
+                        }
+                    },
+                    {
+                        "uuid": "be026e3d-371d-41b0-8394-6663e47099ce",
+                        "name": "voidranger_eliminator",
+                        "level": 66,
+                        "moc": false,
+                        "stat_scales": {
+                            "hp": 1.7,
+                            "atk": 0.8
+                        }
+                    },
+                    {
+                        "uuid": "05c857bd-d64f-49ad-bab8-e3c12290dc21",
+                        "name": "voidranger_eliminator",
+                        "level": 66,
+                        "moc": false,
+                        "stat_scales": {
+                            "hp": 1.7,
+                            "atk": 0.8
+                        }
+                    }
+                ],
+                "condition": []
+            }
+        }
+    ],
+    "characters": [
+        {
+            "uuid": "6279ab17-2230-4c05-952d-f69fd8f11723",
+            "name": "herta",
+            "level": 80,
+            "eidolons": 6,
+            "basic_atk_level": 5,
+            "skill_level": 9,
+            "ultimate_level": 10,
+            "talent_level": 10,
+            "technique_level": 1,
+            "traces_stats_unlocked": [true, true, true, true, true, true, true, true, true, true],
+            "traces_unlocked": [true, true, true],
+            "lightcone": {
+                "name": "the_birth_of_the_self",
+                "level": 80,
+                "stacks": 5
+            },
+            "relics": {
+                "head": {
+                    "name": "hunter_of_glacial_forest",
+                    "level": 15,
+                    "main_stat_type": "hp",
+                    "sub_stat_types": ["atk%", "crt_rate", "crt_dmg", "eff_res"],
+                    "enhancements": [
+                        [0, 0, 0, 1, 2],
+                        [0],
+                        [0, 2],
+                        [0]
+                    ]
+                },
+                "hands": {
+                    "name": "hunter_of_glacial_forest",
+                    "level": 15,
+                    "main_stat_type": "atk",
+                    "sub_stat_types": ["hp", "crt_rate", "crt_dmg", "eff_res"],
+                    "enhancements": [
+                        [2, 2],
+                        [0, 2],
+                        [0, 2, 2],
+                        [0, 2]
+                    ]
+                },
+                "body": {
+                    "name": "hunter_of_glacial_forest",
+                    "level": 15,
+                    "main_stat_type": "crt_rate",
+                    "sub_stat_types": ["hp", "spd", "crt_dmg", "eff_res"],
+                    "enhancements": [
+                        [0, 1],
+                        [0, 1],
+                        [1, 2],
+                        [0, 1]
+                    ]
+                },
+                "feet": {
+                    "name": "hunter_of_glacial_forest",
+                    "level": 15,
+                    "main_stat_type": "atk%",
+                    "sub_stat_types": ["atk", "def%", "crt_rate", "eff_hr"],
+                    "enhancements": [
+                        [0, 2],
+                        [2],
+                        [2],
+                        [0, 0, 2, 2]
+                    ]
+                },
+                "planar_sphere": {
+                    "name": "inert_salsotto",
+                    "level": 15,
+                    "main_stat_type": "ice_dmg_boost",
+                    "sub_stat_types": ["hp", "def", "spd", "crt_dmg"],
+                    "enhancements": [
+                        [0],
+                        [0, 0, 1, 2], 
+                        [0, 0, 2],
+                        [0]
+                    ]
+                },
+                "link_rope": {
+                    "name": "inert_salsotto",
+                    "level": 15,
+                    "main_stat_type": "atk%",
+                    "sub_stat_types": ["hp", "atk", "hp%", "break_eff"],
+                    "enhancements": [
+                        [1],
+                        [0, 2, 2],
+                        [2],
+                        [2, 2, 2]
+                    ]
+                }
+            }
+        }
+    ],
+    "uuids": {
+        "baryon": "dd58f488-58f9-454d-a569-61c3c526d1bf",
+        "voidranger_eliminator1": "be026e3d-371d-41b0-8394-6663e47099ce",
+        "voidranger_eliminator2": "05c857bd-d64f-49ad-bab8-e3c12290dc21",
+        "herta": "6279ab17-2230-4c05-952d-f69fd8f11723"
+    },
+    "initial_state": {
+        "herta": {
+            "cur_energy": 60
+        }
+    },
+    "techniques": [],
+    "battle_config": {
+        "type": "default",
+        "trigger": null
+    }
+}

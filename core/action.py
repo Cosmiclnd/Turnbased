@@ -149,17 +149,26 @@ class ActionList:
         for turn in self.normals:
             turn.action_value -= delta
         await battle.current.event_bus.dispatch("normal_turn_start", current)
-        for i in range(current.get_num_actions() + 1):
-            if i != 0:
-                if i == 1:
-                    current.next_run()
-                current.cur_action = i - 1
-                await battle.current.event_bus.dispatch("normal_turn", current)
+        await self.refresh_targets()
+        await self.ask_ultimate()
+        await self.check_extra_turns()
+        current.next_run()
+        for i in range(current.get_num_actions()):
+            if not current.target.can_act():
+                break
+            current.cur_action = i
+            await battle.current.event_bus.dispatch("normal_turn", current)
             await self.refresh_targets()
             await self.ask_ultimate()
             await self.check_extra_turns()
         current.cur_action = None
         await battle.current.event_bus.dispatch("normal_turn_end", current)
+    
+    async def reset(self):
+        for turn in self.normals:
+            # TODO: order?
+            turn.action_value = turn.base_action_value()
+        await self.refresh_targets()
     
     def print(self):
         for turn in self.extras:

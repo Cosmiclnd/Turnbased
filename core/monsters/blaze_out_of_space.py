@@ -82,7 +82,7 @@ class BlazeOutOfSpace(base.Monster):
     
     class NormalTurn(action.NormalTurn):
         def get_num_actions(self):
-            return 2 if self.target.can_act() else 1
+            return 2
 
     def __init__(self, uuid, level, moc, stat_scales, stat_flats):
         super().__init__(uuid, "blaze_out_of_space", level, moc, stat_scales, stat_flats)
@@ -115,7 +115,7 @@ class BlazeOutOfSpace(base.Monster):
     def skill_selector(self, group):
         if self.next_skill is not None:
             return self.next_skill
-        if self.effects.has_effect(self.effect_types["spontaneous_combustion"]):
+        if self.effects.has_effect(self.effect_types.get(self.nameid, "spontaneous_combustion")):
             self.next_skill = group.skills[3]
             return group.skills[2]
         else:
@@ -132,5 +132,5 @@ class BlazeOutOfSpace(base.Monster):
     async def discharge(self, tr):
         if self is not tr.target:
             return
-        await self.effects.delete(self.effect_types["spontaneous_combustion"])
-        await self.effects.delete(self.effect_types["atk_boost"])
+        await self.effects.delete(self.effect_types.get(self.nameid, "spontaneous_combustion"))
+        await self.effects.delete(self.effect_types.get(self.nameid, "atk_boost"))
