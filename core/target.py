@@ -1,3 +1,5 @@
+from dataclasses import dataclass
+
 import item
 import enums
 import config
@@ -10,10 +12,12 @@ import server
 
 all_targets = {}
 
+@dataclass(slots=True, eq=False)
 class DeathState:
-    def __init__(self, t):
-        self.target = t
-        self.clear()
+    target: object
+    alive: bool = True
+    need_clean: bool = False
+    killing_dmg: object = None
 
     def clear(self):
         self.alive = True

@@ -1,11 +1,14 @@
+from dataclasses import dataclass
+
+import modifier
 from characters import base as character
 
+@dataclass(slots=True, eq=False)
 class Healing:
-    def __init__(self, healer, t, stat_desc):
-        self.healer = healer
-        self.target = t
-        self.stat_desc = stat_desc
-        self.multiplier = 1
+    healer: object
+    target: object
+    stat_desc: modifier.StatDesc
+    multiplier: float = 1
     
     def calculate(self):
         mult = self.multiplier

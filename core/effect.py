@@ -1,5 +1,6 @@
 import copy
 from collections.abc import Iterable
+from dataclasses import dataclass
 
 import item
 import event
@@ -183,12 +184,11 @@ class EffectTypes:
     def get(self, group_name, nameid):
         return self.groups[group_name][nameid]
 
-# TODO: dataclass
+@dataclass(slots=True, eq=False)
 class EffectInfo:
-    def __init__(self, duration, stacks):
-        # duration=-1表示永久持续
-        self.duration = duration
-        self.stacks = stacks
+    # duration=-1表示永久持续
+    duration: int
+    stacks: int
     
     def refresh_duration(self, duration):
         if duration == -1 or self.duration != -1 and duration > self.duration:
@@ -305,12 +305,10 @@ class EffectList:
             elif eff.duration_type == Effect.DurationType.TURN_END_CHECK_START and eff in self.start_effects:
                 await self.advance_turn(eff)
 
+@dataclass(slots=True, eq=False)
 class EffectAddition:
-    __slots__ = ("adder", "target", "effect", "duration", "stacks")
-
-    def __init__(self, adder, t, eff, duration, stacks=1):
-        self.adder = adder
-        self.target = t
-        self.effect = eff
-        self.duration = duration
-        self.stacks = stacks
+    adder: object
+    target: object
+    effect: object
+    duration: int
+    stacks: int = 1

@@ -1,5 +1,7 @@
 import copy
 from collections.abc import Iterable
+from dataclasses import dataclass
+from typing import *
 
 import battle
 import enums
@@ -99,16 +101,14 @@ DamageFactorType.MITIGATION = DamageFactorType(async_func(lambda dmg, value: max
 DamageFactorType.BREAK_EFF = DamageFactorType(async_func(lambda dmg, value: 1 + value), break_eff_base_func)
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
 
+@dataclass(slots=True, eq=False)
 class DamageDesc:
-    __slots__ = ("dealer", "stat_desc", "element", "types", "source", "can_kill")
-
-    def __init__(self, dealer, stat_desc, element, types, source, can_kill=True):
-        self.dealer = dealer
-        self.stat_desc = stat_desc
-        self.element = element
-        self.types = types
-        self.source = source
-        self.can_kill = can_kill
+    dealer: object
+    stat_desc: modifier.StatDesc
+    element: enums.Element
+    types: Set[DmgType]
+    source: DmgSource
+    can_kill: bool = True
     
     async def summon(self, t):
         return await Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.source, self.can_kill)
@@ -215,15 +215,13 @@ class Damage:
     def get_info(self):
         return {"amount": self.damage, "crit": self.crit, "types": [t.nameid for t in self.types]}
 
+@dataclass(slots=True, eq=False)
 class ToughnessReduction:
-    __slots__ = ("dealer", "target", "base_amount", "element", "reduction_increase")
-
-    def __init__(self, dealer, target, base_amount, element):
-        self.dealer = dealer
-        self.target = target
-        self.base_amount = base_amount
-        self.element = element
-        self.reduction_increase = 0
+    dealer: object
+    target: object
+    base_amount: float
+    element: enums.Element
+    reduction_increase: float = 0
     
     def calculate(self):
         value = self.base_amount
@@ -238,10 +236,8 @@ class ToughnessReduction:
         tr.base_amount = self.base_amount * scale
         return tr
 
+@dataclass(slots=True, eq=False)
 class DotTick:
-    __slots__ = ("target", "filter", "percentage")
-
-    def __init__(self, target, filter, percentage):
-        self.target = target
-        self.filter = filter
-        self.percentage = percentage
+    target: object
+    filter: Callable
+    percentage: float

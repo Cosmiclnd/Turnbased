@@ -11,6 +11,8 @@ import enums
 from monsters import base as monster
 
 class Skillpoints:
+    __slots__ = ("current", "max")
+
     def __init__(self):
         self.current = 3
         self.max = modifier.Stat("skillpoints")
@@ -73,6 +75,8 @@ class BattleType(enums.Enum):
 BattleType.init()
 
 class BattleConfig:
+    __slots__ = ("type", "use_technique")
+
     def __init__(self, type):
         self.type = type
         if type is BattleType.DEFAULT:
