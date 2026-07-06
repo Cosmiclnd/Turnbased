@@ -358,7 +358,8 @@ class Character(target.Target):
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK, False)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
-        action.NormalTurn.delay_target(tr.target, 0.25)
+        #action.NormalTurn.delay_target(tr.target, 0.25)
+        await battle.current.event_bus.dispatch("action_delay", tr.target, 0.25)
         if self.element is enums.Element.ICE:
             eff_add = effect.EffectAddition(self, tr.target, self.effect_types.get("break", "frozen"), 1)
             await self.try_apply_debuff(eff_add, 1.5)

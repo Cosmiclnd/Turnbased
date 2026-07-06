@@ -78,6 +78,9 @@ class Tester:
     def assert_effect_name(self, test, message):
         return message["effect"] == test["name"]
     
+    def assert_scale(self, test, message):
+        return pytest.approx(message["scale"], abs=1e-6) == test["scale"]
+    
     def respond_ask_ultimate(self, response):
         response["character"] = self.uuids[response["character"]]
         if "target" in response:

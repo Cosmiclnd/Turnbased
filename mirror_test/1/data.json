@@ -657,6 +657,25 @@
     [
       {
         "message_info": {
+          "type": "update",
+          "name": "action_delay"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "baryon"
+          },
+          {
+            "$type": "assert_scale",
+            "scale": 0.25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
           "type": "ask",
           "name": "random_rate"
         },
@@ -1857,6 +1876,25 @@
     [
       {
         "message_info": {
+          "type": "update",
+          "name": "action_delay"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator1"
+          },
+          {
+            "$type": "assert_scale",
+            "scale": 0.25
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
           "type": "ask",
           "name": "random_rate"
         },
@@ -2005,6 +2043,25 @@
           {
             "$type": "assert_damage_amount",
             "amount": 2721.0
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
+          "name": "action_delay"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "voidranger_eliminator2"
+          },
+          {
+            "$type": "assert_scale",
+            "scale": 0.25
           }
         ]
       }

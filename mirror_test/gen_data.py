@@ -12,6 +12,8 @@ character_damage <dealer> <target> <types> <amount> [<crit>] [<toughness_reducti
 monster_damage <dealer> <target> <types> <amount>
 heal <healer> <target> <amount>
 add_effect <adder> <target> <effect_name>
+action_advance <target> <scale>
+action_delay <target> <scale>
 weakness_break <target>
 break_weakness <dealer> <target> <damage_amount> [<effect_name>]
 die <target>
@@ -297,6 +299,44 @@ class Generator:
             ]
         }
     
+    def gen_action_advance(self, target, scale):
+        return {
+            "message_info": {
+                "type": "update",
+                "name": "action_advance"
+            },
+            "tests": [
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": target
+                },
+                {
+                    "$type": "assert_scale",
+                    "scale": self.parse_float(scale)
+                }
+            ]
+        }
+    
+    def gen_action_delay(self, target, scale):
+        return {
+            "message_info": {
+                "type": "update",
+                "name": "action_delay"
+            },
+            "tests": [
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": target
+                },
+                {
+                    "$type": "assert_scale",
+                    "scale": self.parse_float(scale)
+                }
+            ]
+        }
+    
     def gen_weakness_break(self, target):
         return {
             "message_info": {
@@ -315,6 +355,7 @@ class Generator:
     def gen_break_weakness(self, dealer, target, damage_amount, effect_name=None):
         steps = []
         steps.extend(self.coerce_steps(self.gen_character_damage(dealer, target, "break", damage_amount)))
+        steps.extend(self.coerce_steps(self.gen_action_delay(target, "0.25")))
         if effect_name is not None:
             steps.extend(self.coerce_steps(self.gen_ask_random_rate("true")))
             steps.extend(self.coerce_steps(self.gen_add_effect(dealer, target, effect_name)))

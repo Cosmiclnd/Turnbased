@@ -82,6 +82,8 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.clean, self)
         battle.current.event_bus.add_member_listener(self.receive_heal, self)
         battle.current.event_bus.add_member_listener(self.add_effect, self)
+        battle.current.event_bus.add_member_listener(self.action_advance, self)
+        battle.current.event_bus.add_member_listener(self.action_delay, self)
     
     def dead(self):
         return self.death_state.need_clean
@@ -133,13 +135,13 @@ class Target(item.Item):
             self.cur_hp = self.stats["hp"].calculate()
         self.death_state.clear()
     
-    @event.member_listener(event.ListenerPriority.POST_PROCESS, "normal_turn")
+    @event.member_listener(event.ListenerPriority.PRE_PROCESS, "normal_turn_end")
     async def check_frozen(self, turn):
-        if self is not turn.target or turn.cur_action != 0:
+        if self is not turn.target:
             return
         frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
         if frozen:
-            action.NormalTurn.delay_target(self, 0.5)
+            action.NormalTurn.advance_target(self, 0.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def attack_end(self, t):
@@ -214,6 +216,20 @@ class Target(item.Item):
         await server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
             "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
         await self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def action_advance(self, t, scale):
+        if self is not t:
+            return
+        await server.handler.update_client({"name": "action_advance", "target": str(self.uuid), "scale": scale})
+        action.NormalTurn.advance_target(self, scale)
+    
+    @event.member_listener(event.ListenerPriority.EXECUTE)
+    async def action_delay(self, t, scale):
+        if self is not t:
+            return
+        await server.handler.update_client({"name": "action_delay", "target": str(self.uuid), "scale": scale})
+        action.NormalTurn.delay_target(self, scale)
 
 def lerp(a, b, t):
     return a + (b - a) * t
