@@ -2,3 +2,4 @@
 .vscode/
 utilities/output/
 __pycache__/
+client/userdata

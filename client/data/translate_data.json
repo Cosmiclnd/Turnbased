@@ -1,0 +1,51 @@
+{
+    "character_name": {
+        "1013": "herta",
+        "1217": "huohuo",
+        "1303": "ruan_mei"
+    },
+    "skill_type": {
+        "01": "basic_atk",
+        "02": "skill",
+        "03": "ultimate",
+        "04": "talent",
+        "07": "technique"
+    },
+    "lightcone_name": {
+        "21006": "the_birth_of_the_self"
+    },
+    "relic_type_name": {
+        "1": "head",
+        "2": "hands",
+        "3": "body",
+        "4": "feet",
+        "5": "planar_sphere",
+        "6": "link_rope"
+    },
+    "relic_set_name": {
+        "104": "hunter_of_glacial_forest",
+        "306": "inert_salsotto"
+    },
+    "stat_name": {
+        "SpeedDelta": "spd",
+        "HPDelta": "hp",
+        "AttackDelta": "atk",
+        "DefenceDelta": "def",
+        "HPAddedRatio": "hp%",
+        "AttackAddedRatio": "atk%",
+        "DefenceAddedRatio": "def%",
+        "CriticalChanceBase": "crt_rate",
+        "CriticalDamageBase": "crt_dmg",
+        "BreakDamageAddedRatioBase": "break_eff",
+        "StatusProbabilityBase": "eff_hr",
+        "StatusResistanceBase": "eff_res",
+        "SPRatioBase": "energy_regen_rate",
+        "HealRatioBase": "outgoing_healing_boost",
+        "PhysicalAddedRatio": "physical_dmg_boost",
+        "IceAddedRatio": "ice_dmg_boost",
+        "WindAddedRatio": "wind_dmg_boost",
+        "ThunderAddedRatio": "lightning_dmg_boost",
+        "QuantumAddedRatio": "quantum_dmg_boost",
+        "ImaginaryAddedRatio": "imaginary_dmg_boost"
+    }
+}

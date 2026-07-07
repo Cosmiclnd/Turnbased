@@ -18,73 +18,73 @@
     "traces_stats": [
         {
             "nameid": "ruan_mei_trace1",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.053
+        },
+        {
+            "nameid": "ruan_mei_trace2",
             "name": "DEF Boost",
             "stat_name": "def",
             "is_percentage": true,
             "value": 0.05
         },
         {
-            "nameid": "ruan_mei_trace2",
-            "name": "Break Boost",
-            "stat_name": "break_eff",
-            "is_percentage": false,
-            "value": 0.053
-        },
-        {
             "nameid": "ruan_mei_trace3",
             "name": "Break Boost",
             "stat_name": "break_eff",
             "is_percentage": false,
-            "value": 0.08
-        },
-        {
-            "nameid": "ruan_mei_trace4",
-            "name": "DEF Boost",
-            "stat_name": "def",
-            "is_percentage": true,
-            "value": 0.075
-        },
-        {
-            "nameid": "ruan_mei_trace5",
-            "name": "SPD Boost",
-            "stat_name": "spd",
-            "is_percentage": false,
-            "value": 3
-        },
-        {
-            "nameid": "ruan_mei_trace6",
-            "name": "DEF Boost",
-            "stat_name": "def",
-            "is_percentage": true,
-            "value": 0.1
-        },
-        {
-            "nameid": "ruan_mei_trace7",
-            "name": "Break Boost",
-            "stat_name": "break_eff",
-            "is_percentage": false,
-            "value": 0.107
-        },
-        {
-            "nameid": "ruan_mei_trace8",
-            "name": "Break Boost",
-            "stat_name": "break_eff",
-            "is_percentage": false,
             "value": 0.053
         },
         {
-            "nameid": "ruan_mei_trace9",
+            "nameid": "ruan_mei_trace4",
             "name": "SPD Boost",
             "stat_name": "spd",
             "is_percentage": false,
             "value": 2
         },
         {
-            "nameid": "ruan_mei_trace10",
+            "nameid": "ruan_mei_trace5",
             "name": "Break Boost",
             "stat_name": "break_eff",
             "is_percentage": false,
             "value": 0.08
+        },
+        {
+            "nameid": "ruan_mei_trace6",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.075
+        },
+        {
+            "nameid": "ruan_mei_trace7",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.08
+        },
+        {
+            "nameid": "ruan_mei_trace8",
+            "name": "SPD Boost",
+            "stat_name": "spd",
+            "is_percentage": false,
+            "value": 3
+        },
+        {
+            "nameid": "ruan_mei_trace9",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.1
+        },
+        {
+            "nameid": "ruan_mei_trace10",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.107
         }
     ],
     "skills": {

@@ -18,66 +18,66 @@
     "traces_stats": [
         {
             "nameid": "herta_trace1",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.032
+        },
+        {
+            "nameid": "herta_trace2",
             "name": "DEF Boost",
             "stat_name": "def",
             "is_percentage": true,
             "value": 0.05
         },
         {
-            "nameid": "herta_trace2",
+            "nameid": "herta_trace3",
             "name": "DMG Boost: Ice",
             "stat_name": "ice_dmg_boost",
             "is_percentage": false,
             "value": 0.032
         },
         {
-            "nameid": "herta_trace3",
+            "nameid": "herta_trace4",
             "name": "CRT Rate Boost",
             "stat_name": "crt_rate",
             "is_percentage": false,
             "value": 0.027
         },
         {
-            "nameid": "herta_trace4",
+            "nameid": "herta_trace5",
             "name": "DMG Boost: Ice",
             "stat_name": "ice_dmg_boost",
             "is_percentage": false,
             "value": 0.048
         },
         {
-            "nameid": "herta_trace5",
+            "nameid": "herta_trace6",
             "name": "DEF Boost",
             "stat_name": "def",
             "is_percentage": true,
             "value": 0.075
         },
         {
-            "nameid": "herta_trace6",
+            "nameid": "herta_trace7",
             "name": "DMG Boost: Ice",
             "stat_name": "ice_dmg_boost",
             "is_percentage": false,
             "value": 0.048
         },
         {
-            "nameid": "herta_trace7",
+            "nameid": "herta_trace8",
             "name": "CRT Rate Boost",
             "stat_name": "crt_rate",
             "is_percentage": false,
             "value": 0.04
         },
         {
-            "nameid": "herta_trace8",
+            "nameid": "herta_trace9",
             "name": "DEF Boost",
             "stat_name": "def",
             "is_percentage": true,
             "value": 0.1
-        },
-        {
-            "nameid": "herta_trace9",
-            "name": "DMG Boost: Ice",
-            "stat_name": "ice_dmg_boost",
-            "is_percentage": false,
-            "value": 0.032
         },
         {
             "nameid": "herta_trace10",

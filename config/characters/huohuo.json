@@ -18,66 +18,66 @@
     "traces_stats": [
         {
             "nameid": "huohuo_trace1",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.04
+        },
+        {
+            "nameid": "huohuo_trace2",
             "name": "Eff RES Boost",
             "stat_name": "eff_res",
             "is_percentage": false,
             "value": 0.04
         },
         {
-            "nameid": "huohuo_trace2",
+            "nameid": "huohuo_trace3",
             "name": "HP Boost",
             "stat_name": "hp",
             "is_percentage": true,
             "value": 0.04
         },
         {
-            "nameid": "huohuo_trace3",
+            "nameid": "huohuo_trace4",
             "name": "SPD Boost",
             "stat_name": "spd",
             "is_percentage": false,
             "value": 2
         },
         {
-            "nameid": "huohuo_trace4",
+            "nameid": "huohuo_trace5",
             "name": "HP Boost",
             "stat_name": "hp",
             "is_percentage": true,
             "value": 0.06
         },
         {
-            "nameid": "huohuo_trace5",
+            "nameid": "huohuo_trace6",
             "name": "Effect RES Boost",
             "stat_name": "eff_res",
             "is_percentage": false,
             "value": 0.06
         },
         {
-            "nameid": "huohuo_trace6",
+            "nameid": "huohuo_trace7",
             "name": "HP Boost",
             "stat_name": "hp",
             "is_percentage": true,
             "value": 0.06
         },
         {
-            "nameid": "huohuo_trace7",
+            "nameid": "huohuo_trace8",
             "name": "SPD Boost",
             "stat_name": "spd",
             "is_percentage": false,
             "value": 3
         },
         {
-            "nameid": "huohuo_trace8",
+            "nameid": "huohuo_trace9",
             "name": "Effect RES Boost",
             "stat_name": "eff_res",
             "is_percentage": false,
             "value": 0.08
-        },
-        {
-            "nameid": "huohuo_trace9",
-            "name": "HP Boost",
-            "stat_name": "hp",
-            "is_percentage": true,
-            "value": 0.04
         },
         {
             "nameid": "huohuo_trace10",
