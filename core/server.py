@@ -11,7 +11,7 @@ import battle
 import target
 import config
 
-LOG_MESSAGE = False
+LOG_MESSAGE = True
 
 port = 55716
 handler = None
@@ -53,16 +53,20 @@ async def handle(websocket):
     handler = InbattleHandler(websocket)
     while True:
         try:
-            message = await websocket.recv()
-            await handle_message_outbattle(json.loads(message))
-        except (CloseServer, websockets.ConnectionClosedOK):
-            logging.info("connection closed")
-            break
+            try:
+                message = await websocket.recv()
+                await handle_message_outbattle(json.loads(message))
+            except (CloseServer, websockets.ConnectionClosedOK, websockets.ConnectionClosedError):
+                logging.info("connection closed")
+                break
+            except Exception as e:
+                    logging.exception(e)
+                    logging.error(battle.current.event_bus.format_stack())
+                    await websocket.close()
+                    shutdown_event.set()
         except Exception as e:
-            logging.exception(e)
-            logging.error(battle.current.event_bus.format_stack())
-            await websocket.close()
-            shutdown_event.set()
+            logging.critical(e)
+            os._exit(1)
 
 # 服务端的战斗内通信分为以下三种
 # ANSWER: 回复客户端的请求
@@ -130,4 +134,7 @@ class InbattleHandler:
         raise CloseServer
 
 def server_handler(func):  # 提示功能
+    return func
+
+def server_responder(func):  # 提示功能
     return func

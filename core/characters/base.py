@@ -126,6 +126,8 @@ class Character(target.Target):
                     return "bad_target"
                 if selection == "all" and target is not None:
                     return "bad_target"
+                if selection != "all" and target is None:
+                    return "bad_target"
                 return "ok"
             elif type == "character":
                 if target is not None and not isinstance(target, Character):
@@ -133,6 +135,8 @@ class Character(target.Target):
                 if selection == "self" and target is not self.target:
                     return "bad_target"
                 if selection == "all" and target is not None:
+                    return "bad_target"
+                if selection != "all" and target is None:
                     return "bad_target"
                 return "ok"
             return "internal_error"
@@ -173,6 +177,9 @@ class Character(target.Target):
         battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
         battle.current.event_bus.add_member_listener(self.ultimate_turn, self)
 
+        server.handler.add_answer_handler("current_characters", self.respond_current_characters)
+        server.handler.add_answer_handler("character_skill_options", self.respond_skill_options)
+
         self.init_skills()
         self.set_record(record)
     
@@ -184,6 +191,7 @@ class Character(target.Target):
             "talent": skill.SkillGroup(self),
             "technique": skill.SkillGroup(self)
         }
+        self.skill_options = ["basic_atk", "skill"]
         self.skills["basic_atk"].add(self.BasicAtk(self, "basic_atk"))
         self.skills["skill"].add(self.Skill(self, "skill"))
         self.skills["ultimate"].add(self.Ultimate(self, "ultimate"))
@@ -323,7 +331,7 @@ class Character(target.Target):
             return "invalid_message_type"
         try:
             option = message["option"]
-            if option not in ("basic_atk", "skill"):
+            if option not in self.skill_options:
                 return "bad_option"
             if "target" in message:
                 battle.current.cur_main_target = target.from_uuid(uuid.UUID(message["target"]))
@@ -388,3 +396,25 @@ class Character(target.Target):
             return
         await server.handler.update_client({"name": "ultimate_turn", "target": str(self.uuid)})
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
+    
+    @server.server_responder
+    @classmethod
+    async def respond_current_characters(cls, message):
+        result = []
+        for c in battle.current.characters:
+            result.append({"uuid": str(c.uuid), "cur_hp": c.cur_hp, "hp": c.stats["hp"].calculate(), "cur_energy": c.cur_energy,
+                "energy": c.stats["energy"].calculate(), "max_energy": c.stats["max_energy"].calculate()})
+        return {"characters": result}
+    
+    @server.server_responder
+    @classmethod
+    async def respond_skill_options(cls, message):
+        self = target.from_uuid(uuid.UUID(message["target"]))
+        result = {}
+        for option in self.skill_options:
+            skill = self.skills[option].current_skill()
+            result[option] = {
+                "name": skill.nameid,
+                "target_info": skill.target_info
+            }
+        return {"options": result}

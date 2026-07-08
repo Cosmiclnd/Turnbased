@@ -2,14 +2,15 @@ import os
 
 print(os.getcwd())
 
-def combine(dir, output_filename, ext):
+def combine(dirs, output_filename, ext):
     output = ""
     paths = []
 
-    for dirpath, dirnames, filenames in os.walk(dir):
-        for filename in filenames:
-            if filename.endswith(ext):
-                paths.append(os.path.join(dirpath, filename))
+    for dir in dirs:
+        for dirpath, dirnames, filenames in os.walk(dir):
+            for filename in filenames:
+                if filename.endswith(ext):
+                    paths.append(os.path.join(dirpath, filename))
     paths.sort()
 
     for filename in paths:
@@ -23,5 +24,5 @@ def combine(dir, output_filename, ext):
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(output)
 
-combine("core", "utilities\\output\\combined_code.py", ".py")
-combine("config", "utilities\\output\\combined_config.txt", ".json")
+combine(["core", "client"], "utilities\\output\\combined_code.py", ".py")
+combine(["config"], "utilities\\output\\combined_config.txt", ".json")

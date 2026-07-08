@@ -89,6 +89,8 @@ class Monster(target.Target):
         battle.current.event_bus.add_member_listener(self.killed_energy_regen, self)
         battle.current.event_bus.add_member_resolver(self.get_monster_target, self)
 
+        server.handler.add_answer_handler("current_monsters", self.respond_current_monsters)
+
         self.config.set_base_stats()
 
     def init_skills(self, skill_classes):
@@ -161,6 +163,15 @@ class Monster(target.Target):
             return
         taunts = [c.stats["taunt"].calculate() for c in targets]
         return event.QueryResult(await battle.current.random.monster_target(targets, taunts))
+
+    @server.server_responder
+    @classmethod
+    async def respond_current_monsters(self, message):
+        result = []
+        for m in battle.current.monsters:
+            result.append({"uuid": str(m.uuid), "cur_hp": m.cur_hp, "hp": m.stats["hp"].calculate(), "cur_toughness": m.cur_toughness,
+                "toughness": m.stats["toughness"].calculate()})
+        return {"monsters": result}
 
 class Group:
     def __init__(self, name, record):
