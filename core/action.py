@@ -152,15 +152,16 @@ class ActionList:
         await self.refresh_targets()
         await self.ask_ultimate()
         await self.check_extra_turns()
-        current.next_run()
         for i in range(current.get_num_actions()):
-            if not current.target.can_act():
+            if not current.target.can_act() or current is not self.normals[0]:
                 break
             current.cur_action = i
             await battle.current.event_bus.dispatch("normal_turn", current)
             await self.refresh_targets()
             await self.ask_ultimate()
             await self.check_extra_turns()
+        if current is self.normals[0]:
+            current.next_run()
         current.cur_action = None
         await battle.current.event_bus.dispatch("normal_turn_end", current)
     

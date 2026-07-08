@@ -178,8 +178,7 @@ class RuanMei(base.Character):
                     (self.effect.target.stats["break_eff"], modifier.ModifierFilter.CALCULATED, ultimate.get_value("delay_percentage")),
                     (None, None, ultimate.get_value("delay_flat"))
                 ))
-                action.NormalTurn.advance_target(self.target, 1)  # 回退1回合
-                await battle.current.event_bus.dispatch("action_delay", self.target, stat_desc.calculate())
+                await battle.current.event_bus.dispatch("action_delay", self.target, stat_desc.calculate())  # TODO: need more tests
                 dmg = await damage.Damage.create(self.effect.target, self.target,
                     modifier.StatDesc((self.effect.target.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED,
                         ultimate.get_value("percentage"))),

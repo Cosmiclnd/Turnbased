@@ -177,6 +177,17 @@ class Damage:
                 DamageFactorType.BREAK_DMG_BOOST
             ):
                 await self.new_factor(factor)
+        elif self.types == {DmgType.DOT}:
+            for factor in (
+                DamageFactorType.DMG_BOOST,
+                DamageFactorType.WEAKEN,
+                DamageFactorType.DEFENCE,
+                DamageFactorType.DEF_BOOST,
+                DamageFactorType.RESISTANCE,
+                DamageFactorType.VULNERABILITY,
+                DamageFactorType.MITIGATION
+            ):
+                await self.new_factor(factor)
 
     async def new_factor(self, factor):
         if factor in self.factors:

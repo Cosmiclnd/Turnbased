@@ -65,7 +65,7 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def handle_action_delay(self, message):
-        console.print(f"{self.client.targets[message['target']].nameid}'s action is delayed by {message['scale']}", style="yellow")
+        console.print(f"{self.client.targets[message['target']].nameid}'s action is delayed by {round(100 * message['scale'], 2)}%", style="yellow")
         return {"type": "empty"}
     
     def handle_add_effect(self, message):
