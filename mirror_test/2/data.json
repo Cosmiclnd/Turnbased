@@ -2047,6 +2047,19 @@
     [
       {
         "message_info": {
+          "type": "ask",
+          "name": "ultimate_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate_target"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
           "type": "update",
           "name": "skill_trigger"
         },
@@ -2969,6 +2982,19 @@
             "uuid": "herta"
           }
         ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate_target"
+        }
       }
     ],
     [
@@ -4107,6 +4133,19 @@
             "uuid": "huohuo"
           }
         ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate_target"
+        }
       }
     ],
     [
@@ -7124,6 +7163,19 @@
     [
       {
         "message_info": {
+          "type": "ask",
+          "name": "ultimate_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate_target"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
           "type": "update",
           "name": "skill_trigger"
         },
@@ -8368,6 +8420,19 @@
             "uuid": "ruan_mei"
           }
         ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "ask",
+          "name": "ultimate_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate_target"
+        }
       }
     ],
     [

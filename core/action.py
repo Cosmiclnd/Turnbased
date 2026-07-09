@@ -26,6 +26,7 @@ class NormalTurn(item.Item):
         self.spd = self.target.stats["spd"].calculate()
         self.action_value = self.base_action_value()
         self.order = next_add_order()
+        self.next_scale = 1  # 用于实现“下一次行动提前X%”的效果
     
     def get_num_actions(self):
         return 1
@@ -41,11 +42,15 @@ class NormalTurn(item.Item):
     
     def next_run(self):
         self.spd = self.target.stats["spd"].calculate()
-        self.action_value = self.base_action_value()
+        self.action_value = self.next_scale * self.base_action_value()
+        self.next_scale = 1
         self.order = next_order()
     
     def advance(self, scale):
-        self.action_value = max(0, self.action_value - self.base_action_value() * scale)
+        if self.cur_action is None:
+            self.action_value = max(0, self.action_value - self.base_action_value() * scale)
+        else:
+            self.next_scale = max(0, self.next_scale - scale)
     
     def delay(self, scale):
         self.advance(-scale)

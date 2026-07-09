@@ -69,7 +69,7 @@ begin
   add_effect huohuo ruan_mei night_of_fright.effect
   heal huohuo ruan_mei 544
 end
-extra_turn ultimate_turn ruan_mei
+ultimate_turn ruan_mei
 skill_trigger ruan_mei petals_to_stream_repose_in_dream
 add_effect ruan_mei ruan_mei ruan_mei.zone
 begin
@@ -113,7 +113,7 @@ begin
   heal huohuo herta 467
   add_effect herta herta hunter_of_glacial_forest.4pc_effect
 end
-extra_turn ultimate_turn herta
+ultimate_turn herta
 skill_trigger herta its_magic_i_added_some_magic
 character_damage herta voidranger_eliminator normal 16972 true 30
 break_weakness herta voidranger_eliminator 3848 break.frozen
@@ -157,7 +157,7 @@ begin
   add_effect huohuo huohuo night_of_fright.effect
   heal huohuo huohuo 1238
 end
-extra_turn ultimate_turn huohuo
+ultimate_turn huohuo
 skill_trigger huohuo tail_spiritual_domination
 add_effect huohuo huohuo huohuo.divine_provision
 begin
@@ -266,7 +266,7 @@ begin
   heal huohuo herta 467
   add_effect herta herta hunter_of_glacial_forest.4pc_effect
 end
-extra_turn ultimate_turn herta
+ultimate_turn herta
 skill_trigger herta its_magic_i_added_some_magic
 character_damage herta blaze_out_of_space normal 18094 true 30
 add_effect herta herta herta.no_one_can_betray_me
@@ -325,7 +325,7 @@ begin
   add_effect huohuo ruan_mei night_of_fright.effect
   heal huohuo ruan_mei 544
 end
-extra_turn ultimate_turn ruan_mei
+ultimate_turn ruan_mei
 skill_trigger ruan_mei petals_to_stream_repose_in_dream
 add_effect ruan_mei ruan_mei ruan_mei.zone
 begin

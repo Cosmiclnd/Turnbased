@@ -1,0 +1,449 @@
+{
+    "nameid": "firefly",
+    "name": "Firefly",
+    "rarity": 5,
+    "element": "fire",
+    "path": "destruction",
+    "base_stat_scales": {
+        "hp": 21,
+        "atk": 27,
+        "def": 31
+    },
+    "base_stats": {
+        "spd": 104,
+        "taunt": 1.25,
+        "energy": 240,
+        "max_energy": 240
+    },
+    "traces_stats": [
+        {
+            "nameid": "firefly_trace1",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.053
+        },
+        {
+            "nameid": "firefly_trace2",
+            "name": "Eff RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": false,
+            "value": 0.04
+        },
+        {
+            "nameid": "firefly_trace3",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.053
+        },
+        {
+            "nameid": "firefly_trace4",
+            "name": "SPD Boost",
+            "stat_name": "spd",
+            "is_percentage": false,
+            "value": 2
+        },
+        {
+            "nameid": "firefly_trace5",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.08
+        },
+        {
+            "nameid": "firefly_trace6",
+            "name": "Eff RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": false,
+            "value": 0.06
+        },
+        {
+            "nameid": "firefly_trace7",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.08
+        },
+        {
+            "nameid": "firefly_trace8",
+            "name": "SPD Boost",
+            "stat_name": "spd",
+            "is_percentage": false,
+            "value": 3
+        },
+        {
+            "nameid": "firefly_trace9",
+            "name": "Eff RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": false,
+            "value": 0.08
+        },
+        {
+            "nameid": "firefly_trace10",
+            "name": "Break Boost",
+            "stat_name": "break_eff",
+            "is_percentage": false,
+            "value": 0.107
+        }
+    ],
+    "skills": {
+        "basic_atk": {
+            "nameid": "order_flare_propulsion",
+            "name": "Order: Flare Propulsion",
+            "category": "basic_atk",
+            "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
+            "delta_skillpoints": 1,
+            "desc": "Deals Fire DMG equal to {percentage:.2%} of SAM's ATK to one designated enemy.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.6, 0.7, 0.8, 0.9, 1.0, 1.1]
+                },
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "enhanced_basic_atk": {
+            "nameid": "fyrefly_type_iv_pyrogenic_decimation",
+            "name": "Fyrefly Type-IV: Pyrogenic Decimation",
+            "category": "basic_atk",
+            "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
+            "delta_skillpoints": 1,
+            "desc": "Restores HP by an amount equal to {heal_percentage:.2%} of this unit's Max HP. Deals Fire DMG equal to {percentage:.2%} of SAM's ATK to one designated enemy.",
+            "values": {
+                "heal_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [1.0, 1.1, 1.2, 1.3, 1.4, 1.5, 1.6, 1.7, 1.8, 1.9, 2.0, 2.1, 2.2]
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 15
+                }
+            }
+        },
+        "skill": {
+            "nameid": "order_aerial_bombardment",
+            "name": "Order: Aerial Bombardment",
+            "category": "skill",
+            "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
+            "delta_skillpoints": -1,
+            "desc": "Consumes HP equal to {hp_cost:.2%} of this unit's Max HP and regenerates a fixed amount of Energy equal to {energy_regen_rate:.2%} of this unit's Max Energy. Deals Fire DMG equal to {percentage:.2%} of SAM's ATK to one designated enemy. If current HP is insufficient, reduces HP to 1 instead. Additionally, advances this unit's action by {advance_scale:.2%}.",
+            "values": {
+                "hp_cost": {
+                    "is_dynamic": false,
+                    "value": 0.4
+                },
+                "energy_regen_rate": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.51, 0.52, 0.53, 0.54, 0.55, 0.5625, 0.575, 0.5875, 0.6, 0.61, 0.62, 0.63, 0.64, 0.65]
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.625, 1.75, 1.875, 2, 2.1, 2.2, 2.3, 2.4, 2.5]
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "advance_scale": {
+                    "is_dynamic": false,
+                    "value": 0.25
+                }
+            }
+        },
+        "enhanced_skill": {
+            "nameid": "fyrefly_type_iv_deathstar_overload",
+            "name": "Fyrefly Type-IV: Deathstar Overload",
+            "category": "skill",
+            "type": "blast",
+            "target": {
+                "type": "monster",
+                "selection": "blast"
+            },
+            "delta_skillpoints": -1,
+            "desc": "Restores HP by an amount equal to {heal_percentage:.2%} of this unit's Max HP. If the designated enemy does not have Fire Weakness, applies Fire Weakness for {duration} turn(s). Deals Fire DMG equal to ({main_break_eff_percentage:.2%} × Break Effect + {main_percentage:.2%}) of SAM's ATK to this target. At the same time, deals Fire DMG equal to ({sub_break_eff_percentage:.2%} × Break Effect + {sub_percentage:.2%}) of SAM's ATK to adjacent targets. Break Effect scaling is capped at {break_eff_cap:.2%}.",
+            "values": {
+                "heal_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.25
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "main_break_eff_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                },
+                "main_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [1, 1.1, 1.2, 1.3, 1.4, 1.5, 1.625, 1.75, 1.875, 2, 2.1, 2.2, 2.3, 2.4, 2.5]
+                },
+                "sub_break_eff_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.1
+                },
+                "sub_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8125, 0.875, 0.9375, 1, 1.05, 1.1, 1.15, 1.2, 1.25]
+                },
+                "break_eff_cap": {
+                    "is_dynamic": false,
+                    "value": 3.6
+                },
+                "main_toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
+                "sub_toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 15
+                }
+            }
+        },
+        "ultimate": {
+            "nameid": "fyrefly_type_iv_complete_combustion",
+            "name": "Fyrefly Type-IV: Complete Combustion",
+            "category": "ultimate",
+            "type": "enhance",
+            "target": {
+                "type": "character",
+                "selection": "self"
+            },
+            "delta_skillpoints": 0,
+            "desc": "Enters the Complete Combustion state, advances this unit's Action by {advance_scale:.2%}, and gains Enhanced Basic ATK and Enhanced Skill. While in Complete Combustion, increases SPD by {spd_boost}, and when using the Enhanced Basic ATK or Enhanced Skill, increases this unit's Weakness Break Efficiency by {wb_eff_boost:.2%} and increases Break DMG dealt by SAM to the enemy targets by {break_dmg_boost:.2%}, lasting until this current attack ends.\nA countdown timer for the Complete Combustion state appears in the Action Order. When the countdown timer's turn starts, SAM exits the Complete Combustion state. The countdown timer has a fixed SPD of {countdown_spd}.\nSAM cannot use Ultimate while in Complete Combustion.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "advance_scale": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "spd_boost": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [30, 33, 36, 39, 42, 45, 48.75, 52.5, 56.25, 60, 63, 66, 69, 72, 75]
+                },
+                "wb_eff_boost": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "break_dmg_boost": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.1, 0.11, 0.12, 0.13, 0.14, 0.15, 0.1625, 0.175, 0.1875, 0.2, 0.21, 0.22, 0.23, 0.24, 0.25]
+                },
+                "countdown_spd": {
+                    "is_dynamic": false,
+                    "value": 70
+                }
+            }
+        },
+        "talent": {
+            "nameid": "chrysalid_pyronexus",
+            "name": "Chrysalid Pyronexus",
+            "category": "talent",
+            "type": "defense",
+            "delta_skillpoints": 0,
+            "desc": "The lower the HP, the less DMG received. When HP is {hp_threshold:.2%} or lower, the DMG Reduction reaches its maximum effect, reducing up to {max_dmg_reduction:.2%}. During the Complete Combustion, the DMG Reduction remains at its maximum effect, and the Effect RES increases by {eff_res_boost:.2%}.\nIf Energy is lower than {energy_threshold:.2%} when the battle starts, regenerates Energy to {energy_threshold:.2%}. Once Energy is regenerated to its maximum, dispels all debuffs on this unit.",
+            "values": {
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                },
+                "max_dmg_reduction": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.2, 0.225, 0.25, 0.275, 0.3, 0.325, 0.35, 0.375, 0.4, 0.425, 0.45, 0.475, 0.5]
+                },
+                "eff_res_boost": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.1, 0.12, 0.14, 0.16, 0.18, 0.2, 0.22, 0.24, 0.26, 0.28, 0.3, 0.32, 0.34]
+                },
+                "energy_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                }
+            }
+        },
+        "technique": {
+            "nameid": "delta_order_meteroic_incineration",
+            "name": "Δ Order: Meteoric Incineration",
+            "category": "technique",
+            "type": "technique",
+            "delta_skillpoints": 0,
+            "desc": "Jump into the air and move freely for {seconds} second(s). Attacking during this time ends the technique early. When the duration ends, descend and immediately attack all enemies in a set area. At the start of each wave, applies Fire Weakness to enemies without it, lasting for {duration} turn(s). Then deals Fire DMG equal to {percentage:.2%} of SAM's ATK to all enemies.",
+            "values": {
+                "seconds": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 2.0
+                }
+            }
+        },
+        "bonus_trace1": {
+            "nameid": "module_alpha_antilag_outburst",
+            "name": "Module α: Antilag Outburst",
+            "category": "trace",
+            "desc": "While in the Complete Combustion state, SAM's Break Effect increases by {break_eff_boost:.2%}. When using Enhanced Basic ATK or Enhanced Skill to inflict Weakness Break on a target, the Complete Combustion countdown is delayed by {delay_scale:.2%}. This effect can trigger a maximum of {max_trigger} time(s) during each Complete Combustion state.",
+            "values": {
+                "break_eff_boost": {
+                    "is_dynamic": false,
+                    "value": 0.25
+                },
+                "delay_scale": {
+                    "is_dynamic": false,
+                    "value": 0.1
+                },
+                "max_trigger": {
+                    "is_dynamic": false,
+                    "value": 3
+                }
+            }
+        },
+        "bonus_trace2": {
+            "nameid": "module_beta_autoreactive_armor",
+            "name": "Module β: Autoreactive Armor",
+            "category": "trace",
+            "desc": "When SAM is in Complete Combustion with a Break Effect that is equal to or greater than {break_eff_threshold1:.2%}/{break_eff_threshold2:.2%}, attacking a Weakness-Broken enemy target will convert the Toughness Reduction of this attack into 1 instance of {percentage1:.2%}/{percentage2:.2%} Super Break DMG.",
+            "values": {
+                "break_eff_threshold1": {
+                    "is_dynamic": false,
+                    "value": 1.5
+                },
+                "break_eff_threshold2": {
+                    "is_dynamic": false,
+                    "value": 3
+                },
+                "percentage1": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "percentage2": {
+                    "is_dynamic": false,
+                    "value": 1.5
+                }
+            }
+        },
+        "bonus_trace3": {
+            "nameid": "module_gamma_core_overload",
+            "name": "Module γ: Core Overload",
+            "category": "trace",
+            "desc": "For every {atk_step} point(s) of SAM's ATK that exceeds {atk_threshold}, increases this unit's Break Effect by {break_eff_boost:.2%}.",
+            "values": {
+                "atk_step": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "atk_threshold": {
+                    "is_dynamic": false,
+                    "value": 1800
+                },
+                "break_eff_boost": {
+                    "is_dynamic": false,
+                    "value": 0.008
+                }
+            }
+        },
+        "eidolon1": {
+            "nameid": "in_reddened_chrysalis_i_once_rest",
+            "name": "In Reddened Chrysalis, I Once Rest",
+            "category": "eidolon",
+            "desc": "When using the Enhanced Skill, ignores {def_ignore:.2%} of the target's DEF. Enhanced Skill does not consume Skill Points.",
+            "values": {
+                "def_ignore": {
+                    "is_dynamic": false,
+                    "value": 0.15
+                }
+            }
+        },
+        "eidolon2": {
+            "nameid": "from_shattered_sky_i_free_fall",
+            "name": "From Shattered Sky, I Free Fall",
+            "category": "eidolon",
+            "desc": "While in Complete Combustion, using the Enhanced Basic ATK or the Enhanced Skill to defeat an enemy target or to Break their Weakness allows SAM to immediately gain 1 extra turn. This effect can only trigger 1 time per turn, and the trigger count resets at the start of SAM's turn.",
+            "values": {}
+        },
+        "eidolon3": {
+            "nameid": "i_will_see_fireflies_ablaze",
+            "name": "I Will See, Fireflies Ablaze",
+            "category": "eidolon",
+            "desc": "Skill Lv. +2, up to a maximum of Lv. 15.\nBasic ATK Lv. +1, up to a maximum of Lv. 10.",
+            "values": {}
+        },
+        "eidolon4": {
+            "nameid": "in_rekindled_dreams_i_soar",
+            "name": "In Rekindled Dreams, I Soar",
+            "category": "eidolon",
+            "desc": "While in Complete Combustion, increases SAM's Effect RES by {effect_res_boost:.2%}.",
+            "values": {
+                "effect_res_boost": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                }
+            }
+        },
+        "eidolon5": {
+            "nameid": "in_fleeting_midnight_i_glow",
+            "name": "In Fleeting Midnight, I Glow",
+            "category": "eidolon",
+            "desc": "Ultimate Lv. +2, up to a maximum of Lv. 15.\nTalent Lv. +2, up to a maximum of Lv. 15.",
+            "values": {}
+        },
+        "eidolon6": {
+            "nameid": "in_finalized_morrow_i_full_bloom",
+            "name": "In Finalized Morrow, I Full Bloom",
+            "category": "eidolon",
+            "desc": "While in Complete Combustion, increases SAM's Fire RES PEN by {fire_res_pen:.2%}. When using the Enhanced Basic ATK or Enhanced Skill, increases Weakness Break Efficiency by {wb_eff_boost:.2%}.",
+            "values": {
+                "fire_res_pen": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                },
+                "wb_eff_boost": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                }
+            }
+        }
+    }
+}

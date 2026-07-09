@@ -52,7 +52,7 @@ ask ultimate herta
 ask ultimate
 
   add_effect herta herta hunter_of_glacial_forest.4pc_effect
-  extra_turn ultimate_turn herta
+  ultimate_turn herta
   skill_trigger herta its_magic_i_added_some_magic
   character_damage herta voidranger_eliminator1 normal 11338 true 20
   break_weakness herta voidranger_eliminator1 2721 break.frozen

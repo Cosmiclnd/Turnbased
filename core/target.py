@@ -125,6 +125,11 @@ class Target(item.Item):
         if await battle.current.random.rate(chance):
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
+    async def consume_hp(self, amount):
+        # 主动消耗生命值，最多使生命值降低至1点
+        await battle.current.event_bus.dispatch("cur_hp_modify", self, -amount)
+        self.cur_hp = max(1, self.cur_hp)
+    
     @event.member_listener(event.ListenerPriority.START, "battle_start")
     async def set_initial_state(self):
         if "cur_hp" in self.initial_state:

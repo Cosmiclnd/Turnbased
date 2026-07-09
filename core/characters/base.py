@@ -313,17 +313,19 @@ class Character(target.Target):
             return "not_enough_energy"
         if not self.ultimate_available():
             return "ultimate_not_available"
-        skill = self.get_current_skill("ultimate")
+        return "ok"
+    
+    @server.server_handler
+    async def check_ultimate_target(self, message):
+        print("!!!", message)
+        ultimate = self.get_current_skill("ultimate")
+        battle.current.cur_main_target = None
         if "target" in message:
-            battle.current.cur_main_target = target.from_uuid(message["target"])
+            battle.current.cur_main_target = target.from_uuid(uuid.UUID(message["target"]))
             if battle.current.cur_main_target is None:
                 return "target_not_found"
-        else:
-            battle.current.cur_main_target = None
-        info = await skill.target_validator(battle.current.cur_main_target)
-        if info != "ok":
-            return info
-        return "ok"
+        info = await ultimate.target_validator(battle.current.cur_main_target)
+        return info
     
     @server.server_handler
     async def character_skill_option_handler(self, message):
@@ -395,6 +397,8 @@ class Character(target.Target):
         if self is not turn.target:
             return
         await server.handler.update_client({"name": "ultimate_turn", "target": str(self.uuid)})
+        ultimate = self.get_current_skill("ultimate")
+        await server.handler.ask_client({"name": "ultimate_target", "target_info": ultimate.target_info}, self.check_ultimate_target)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
     
     @server.server_responder

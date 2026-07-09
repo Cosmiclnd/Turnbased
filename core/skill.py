@@ -11,10 +11,12 @@ class SkillType(enums.Enum):
     RESTORE = item.Item("restore", "Restore")
     SUPPORT = item.Item("support", "Support")
     ENHANCE = item.Item("enhance", "Enhance")
+    DEFENSE = item.Item("defense", "Defense")
     IMPAIR = item.Item("impair", "Impair")
+    TECHNIQUE = item.Item("technique", "Technique")  # 用于直接攻击怪物的秘技
     LOCK_ON = item.Item("lock_on", "Lock On")
     OTHERS = item.Item("others", "Others")
-    ALL = (SINGLE, BLAST, BOUNCE, AOE, RESTORE, SUPPORT, ENHANCE, IMPAIR, LOCK_ON, OTHERS)
+    ALL = (SINGLE, BLAST, BOUNCE, AOE, RESTORE, SUPPORT, ENHANCE, DEFENSE, IMPAIR, TECHNIQUE, LOCK_ON, OTHERS)
 SkillType.init()
 
 class Skill(item.Item):

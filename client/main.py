@@ -25,15 +25,15 @@ class UpdateHandler:
         return method(message, *words[1:])
     
     def handle_new_wave(self, message):
-        console.print(f"*** Wave {message['wave']}/{message['total']}", style="bold yellow")
+        console.print(f"*** Wave {message['wave']}/{message['total']} ***", style="bold yellow")
         return {"type": "empty"}
     
     def handle_normal_turn_start(self, message):
-        console.print(f"Normal Turn: {self.client.targets[message['target']].nameid}", style="bold blue")
+        console.print(f"> Normal Turn: {self.client.targets[message['target']].nameid} <", style="bold blue")
         return {"type": "empty"}
     
     def handle_ultimate_turn(self, message):
-        console.print(f"Ultimate Turn: {self.client.targets[message['target']].nameid}", style="bold blue")
+        console.print(f"> Ultimate Turn: {self.client.targets[message['target']].nameid} <", style="bold blue")
         return {"type": "empty"}
     
     def handle_skill_trigger(self, message):
@@ -61,11 +61,13 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def handle_action_advance(self, message):
-        console.print(f"{self.client.targets[message['target']].nameid}'s action is advanced by {message['scale']}", style="yellow")
+        console.print(f"{self.client.targets[message['target']].nameid}'s action is advanced by {round(100 * message['scale'], 2)}%",
+            style="yellow")
         return {"type": "empty"}
     
     def handle_action_delay(self, message):
-        console.print(f"{self.client.targets[message['target']].nameid}'s action is delayed by {round(100 * message['scale'], 2)}%", style="yellow")
+        console.print(f"{self.client.targets[message['target']].nameid}'s action is delayed by {round(100 * message['scale'], 2)}%",
+            style="yellow")
         return {"type": "empty"}
     
     def handle_add_effect(self, message):
@@ -91,7 +93,7 @@ class UpdateHandler:
     
     def handle_herta(self, message, *args):
         if args[0] == "follow_up_turn":
-            console.print(f"Follow-Up Attack: {self.client.targets[message['target']].nameid}", style="bold blue")
+            console.print(f"> Follow-Up Attack: {self.client.targets[message['target']].nameid} <", style="bold blue")
         return {"type": "empty"}
 
 class AskHandler:
@@ -105,11 +107,26 @@ class AskHandler:
     def handle_ultimate(self, message):
         if message["info"] is not None:
             console.print(f"Error: {message['info']}", style="bold red")
-        characters = self.print_current_characters()
+        characters = self.print_current_characters(lambda c: c["cur_energy"] >= c["energy"])
+        if not characters:
+            return {"type": "empty"}
         raw = input("ultimate> ")
         if not raw:
             return {"type": "empty"}
         return {"type": "ask", "name": "ultimate", "character": characters[int(raw)]["uuid"]}
+    
+    def handle_ultimate_target(self, message):
+        if message["info"] is not None:
+            console.print(f"Error: {message['info']}", style="bold red")
+        if message["target_info"]["type"] == "character":
+            target_list = self.print_current_characters()
+        elif message["target_info"]["type"] == "monster":
+            target_list = self.print_current_monsters()
+        response = {"type": "ask", "name": "ultimate_target"}
+        raw = input("target> ")
+        if raw:
+            response["target"] = target_list[int(raw)]["uuid"]
+        return response
     
     def handle_character_skill_option(self, message):
         if message["info"] is not None:
@@ -145,18 +162,18 @@ class AskHandler:
             response["target"] = target
         return response
     
-    def print_current_characters(self):
+    def print_current_characters(self, filter=None):
         result = self.client.query({"name": "current_characters"})
-        characters = result["characters"]
+        characters = [c for c in result["characters"] if filter is None or filter(c)]
         for i, character in enumerate(characters):
             console.print(f"\\[{i}] {self.client.targets[character['uuid']].nameid}"
                 f"HP: {round(character['cur_hp'], 2)}/{round(character['hp'], 2)} "
                 f"Energy: {round(character['cur_energy'], 2)}/{round(character['max_energy'], 2)}", style="#a0a0a0")
         return characters
     
-    def print_current_monsters(self):
+    def print_current_monsters(self, filter=None):
         result = self.client.query({"name": "current_monsters"})
-        monsters = result["monsters"]
+        monsters = [m for m in result["monsters"] if filter is None or filter(m)]
         for i, monster in enumerate(monsters):
             console.print(f"\\[{i}] {self.client.targets[monster['uuid']].nameid}"
                 f"HP: {round(monster['cur_hp'], 2)}/{round(monster['hp'], 2)} "

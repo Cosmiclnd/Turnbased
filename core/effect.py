@@ -151,7 +151,7 @@ class DotEffect(Effect):
             if self.target is not dot.target or not dot.filter(self.effect):
                 return
             await battle.current.event_bus.dispatch("additional_damage",
-                await self.effect.dmg_desc.summon(self.target).scale(dot.percentage * self.old_stacks))
+                (await self.effect.dmg_desc.summon(self.target)).scale(dot.percentage * self.old_stacks))
 
     def __init__(self, nameid, name, dmg_desc, debuff_type, max_stacks, dispellable=True):
         super().__init__(nameid, name, Effect.Type.DEBUFF, Effect.DurationType.TURN_END, max_stacks, dispellable)

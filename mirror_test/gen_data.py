@@ -4,6 +4,7 @@ Syntax:
 UPDATE:
 new_wave
 normal_turn_start <target>
+ultimate_turn <character> [<target>]
 extra_turn <name> <target>
 skill_trigger <target> <skill_name>
 damage <dealer> <target> <types> <amount> [<crit>]
@@ -21,7 +22,8 @@ battle_win
 battle_lose
 
 ASK:
-ultimate [<character>] [<target>]
+ultimate [<character>]
+ultimate_target [<target>]
 character_skill_option <option> [<target>]
 random_rate <result>
 random_monster_target <result>
@@ -145,6 +147,23 @@ class Generator:
                 }
             ]
         }
+    
+    def gen_ultimate_turn(self, character, target=None):
+        steps = [{
+            "message_info": {
+                "type": "update",
+                "name": "ultimate_turn"
+            },
+            "tests": [
+                {
+                    "$type": "assert_target",
+                    "name": "target",
+                    "uuid": character
+                }
+            ]
+        }]
+        steps.extend(self.coerce_steps(self.gen_ask_ultimate_target(target)))
+        return steps
     
     def gen_extra_turn(self, name, target):
         return {
@@ -396,21 +415,35 @@ class Generator:
         }
     
     def gen_ask_ultimate(self, character=None, target=None):
-        process = {
+        steps = [{
             "message_info": {
                 "type": "ask",
                 "name": "ultimate"
             },
             "tests": []
-        }
+        }]
         if character is not None:
-            process["response"] = {
+            steps[0]["response"] = {
                 "type": "ask",
                 "name": "ultimate",
                 "character": character
             }
-            if target is not None:
-                process["response"]["target"] = target
+        return steps
+    
+    def gen_ask_ultimate_target(self, target=None):
+        process = {
+            "message_info": {
+                "type": "ask",
+                "name": "ultimate_target"
+            },
+            "tests": [],
+            "response": {
+                "type": "ask",
+                "name": "ultimate_target"
+            }
+        }
+        if target is not None:
+            process["response"]["target"] = target
         return process
     
     def gen_ask_character_skill_option(self, option, target=None):

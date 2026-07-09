@@ -1755,6 +1755,19 @@
     [
       {
         "message_info": {
+          "type": "ask",
+          "name": "ultimate_target"
+        },
+        "tests": [],
+        "response": {
+          "type": "ask",
+          "name": "ultimate_target"
+        }
+      }
+    ],
+    [
+      {
+        "message_info": {
           "type": "update",
           "name": "skill_trigger"
         },

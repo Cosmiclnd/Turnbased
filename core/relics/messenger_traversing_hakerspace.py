@@ -31,7 +31,7 @@ class MessengerTraversingHakerspace(base.RelicSet):
         async def ultimate_turn(self, turn):
             if self.target is not turn.target:
                 return
-            if not self.target.skills["ultimate"].current_skill().is_character_target():
+            if not self.target.get_current_skill("ultimate").is_character_target():
                 return
             for c in battle.current.characters:
                 eff_add = effect.EffectAddition(self.target, c, self.effect_types.get(self.relic_set.nameid, "4pc"),
