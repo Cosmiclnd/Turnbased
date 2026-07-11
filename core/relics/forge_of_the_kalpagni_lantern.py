@@ -23,7 +23,7 @@ class ForgeOfTheKalpagniLantern(base.RelicSet):
         async def hit(self, dmg):
             if self.target is not dmg.dealer:
                 return
-            if dmg.target.has_weakness(enums.Element.FIRE):
+            if dmg.target.weaknesses.has_weakness(enums.Element.FIRE):
                 eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.relic_set.nameid, "2pc"),
                     self.get_value_2pc("duration"))
                 await battle.current.event_bus.dispatch("add_effect", eff_add)

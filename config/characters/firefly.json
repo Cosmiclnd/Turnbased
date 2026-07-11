@@ -317,6 +317,10 @@
                 "percentage": {
                     "is_dynamic": false,
                     "value": 2.0
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
                 }
             }
         },
@@ -324,7 +328,7 @@
             "nameid": "module_alpha_antilag_outburst",
             "name": "Module α: Antilag Outburst",
             "category": "trace",
-            "desc": "While in the Complete Combustion state, SAM's Break Effect increases by {break_eff_boost:.2%}. When using Enhanced Basic ATK or Enhanced Skill to inflict Weakness Break on a target, the Complete Combustion countdown is delayed by {delay_scale:.2%}. This effect can trigger a maximum of {max_trigger} time(s) during each Complete Combustion state.",
+            "desc": "While in the Complete Combustion state, SAM's Break Effect increases by {break_eff_boost:.2%}. When using Enhanced Basic ATK or Enhanced Skill to inflict Weakness Break on a target, the Complete Combustion countdown is delayed by {delay_scale:.2%}. This effect can trigger a maximum of {trigger_count} time(s) during each Complete Combustion state.",
             "values": {
                 "break_eff_boost": {
                     "is_dynamic": false,
@@ -334,7 +338,7 @@
                     "is_dynamic": false,
                     "value": 0.1
                 },
-                "max_trigger": {
+                "trigger_count": {
                     "is_dynamic": false,
                     "value": 3
                 }
@@ -414,9 +418,9 @@
             "nameid": "in_rekindled_dreams_i_soar",
             "name": "In Rekindled Dreams, I Soar",
             "category": "eidolon",
-            "desc": "While in Complete Combustion, increases SAM's Effect RES by {effect_res_boost:.2%}.",
+            "desc": "While in Complete Combustion, increases SAM's Effect RES by {eff_res_boost:.2%}.",
             "values": {
-                "effect_res_boost": {
+                "eff_res_boost": {
                     "is_dynamic": false,
                     "value": 0.5
                 }
@@ -433,9 +437,9 @@
             "nameid": "in_finalized_morrow_i_full_bloom",
             "name": "In Finalized Morrow, I Full Bloom",
             "category": "eidolon",
-            "desc": "While in Complete Combustion, increases SAM's Fire RES PEN by {fire_res_pen:.2%}. When using the Enhanced Basic ATK or Enhanced Skill, increases Weakness Break Efficiency by {wb_eff_boost:.2%}.",
+            "desc": "While in Complete Combustion, increases SAM's Fire RES PEN by {fire_res_pen_boost:.2%}. When using the Enhanced Basic ATK or Enhanced Skill, increases Weakness Break Efficiency by {wb_eff_boost:.2%}.",
             "values": {
-                "fire_res_pen": {
+                "fire_res_pen_boost": {
                     "is_dynamic": false,
                     "value": 0.2
                 },

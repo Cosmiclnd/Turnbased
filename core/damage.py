@@ -12,18 +12,21 @@ class DmgType(enums.Enum):
     NORMAL = item.Item("normal", "Normal")
     ADDITIONAL = item.Item("additional", "Additional")
     BREAK = item.Item("break", "Break")
+    SUPER_BREAK = item.Item("super_break", "Super Break")
     DOT = item.Item("dot", "DoT")
-    ALL = (NORMAL, ADDITIONAL, BREAK)
+    ALL = (NORMAL, ADDITIONAL, BREAK, SUPER_BREAK, DOT)
 DmgType.init()
 
 class DmgSource(enums.Enum):
     BASIC_ATK = item.Item("basic_atk", "Basic ATK")
+    ENHANCED_BASIC_ATK = item.Item("enhanced_basic_atk", "Enhanced Basic ATK")
     SKILL = item.Item("skill", "Skill")
+    ENHANCED_SKILL = item.Item("enhanced_skill", "Enhanced Skill")
     ULTIMATE = item.Item("ultimate", "Ultimate")
     FOLLOW_UP = item.Item("follow_up", "Follow-Up")
     WEAKNESS_BREAK = item.Item("weakness_break", "Weakness Break")
     MONSTER = item.Item("monster", "Monster")
-    ALL = (BASIC_ATK, SKILL, ULTIMATE, FOLLOW_UP, WEAKNESS_BREAK, MONSTER)
+    ALL = (BASIC_ATK, ENHANCED_BASIC_ATK, SKILL, ENHANCED_SKILL, ULTIMATE, FOLLOW_UP, WEAKNESS_BREAK, MONSTER)
 DmgSource.init()
 
 class DamageFactorType:
@@ -83,6 +86,9 @@ async def mitigation_factor_base_func(dmg):
 async def break_eff_base_func(dmg):
     return dmg.dealer.stats["break_eff"].calculate(damage=dmg)
 
+async def break_dmg_boost_base_func(dmg):
+    return dmg.dealer.stats["break_dmg_boost"].calculate(damage=dmg)
+
 def async_func(func):
     async def wrapper(*args):
         return func(*args)
@@ -99,7 +105,9 @@ DamageFactorType.RESISTANCE = DamageFactorType(async_func(lambda dmg, value: min
 DamageFactorType.VULNERABILITY = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
 DamageFactorType.MITIGATION = DamageFactorType(async_func(lambda dmg, value: max(value, 0.01)), mitigation_factor_base_func)
 DamageFactorType.BREAK_EFF = DamageFactorType(async_func(lambda dmg, value: 1 + value), break_eff_base_func)
-DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
+DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), break_dmg_boost_base_func)
+DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS = DamageFactorType(async_func(lambda dmg, value: value), async_func(lambda dmg: 0))
+DamageFactorType.SUPER_BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
 
 @dataclass(slots=True, eq=False)
 class DamageDesc:
@@ -188,6 +196,21 @@ class Damage:
                 DamageFactorType.MITIGATION
             ):
                 await self.new_factor(factor)
+        elif self.types == {DmgType.SUPER_BREAK}:
+            for factor in (
+                DamageFactorType.MAX_TOUGHNESS,
+                DamageFactorType.MULTIPLIER,
+                DamageFactorType.DEFENCE,
+                DamageFactorType.DEF_BOOST,
+                DamageFactorType.RESISTANCE,
+                DamageFactorType.VULNERABILITY,
+                DamageFactorType.MITIGATION,
+                DamageFactorType.BREAK_EFF,
+                DamageFactorType.BREAK_DMG_BOOST,
+                DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS,
+                DamageFactorType.SUPER_BREAK_DMG_BOOST
+            ):
+                await self.new_factor(factor)
 
     async def new_factor(self, factor):
         if factor in self.factors:
@@ -207,7 +230,7 @@ class Damage:
         else:
             dmg = self.scale(self.hit_split_ratio)
         await battle.current.event_bus.dispatch("deal_damage", dmg)
-        if self.toughness_reduction is not None and self.target.has_weakness(self.toughness_reduction.element):
+        if self.toughness_reduction is not None and self.target.weaknesses.has_weakness(self.toughness_reduction.element):
             await battle.current.event_bus.dispatch("reduce_toughness", dmg.toughness_reduction)
         if self.energy_regen is not None:
             from characters import base as character  # TODO: Python 3.15 lazy import
@@ -225,13 +248,30 @@ class Damage:
     
     def get_info(self):
         return {"amount": self.damage, "crit": self.crit, "types": [t.nameid for t in self.types]}
+    
+    def __setattr__(self, name, value):
+        super().__setattr__(name, value)
+        if name == "toughness_reduction" and self.toughness_reduction is not None:
+            self.toughness_reduction.damage = self
+            self.toughness_reduction.dealer = self.dealer
+            self.toughness_reduction.target = self.target
+    
+    def is_break_dmg(self):
+        return self.types in ({DmgType.BREAK}, {DmgType.ADDITIONAL, DmgType.BREAK}, {DmgType.SUPER_BREAK})
+    
+    def is_from_basic_atk(self):
+        return self.source in (damage.DmgSource.BASIC_ATK, damage.DmgSource.ENHANCED_BASIC_ATK)
+    
+    def is_from_skill(self):
+        return self.source in (damage.DmgSource.SKILL, damage.DmgSource.ENHANCED_SKILL)
 
 @dataclass(slots=True, eq=False)
 class ToughnessReduction:
-    dealer: object
-    target: object
     base_amount: float
     element: enums.Element
+    damage: Damage = None
+    dealer: object = None
+    target: object = None
     reduction_increase: float = 0
     
     def calculate(self):
@@ -246,6 +286,12 @@ class ToughnessReduction:
         tr = copy.copy(self)
         tr.base_amount = self.base_amount * scale
         return tr
+    
+    async def to_super_break_dmg(self, multiplier):
+        dmg = await Damage.create(self.dealer, self.target,
+            modifier.StatDesc((self.dealer.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, multiplier)), self.element, {DmgType.SUPER_BREAK}, self.damage.source, False)
+        dmg.factors[DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS] = self.calculate() / 10
+        return dmg
 
 @dataclass(slots=True, eq=False)
 class DotTick:

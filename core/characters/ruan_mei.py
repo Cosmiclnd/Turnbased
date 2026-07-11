@@ -27,7 +27,7 @@ class RuanMei(base.Character):
             dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
@@ -47,7 +47,7 @@ class RuanMei(base.Character):
             await battle.current.event_bus.dispatch("add_effect", eff_add)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
-    class Ultimate(base.Character.CharacterSkill):
+    class Ultimate(base.Character.CharacterUltimate):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
@@ -57,8 +57,6 @@ class RuanMei(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            self.target.cur_energy -= self.target.stats["energy"].calculate()
-            self.target.ultimate_activated = False
             duration = self.get_value("duration")
             if self.target.eidolons >= 6:
                 duration += self.target.config.get_skill_value("eidolon6", "duration")
@@ -70,9 +68,9 @@ class RuanMei(base.Character):
         pass
     
     class Technique(base.Character.CharacterSkill):
-        class ExtraTurn(action.ExtraTurn):
+        class ExtraTurn(target.Target.ExtraTurn):
             def __init__(self, t, skill):
-                super().__init__(t, action.ExtraTurn.Priority.NORMAL)
+                super().__init__(f"{t.nameid}_technique_turn", f"{t.name}'s Technique Turn", action.ExtraTurn.Priority.NORMAL, t)
                 self.skill = skill
                 battle.current.event_bus.add_member_listener(self.extra_turn, self)
             
@@ -178,7 +176,7 @@ class RuanMei(base.Character):
                     (self.effect.target.stats["break_eff"], modifier.ModifierFilter.CALCULATED, ultimate.get_value("delay_percentage")),
                     (None, None, ultimate.get_value("delay_flat"))
                 ))
-                await battle.current.event_bus.dispatch("action_delay", self.target, stat_desc.calculate())  # TODO: need more tests
+                await battle.current.event_bus.dispatch("action_delay", self.target.cur_normal_turn, stat_desc.calculate())  # TODO: need more tests
                 dmg = await damage.Damage.create(self.effect.target, self.target,
                     modifier.StatDesc((self.effect.target.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED,
                         ultimate.get_value("percentage"))),
@@ -289,7 +287,7 @@ class RuanMei(base.Character):
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
     async def turn_start(self, turn):
-        if self is not turn.target:
+        if not isinstance(turn, target.Target.NormalTurn) or self is not turn.target:
             return
         await battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace2", "energy"))
     

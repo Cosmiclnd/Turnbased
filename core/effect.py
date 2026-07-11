@@ -120,7 +120,7 @@ class FrozenEffect(Effect):
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def normal_turn_start(self, turn):
-            if self.target is not turn.target:
+            if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
                 return
             if self.effect.dmg_desc is not None:
                 await battle.current.event_bus.dispatch("additional_damage", await self.effect.dmg_desc.summon(self.target))
@@ -163,6 +163,24 @@ class DotEffect(Effect):
     
     def is_debuff_type(self, type):
         return type is self.debuff_type
+
+class AdditionalWeaknessEffect(Effect):
+    class Instance(Effect.Instance):
+        async def refresh(self):
+            stacks = self.target.effects.get_stacks(self.effect)
+            if self.old_stacks == 0 and stacks != 0:
+                self.eff_dead = item.DeadToggle(self.target)
+                from monsters import base as monster  # TODO: Python 3.15 lazy import
+                self.target.weaknesses.additions.append(monster.AdditionalWeakness(self.effect.nameid, self.effect.name, self.effect.caster,
+                    self.target, self.effect.element, self.eff_dead))
+            elif self.old_stacks != 0 and stacks == 0:
+                self.eff_dead.dead_toggle = True
+            self.old_stacks = stacks
+
+    def __init__(self, nameid, name, duration_type, caster, element, dispellable=True):
+        super().__init__(nameid, name, Effect.Type.DEBUFF, duration_type, 1, dispellable)
+        self.caster = caster
+        self.element = element
 
 class EffectTypes:
     def __init__(self, t=None):
@@ -272,14 +290,21 @@ class EffectList:
         return True
     
     async def dispel(self, count, f=None):
-        for i in range(count):
+        # count=0表示全部驱散
+        dispelled = 0
+        while True:
+            if count != 0:
+                if count <= 0:
+                    return dispelled
+                count -= 1
             effects = list(filter(lambda eff: eff.dispellable and (f is None or f(eff)), self.effects.keys()))
             if not effects:
-                return i
+                return dispelled
             import random  # TODO: battle.current.random
             eff = random.choice(effects)
             await self.delete(eff)
-        return count
+            dispelled += 1
+        return dispelled
     
     async def die(self):
         for eff in list(self.effects.keys()):
@@ -287,7 +312,7 @@ class EffectList:
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     async def normal_turn_start(self, turn):
-        if self.target is not turn.target:
+        if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
             return
         await battle.current.event_bus.dispatch("tick_dot", damage.DotTick(self.target, lambda x: True, 1))
         for eff in list(self.effects.keys()):
@@ -297,7 +322,7 @@ class EffectList:
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS)
     async def normal_turn_end(self, turn):
-        if self.target is not turn.target:
+        if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
             return
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_END:

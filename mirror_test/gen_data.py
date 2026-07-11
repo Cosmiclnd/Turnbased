@@ -326,8 +326,7 @@ class Generator:
             },
             "tests": [
                 {
-                    "$type": "assert_target",
-                    "name": "target",
+                    "$type": "assert_turn_target",
                     "uuid": target
                 },
                 {
@@ -345,8 +344,7 @@ class Generator:
             },
             "tests": [
                 {
-                    "$type": "assert_target",
-                    "name": "target",
+                    "$type": "assert_turn_target",
                     "uuid": target
                 },
                 {

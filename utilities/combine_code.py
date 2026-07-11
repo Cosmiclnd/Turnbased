@@ -24,5 +24,5 @@ def combine(dirs, output_filename, ext):
     with open(output_filename, "w", encoding="utf-8") as f:
         f.write(output)
 
-combine(["core", "client"], "utilities\\output\\combined_code.py", ".py")
+combine(["core", "client", "mirror_test"], "utilities\\output\\combined_code.py", ".py")
 combine(["config"], "utilities\\output\\combined_config.txt", ".json")

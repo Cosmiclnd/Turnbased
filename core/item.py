@@ -6,6 +6,9 @@ class Item:
     
     def dead(self):
         return self.master.dead() if self.master else False
+    
+    def on_removed(self, list):
+        pass
 
 class DeadToggle(Item):
     def __init__(self, master=None):
@@ -20,6 +23,9 @@ class DeadToggle(Item):
             return True
         return self.dead_toggle
 
-class ItemList(list[Item]):
+class ItemList(list):
     def refresh(self):
+        dead = [item for item in self if item.dead()]
         self[:] = [item for item in self if not item.dead()]
+        for item in dead:
+            item.on_removed(self)

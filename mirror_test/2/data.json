@@ -726,7 +726,7 @@
     "ruan_mei"
   ],
   "battle_config": {
-    "type": "moc",
+    "type": "default",
     "trigger": null
   },
   "process": [
@@ -1394,8 +1394,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "baryon1"
           },
           {
@@ -3126,8 +3125,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "voidranger_eliminator"
           },
           {
@@ -5783,8 +5781,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "baryon2"
           },
           {
@@ -5957,8 +5954,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "baryon3"
           },
           {
@@ -6203,8 +6199,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "baryon4"
           },
           {
@@ -6377,8 +6372,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "baryon5"
           },
           {
@@ -8952,8 +8946,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "blaze_out_of_space"
           },
           {

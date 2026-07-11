@@ -11,6 +11,28 @@ import effect
 import server
 import item
 
+class AdditionalWeakness(item.Item):
+    def __init__(self, nameid, name, adder, t, element, master=None):
+        super().__init__(nameid, name, master)
+        self.adder = adder
+        self.target = t
+        self.element = element
+
+class WeaknessList:
+    def __init__(self, t):
+        self.target = t
+        self.base = []
+        self.additions = item.ItemList()
+    
+    def has_weakness(self, element):
+        if element is None or element in self.base:
+            return True
+        self.additions.refresh()
+        for a in self.additions:
+            if a.element is element:
+                return True
+        return False
+
 class Monster(target.Target):
     class Tier(enums.Enum):
         NORMAL = item.Item("normal", "Normal")
@@ -30,10 +52,10 @@ class Monster(target.Target):
         
         def init(self):
             self.target.tier = Monster.Tier.dict_nameid[self.data["tier"]]
-            self.target.base_weakness = list(map(lambda x: enums.Element.dict_nameid[x], self.data["weakness"]))
             self.target.first_turn_delay = self.data["first_turn_delay"]
         
         def set_base_stats(self):
+            self.target.weaknesses.base = list(map(lambda x: enums.Element.dict_nameid[x], self.data["weakness"]))
             for stat_name in ("hp", "atk", "def", "spd"):
                 self.target.stats[stat_name].base_value = self.get_base_stat(
                     stat_name, self.target.level, self.target.moc) * self.data["base_stat_scales"][stat_name]
@@ -75,13 +97,13 @@ class Monster(target.Target):
         super().__init__(uuid, nameid, self.config.name, level)
         self.config.init()
         self.moc = moc
-        self.additional_weakness = []
+        self.weaknesses = WeaknessList(self)
         self.stats.new_stats(["toughness", "toughness_vulnerability"], self)
         self.skills = skill.SkillGroup(self)
         self.cur_toughness = 0
         self.weakness_broken = False
 
-        battle.current.event_bus.add_member_listener(self.normal_turn, self)
+        battle.current.event_bus.add_member_listener(self.target_action, self)
         battle.current.event_bus.add_member_listener(self.reduce_toughness, self)
         battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
         battle.current.event_bus.add_member_listener(self.weakness_break, self)
@@ -100,9 +122,6 @@ class Monster(target.Target):
     def countable(self):
         return True
     
-    def has_weakness(self, elem):
-        return elem in self.base_weakness or elem in self.additional_weakness
-    
     @event.member_listener(event.ListenerPriority.START, "battle_start")
     async def set_initial_state(self):
         # 这个listener在Target类中已经被添加
@@ -110,8 +129,8 @@ class Monster(target.Target):
         self.cur_toughness = self.stats["toughness"].calculate()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def normal_turn(self, turn):
-        if self is not turn.target:
+    async def target_action(self, t):
+        if self is not t:
             return
         if self.weakness_broken:
             await battle.current.event_bus.dispatch("weakness_recover", self)
@@ -233,10 +252,14 @@ class Setup:
         for group in self.current_wave().check():
             for monster in group.monsters:
                 self.monster_queue.append(monster)
+        added = False
         while battle.current.count_monsters() < 5:
             if len(self.monster_queue) == 0:
                 break
             await battle.current.event_bus.dispatch("add_monster", self.monster_queue.pop(0))
+            added = True
+        if added:
+            await battle.current.action_list.refresh_targets()
     
     async def check(self):
         if self.cur_wave >= 0:

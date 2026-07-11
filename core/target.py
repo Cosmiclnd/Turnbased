@@ -49,6 +49,47 @@ class Target(item.Item):
                 else:
                     values[name] = self.get_skill_value(skill_name, name)
             return desc.format(**values)
+    
+    class NormalTurn(action.NormalTurn):
+        def __init__(self, t):
+            super().__init__(f"{t.nameid}_normal_turn", f"{t.name}'s Normal Turn", t.stats["spd"], t)
+            self.target = t
+            
+            battle.current.event_bus.add_member_listener(self.normal_turn, self)
+        
+        def get_info(self):
+            return {"target": str(self.target.uuid)} | super().get_info()
+    
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def normal_turn(self, turn):
+            if self is not turn:
+                return
+            await battle.current.event_bus.dispatch("target_action", self.target)
+    
+    class ExtraTurn(action.ExtraTurn):
+        def __init__(self, nameid, name, priority, t):
+            super().__init__(nameid, name, priority, item.DeadToggle(t))
+            self.target = t
+    
+    class ExtraNormalTurn(ExtraTurn):
+        def __init__(self, t):
+            super().__init__(f"{t.nameid}_extra_normal_turn", f"{t.name}'s Extra Normal Turn", action.ExtraTurn.Priority.NORMAL, t)
+
+            battle.current.event_bus.add_member_listener(self.extra_turn, self)
+            if not battle.current.features.get("extra_normal_turn_not_reset_at_new_wave"):
+                battle.current.event_bus.add_member_listener(self.new_wave_start, self)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def extra_turn(self, turn):
+            if self is not turn:
+                return
+            await server.handler.update_client({"name": "extra_normal_turn", "target": str(self.target.uuid)})
+            self.master.dead_toggle = True
+            await battle.current.event_bus.dispatch("target_action", self.target)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def new_wave_start(self):
+            self.master.dead_toggle = True
 
     def __init__(self, uuid, nameid, name, level):
         super().__init__(nameid, name, None)
@@ -61,10 +102,11 @@ class Target(item.Item):
             stat_names.append(f"{e.nameid}_dmg_boost")
             stat_names.append(f"{e.nameid}_res")
             stat_names.append(f"{e.nameid}_res_pen")
-        stat_names.extend(["eff_hr", "eff_res"])
+        stat_names.extend(["eff_hr", "eff_res", "break_dmg_boost"])
         for e in effect.Debuff.ALL:
             stat_names.append(f"{e.nameid}_res")
         self.stats.new_stats(stat_names, self)
+        self.cur_normal_turn = None
         self.cur_hp = 0
         self.death_state = DeathState(self)
         self.effects = effect.EffectList(self)
@@ -82,14 +124,13 @@ class Target(item.Item):
         battle.current.event_bus.add_member_listener(self.clean, self)
         battle.current.event_bus.add_member_listener(self.receive_heal, self)
         battle.current.event_bus.add_member_listener(self.add_effect, self)
-        battle.current.event_bus.add_member_listener(self.action_advance, self)
-        battle.current.event_bus.add_member_listener(self.action_delay, self)
     
     def dead(self):
         return self.death_state.need_clean
     
     def new_normal_turn(self):
-        return action.NormalTurn(self)
+        self.cur_normal_turn = self.NormalTurn(self)
+        return self.cur_normal_turn
     
     def can_act(self):
         if not self.death_state.alive:
@@ -139,14 +180,14 @@ class Target(item.Item):
         else:
             self.cur_hp = self.stats["hp"].calculate()
         self.death_state.clear()
-    
+
     @event.member_listener(event.ListenerPriority.PRE_PROCESS, "normal_turn_end")
     async def check_frozen(self, turn):
-        if self is not turn.target:
+        if not isinstance(turn, self.NormalTurn) or self is not turn.target:
             return
         frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
         if frozen:
-            action.NormalTurn.advance_target(self, 0.5)
+            turn.advance(0.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def attack_end(self, t):
@@ -221,20 +262,6 @@ class Target(item.Item):
         await server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
             "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
         await self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def action_advance(self, t, scale):
-        if self is not t:
-            return
-        await server.handler.update_client({"name": "action_advance", "target": str(self.uuid), "scale": scale})
-        action.NormalTurn.advance_target(self, scale)
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def action_delay(self, t, scale):
-        if self is not t:
-            return
-        await server.handler.update_client({"name": "action_delay", "target": str(self.uuid), "scale": scale})
-        action.NormalTurn.delay_target(self, scale)
 
 def lerp(a, b, t):
     return a + (b - a) * t

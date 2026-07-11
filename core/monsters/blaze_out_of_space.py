@@ -80,7 +80,7 @@ class BlazeOutOfSpace(base.Monster):
                 self.get_value("duration"))
             await battle.current.event_bus.dispatch("add_effect", eff_add)
     
-    class NormalTurn(action.NormalTurn):
+    class NormalTurn(target.Target.NormalTurn):
         def get_num_actions(self):
             return 2
 
@@ -109,9 +109,6 @@ class BlazeOutOfSpace(base.Monster):
         self.effect_types.add_unique(effect.ModifierEffect(*names, effect.Effect.Type.BUFF,
             effect.Effect.DurationType.TURN_END_CHECK_START, self.config.get_skill_value("skill4", "max_stacks"), "atk", mod), "atk_boost")
     
-    def new_normal_turn(self):
-        return self.NormalTurn(self)
-    
     def skill_selector(self, group):
         if self.next_skill is not None:
             return self.next_skill
@@ -124,7 +121,7 @@ class BlazeOutOfSpace(base.Monster):
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
     async def reset_next_skill(self, turn):
-        if self is not turn.target or turn.cur_action != 0:
+        if not isinstance(turn, target.Target.NormalTurn) or self is not turn.target or turn.cur_action != 0:
             return
         self.next_skill = None
     

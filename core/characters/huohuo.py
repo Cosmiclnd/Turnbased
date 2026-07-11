@@ -26,7 +26,7 @@ class Huohuo(base.Character):
             dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.2, 0.2, 0.2, 0.4):
                 dmg.hit_split_ratio = ratio
@@ -63,7 +63,7 @@ class Huohuo(base.Character):
                 await self.target.heal_by_skill(sub)
             await battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
     
-    class Ultimate(base.Character.CharacterSkill):
+    class Ultimate(base.Character.CharacterUltimate):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
@@ -72,8 +72,6 @@ class Huohuo(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            self.target.cur_energy -= self.target.stats["energy"].calculate()
-            self.target.ultimate_activated = False
             duration = self.target.config.get_skill_value("talent", "duration")
             if self.target.eidolons >= 1:
                 duration += self.target.config.get_skill_value("eidolon1", "duration")
@@ -118,13 +116,13 @@ class Huohuo(base.Character):
             
         @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
         async def turn_start(self, turn):
-            if not isinstance(turn.target, base.Character) or not self.target.has_divine_provision():
+            if not isinstance(turn, target.Target.NormalTurn) or not isinstance(turn.target, base.Character) or not self.target.has_divine_provision():
                 return
             await self.trigger_divine_provision(turn.target)
         
         @event.member_listener(event.ListenerPriority.EXECUTE + 1, "ultimate_turn")
         async def ultimate_turn_start(self, turn):
-            if not isinstance(turn.target, base.Character) or not self.target.has_divine_provision():
+            if not self.target.has_divine_provision():
                 return
             await self.trigger_divine_provision(turn.target)
         

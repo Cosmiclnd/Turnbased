@@ -13,6 +13,7 @@ import server
 import damage
 import effect
 import action
+import item
 from relics import base as relic
 
 class Character(target.Target):
@@ -58,18 +59,23 @@ class Character(target.Target):
         def get_base_stat(self, name, level):
             return config.load_config_data("characters", "level_curve")[name][level - 1]
 
-    class UltimateTurn(action.ExtraTurn):
+    class UltimateTurn(target.Target.ExtraTurn):
         def __init__(self, t):
-            super().__init__(t, action.ExtraTurn.Priority.ULTIMATE)
+            super().__init__(f"{t.nameid}_ultimate_turn", f"{t.name}'s Ultimate Turn", action.ExtraTurn.Priority.ULTIMATE, t)
+            
             battle.current.event_bus.add_member_listener(self.extra_turn, self)
+            if not battle.current.features.get("ultimate_turn_not_reset_at_new_wave"):
+                battle.current.event_bus.add_member_listener(self.new_wave_start, self)
         
         def dead(self):
             if super().dead():
                 return True
-            energy = self.target.stats["energy"].calculate()
-            if self.target.cur_energy < energy:
+            return self.target.cur_energy < self.target.stats["energy"].calculate()
+        
+        def on_removed(self, list):
+            super().on_removed(list)
+            if list is battle.current.action_list.extras:
                 self.target.ultimate_activated = False
-                return True
         
         def is_ultimate(self):
             return True
@@ -80,6 +86,10 @@ class Character(target.Target):
                 return
             self.master.dead_toggle = True
             await battle.current.event_bus.dispatch("ultimate_turn", self)
+        
+        @event.member_listener(event.ListenerPriority.EXECUTE)
+        async def new_wave_start(self):
+            self.master.dead_toggle = True
 
     class CharacterSkill(skill.Skill):
         def __init__(self, t, skill_name):
@@ -95,6 +105,7 @@ class Character(target.Target):
                 self.target_info = config_data["target"]
             self.bonus_level = 0
             battle.current.event_bus.add_member_listener(self.skill_trigger_pre, t)
+            battle.current.event_bus.add_member_listener(self.skill_trigger_post, t)
         
         def is_character_target(self):
             return self.target_info["type"] == "character"
@@ -141,11 +152,30 @@ class Character(target.Target):
                 return "ok"
             return "internal_error"
         
+        async def before_skill_trigger(self):
+            self.skill_dead = item.DeadToggle(self.target)
+            battle.current.skillpoints.modify(self.delta_skillpoints)
+        
+        async def after_skill_trigger(self):
+            self.skill_dead.dead_toggle = True
+        
         @event.member_listener(event.ListenerPriority.PRE_PROCESS, "skill_trigger")
         async def skill_trigger_pre(self, skill):
             if self is not skill:
                 return
-            battle.current.skillpoints.modify(self.delta_skillpoints)
+            await self.before_skill_trigger()
+        
+        @event.member_listener(event.ListenerPriority.POST_PROCESS, "skill_trigger")
+        async def skill_trigger_post(self, skill):
+            if self is not skill:
+                return
+            await self.after_skill_trigger()
+    
+    class CharacterUltimate(CharacterSkill):
+        async def before_skill_trigger(self):
+            await super().before_skill_trigger()
+            self.target.cur_energy -= self.target.stats["energy"].calculate()
+            self.target.ultimate_activated = False
 
     def __init__(self, nameid, record):
         self.config = self.CharacterConfig(config.load_config_data("characters", nameid), self)
@@ -171,7 +201,7 @@ class Character(target.Target):
         self.cur_energy = 0
         self.ultimate_activated = False
 
-        battle.current.event_bus.add_member_listener(self.normal_turn, self)
+        battle.current.event_bus.add_member_listener(self.target_action, self)
         battle.current.event_bus.add_member_listener(self.break_weakness, self)
         battle.current.event_bus.add_member_listener(self.regen_energy, self)
         battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
@@ -303,7 +333,7 @@ class Character(target.Target):
         return self.cur_energy >= self.stats["energy"].calculate()
     
     def ultimate_available(self):
-        return True
+        return self.can_act()
 
     @server.server_handler
     async def check_ultimate(self, message):
@@ -317,7 +347,6 @@ class Character(target.Target):
     
     @server.server_handler
     async def check_ultimate_target(self, message):
-        print("!!!", message)
         ultimate = self.get_current_skill("ultimate")
         battle.current.cur_main_target = None
         if "target" in message:
@@ -354,8 +383,8 @@ class Character(target.Target):
             return "invalid_message"
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def normal_turn(self, turn):
-        if self is not turn.target:
+    async def target_action(self, t):
+        if self is not t:
             return
         await server.handler.ask_client({"name": "character_skill_option", "target": str(self.uuid)}, self.character_skill_option_handler)
         await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
@@ -368,7 +397,7 @@ class Character(target.Target):
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK, False)
         await battle.current.event_bus.dispatch("additional_damage", dmg)
-        await battle.current.event_bus.dispatch("action_delay", tr.target, 0.25)
+        await battle.current.event_bus.dispatch("action_delay", tr.target.cur_normal_turn, 0.25)
         if self.element is enums.Element.ICE:
             eff_add = effect.EffectAddition(self, tr.target, self.effect_types.get("break", "frozen"), 1)
             await self.try_apply_debuff(eff_add, 1.5)

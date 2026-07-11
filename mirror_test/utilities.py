@@ -53,9 +53,7 @@ class Tester:
             return response
     
     def assert_target(self, test, message):
-        name = test["name"]
-        uuid_name = test["uuid"]
-        return message[name] == self.uuids[uuid_name]
+        return message[test["name"]] == self.uuids[test["uuid"]]
     
     def assert_skill_name(self, test, message):
         return message["skill"] == test["name"]
@@ -77,6 +75,9 @@ class Tester:
     
     def assert_effect_name(self, test, message):
         return message["effect"] == test["name"]
+    
+    def assert_turn_target(self, test, message):
+        return message["turn"]["target"] == self.uuids[test["uuid"]]
     
     def assert_scale(self, test, message):
         return pytest.approx(message["scale"], abs=1e-6) == test["scale"]

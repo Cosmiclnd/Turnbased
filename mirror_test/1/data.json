@@ -662,8 +662,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "baryon"
           },
           {
@@ -1894,8 +1893,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "voidranger_eliminator1"
           },
           {
@@ -2068,8 +2066,7 @@
         },
         "tests": [
           {
-            "$type": "assert_target",
-            "name": "target",
+            "$type": "assert_turn_target",
             "uuid": "voidranger_eliminator2"
           },
           {

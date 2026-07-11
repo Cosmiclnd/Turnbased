@@ -8,6 +8,7 @@ import target
 import modifier
 import server
 import enums
+import features
 from monsters import base as monster
 
 class Skillpoints:
@@ -75,21 +76,18 @@ class BattleType(enums.Enum):
 BattleType.init()
 
 class BattleConfig:
-    __slots__ = ("type", "use_technique")
+    __slots__ = ("type")
 
     def __init__(self, type):
         self.type = type
-        if type is BattleType.DEFAULT:
-            self.use_technique = "new_wave_start"
-        else:
-            self.use_technique = "battle_start"
 
 class Battle:
     def __init__(self):
         self.random = None
         self.config = None
+        self.features = features.Features()
         self.event_bus = event.EventBus()
-        self.action_list = action.ActionList()
+        self.action_list = None
         self.skillpoints = Skillpoints()
         self.characters = item.ItemList()
         self.monsters = item.ItemList()
@@ -98,8 +96,8 @@ class Battle:
         self.suspended = False
 
         self.event_bus.add_member_listener(self.battle_start, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.check_techniques_new_wave, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.check_techniques_battle_start, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener(self.new_wave_start, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener(self.check_techniques, nameid="battle", name="Battle")
         self.event_bus.add_member_listener(self.add_monster, nameid="battle", name="Battle")
         self.event_bus.add_member_listener(self.normal_turn_start_message, nameid="battle", name="Battle")
         self.event_bus.add_member_listener(self.skill_trigger_message, nameid="battle", name="Battle")
@@ -136,19 +134,14 @@ class Battle:
             self.action_list.normals.append(t.new_normal_turn())
         await self.monster_setup.check()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE - 1, "new_wave_start")
-    async def check_techniques_new_wave(self):
-        if self.config.use_technique == "new_wave_start":
-            for c in self.characters:
-                await c.check_technique()
-        if self.config.type is BattleType.MOC:
-            await self.action_list.reset()
+    @event.member_listener(event.ListenerPriority.EXECUTE - 1)
+    async def new_wave_start(self):
+        await self.action_list.reset()
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS - 1, "battle_start")
-    async def check_techniques_battle_start(self):
-        if self.config.use_technique == "battle_start":
-            for c in self.characters:
-                await c.check_technique()
+    async def check_techniques(self):
+        for c in self.characters:
+            await c.check_technique()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def add_monster(self, m):
@@ -159,6 +152,8 @@ class Battle:
     
     @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
     async def normal_turn_start_message(self, turn):
+        if not isinstance(turn, target.Target.NormalTurn):
+            return
         await server.handler.update_client({"name": "normal_turn_start", "target": str(turn.target.uuid)})
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 2, "skill_trigger")

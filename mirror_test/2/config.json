@@ -371,7 +371,7 @@
         "ruan_mei"
     ],
     "battle_config": {
-        "type": "moc",
+        "type": "default",
         "trigger": null
     }
 }

@@ -76,7 +76,8 @@ class StatDesc:
         return result
     
     def scale(self, scale):
-        return StatDesc(tuple((stat, filter, value * scale) for stat, filter, value in self.desc))
+        return StatDesc(tuple((stat, filter, value.scale(scale) if isinstance(value, StatDescFunc) else value * scale)
+            for stat, filter, value in self.desc))
     
     def print(self, target, indent=0):
         for stat, filter, func in self.desc:
@@ -98,7 +99,7 @@ class StatDesc:
             else:
                 print(" " * indent + f"{result}")
 
-class StatDict(dict[str, Stat]):
+class StatDict(dict):
     def new_stats(self, names, target=None):
         for name in names:
             self[name] = Stat(name, target)
@@ -152,7 +153,11 @@ class StatConverter(StatDescFunc):
         if value < self.threshold:
             return 0
         times = (value - self.threshold) // self.step
+        if self.cap is None:
+            return times * self.scale
         return min(times * self.scale, self.cap)
     
     def scale(self, scale):
+        if self.cap is None:
+            return StatConverter(self.threshold, self.step, self.scale * scale, None)
         return StatConverter(self.threshold, self.step, self.scale * scale, self.cap * scale)

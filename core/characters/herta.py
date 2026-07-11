@@ -28,7 +28,7 @@ class Herta(base.Character):
             dmg = await damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
             await battle.current.event_bus.dispatch("hit", dmg)
             if self.target.eidolons >= 1:
@@ -56,7 +56,7 @@ class Herta(base.Character):
                     dmg = await damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-                    dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+                    dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
                     dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
                     if t.cur_hp >= t.stats["hp"].calculate() * self.get_value("hp_threshold"):
                         dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.get_value("dmg_boost")
@@ -66,7 +66,7 @@ class Herta(base.Character):
                     await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
     
-    class Ultimate(base.Character.CharacterSkill):
+    class Ultimate(base.Character.CharacterUltimate):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
@@ -76,14 +76,12 @@ class Herta(base.Character):
         async def skill_trigger(self, skill):
             if self is not skill:
                 return
-            self.target.cur_energy -= self.target.stats["energy"].calculate()
-            self.target.ultimate_activated = False
             await battle.current.event_bus.dispatch("attack_start", self.target)
             for t in battle.current.monsters[:]:
                 dmg = await damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+                dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
                 dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
                 if self.target.traces_unlocked[2] and t.effects.has_debuff(effect.Debuff.FROZEN):
                     dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace3", "dmg_boost")
@@ -95,18 +93,21 @@ class Herta(base.Character):
             await battle.current.event_bus.dispatch("attack_end", self.target)
     
     class Talent(base.Character.CharacterSkill):
-        class FollowUp(action.ExtraTurn):
+        class FollowUp(target.Target.ExtraTurn):
             def __init__(self, t, skill):
-                super().__init__(t, action.ExtraTurn.Priority.FOLLOW_UP)
+                super().__init__(f"{t.nameid}_follow_up_turn", f"{t.name}'s Follow Up Turn", action.ExtraTurn.Priority.FOLLOW_UP, t)
                 self.skill = skill
                 battle.current.event_bus.add_member_listener(self.extra_turn, self)
 
             def dead(self):
                 if super().dead():
                     return True
-                if self.skill.attacks == 0:
+                return self.skill.attacks == 0
+            
+            def on_removed(self, list):
+                super().on_removed(list)
+                if list is battle.current.action_list.extras:
                     self.skill.follow_up_launched = False
-                    return True
             
             def is_followup(self):
                 return True
@@ -127,7 +128,8 @@ class Herta(base.Character):
 
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
             battle.current.event_bus.add_member_listener(self.cur_hp_modify, t)
-            battle.current.event_bus.add_member_listener(self.new_wave_start, t)
+            if not battle.current.features.get("herta_follow_up_not_reset_at_new_wave"):
+                battle.current.event_bus.add_member_listener(self.new_wave_start, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def skill_trigger(self, skill):
@@ -140,7 +142,7 @@ class Herta(base.Character):
                     dmg = await damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
-                    dmg.toughness_reduction = damage.ToughnessReduction(self.target, t, self.get_value("toughness_reduction"), self.target.element)
+                    dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
                     dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
                     if self.target.eidolons >= 4:
                         dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("eidolon4", "dmg_boost")

@@ -8,19 +8,21 @@ import io
 import uuid
 
 import battle
-import target
 import config
+import action
 
-LOG_MESSAGE = True
+LOG_MESSAGE = False
 
 port = 55716
 handler = None
 shutdown_event = asyncio.Event()
 
 async def handle_message_outbattle(message):
+    import target  # TODO: Python 3.15 lazy import
     type = message["type"]
     if type == "init_battle":
         battle.current = battle.Battle()
+        battle.current.action_list = action.ActionList()
     elif type == "start_battle":
         await battle.current.start()
     elif type == "add_character":
@@ -44,6 +46,8 @@ async def handle_message_outbattle(message):
     elif type == "set_battle_config":
         battle.current.config = battle.BattleConfig(battle.BattleType.dict_nameid[message["config"]["type"]])
         # TODO: config["trigger"] triggers the battle
+    elif type == "use_feature":
+        battle.current.features.use(message["feature"])
 
 class CloseServer(Exception):
     pass
