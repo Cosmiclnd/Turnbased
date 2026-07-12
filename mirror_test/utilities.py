@@ -10,9 +10,6 @@ port = 55716
 async def send_message(websocket, message):
     await websocket.send(msgpack.packb(message))
 
-async def recv_message(websocket):
-    return msgpack.unpackb(await websocket.recv())
-
 async def start(name, gen_data=False):
     if gen_data:
         os.system(f"python mirror_test/gen_data.py {name}")
@@ -98,12 +95,35 @@ class Tester:
         response["result"] = self.uuids[response["result"]]
         return response
 
+class InbattleHandler:
+    def __init__(self, websocket):
+        self.websocket = websocket
+        self.updates = []
+        self.response = None
+    
+    async def recv_message(self):
+        if self.updates:
+            return self.updates.pop(0)
+        message = msgpack.unpackb(await self.websocket.recv())
+        if message["type"] == "updates":
+            self.updates = message["updates"]
+            return self.updates.pop(0)
+        else:
+            return message
+    
+    async def respond(self, message):
+        self.response = self.response or message
+        if not self.updates:
+            await send_message(self.websocket, self.response or {"type": "empty"})
+            self.response = None
+
 async def main(websocket, data):
     tester = Tester(data["uuids"])
+    handler = InbattleHandler(websocket)
     process = data["process"]
     for group in process:
         while group:
-            message = await recv_message(websocket)
+            message = await handler.recv_message()
             for step in group:
                 if tester.test(step, message):
                     group.remove(step)
@@ -111,6 +131,6 @@ async def main(websocket, data):
             else:
                 assert False, f"group = {group}, message = {message}"
             if "response" in step:
-                await send_message(websocket, tester.respond(step["response"]))
+                await handler.respond(tester.respond(step["response"]))
             else:
-                await send_message(websocket, {"type": "empty"})
+                await handler.respond(None)

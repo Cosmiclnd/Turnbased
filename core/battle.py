@@ -118,9 +118,11 @@ class Battle:
     async def check_targets(self):
         if await self.monster_setup.check():
             await server.handler.update_client({"name": "battle_win"})
+            await server.handler.flush_updates()
             server.handler.close()
         if not self.characters:
             await server.handler.update_client({"name": "battle_lose"})
+            await server.handler.flush_updates()
             server.handler.close()
     
     async def start(self):

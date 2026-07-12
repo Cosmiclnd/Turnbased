@@ -81,6 +81,7 @@ async def handle(websocket):
 class InbattleHandler:
     def __init__(self, websocket):
         self.websocket = websocket
+        self.updates = []
         self.answer_handlers = {}
     
     def add_answer_handler(self, name, handler):
@@ -103,6 +104,7 @@ class InbattleHandler:
             return response
     
     async def ask_client(self, message, handler):
+        await self.flush_updates()
         if LOG_MESSAGE:
             logging.info(f"Calling ask_client {message}")
         message["type"] = "ask"
@@ -128,12 +130,19 @@ class InbattleHandler:
         if LOG_MESSAGE:
             logging.info(f"Calling update_client {message}")
         message["type"] = "update"
+        self.updates.append(message)
+    
+    async def flush_updates(self):
+        if not self.updates:
+            return
+        message = {"type": "updates", "updates": self.updates} if len(self.updates) > 1 else self.updates[0]
         while True:
             response = await self.send_and_recv(message)
             if (answer := await self.check_client_query(response)) is not None:
                 message = answer
             else:
                 break
+        self.updates = []
     
     def close(self):
         raise CloseServer

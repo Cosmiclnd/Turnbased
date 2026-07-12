@@ -80,7 +80,6 @@ class UpdateHandler:
     
     def handle(self, message):
         words = message["name"].split(".")
-        self.update_action_order()
         method = getattr(self, "handle_" + words[0])
         return method(message, *words[1:])
     
@@ -196,7 +195,6 @@ class AskHandler:
         self.client = client
     
     def handle(self, message):
-        self.client.update_handler.update_action_order()
         method = getattr(self, "handle_" + message["name"])
         return method(message)
     
@@ -291,6 +289,31 @@ class AskHandler:
                 f"Toughness: {round(monster['cur_toughness'], 2)}/{round(monster['toughness'], 2)}", style="#a0a0a0")
         return monsters
 
+class InbattleMessageHandler:
+    def __init__(self, websocket):
+        self.websocket = websocket
+        self.updates = []
+        self.response = None
+    
+    def recv_message(self, query=False):
+        if not query and self.updates:
+            return self.updates.pop(0)
+        message = msgpack.unpackb(self.websocket.recv())
+        if message["type"] == "updates":
+            self.updates = message["updates"]
+            return self.updates.pop(0)
+        else:
+            return message
+    
+    def respond(self, message, query=False):
+        if query:
+            self.websocket.send(msgpack.packb(message))
+            return
+        self.response = self.response or message
+        if not self.updates:
+            self.websocket.send(msgpack.packb(self.response or {"type": "empty"}))
+            self.response = None
+
 class Client:
     def __init__(self, url):
         self.url = url
@@ -304,8 +327,8 @@ class Client:
     
     def query(self, message):
         message["type"] = "query"
-        self.send_message(message)
-        return msgpack.unpackb(self.websocket.recv())
+        self.handler.respond(message, True)
+        return self.handler.recv_message(True)
     
     def collect_targets(self, config):
         for record in config["characters"]:
@@ -332,17 +355,15 @@ class Client:
             for feature in config["features"]:
                 self.send_message({"type": "use_feature", "feature": feature})
             self.send_message({"type": "start_battle"})
+            self.handler = InbattleMessageHandler(websocket)
             while True:
-                message = msgpack.unpackb(self.websocket.recv())
+                message = self.handler.recv_message()
+                self.update_handler.update_action_order()
                 response = None
                 if message["type"] == "update":
-                    response = self.update_handler.handle(message)
+                    self.handler.respond(self.update_handler.handle(message))
                 elif message["type"] == "ask":
-                    response = self.ask_handler.handle(message)
-                if response is not None:
-                    self.send_message(response)
-                else:
-                    self.send_message({"type": "empty"})
+                    self.handler.respond(self.ask_handler.handle(message))
 
 live.start()
 client = Client("ws://localhost:55716")
@@ -350,4 +371,6 @@ with open("client/userdata/config.json", "r", encoding="utf-8") as f:
     try:
         client.start(json.load(f))
     except ConnectionClosedOK:
+        pass
+    finally:
         live.stop()
