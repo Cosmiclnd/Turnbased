@@ -6,6 +6,7 @@ import os
 import sys
 import io
 import uuid
+import msgpack
 
 import battle
 import config
@@ -58,8 +59,8 @@ async def handle(websocket):
     while True:
         try:
             try:
-                message = await websocket.recv()
-                await handle_message_outbattle(json.loads(message))
+                message = msgpack.unpackb(await websocket.recv())
+                await handle_message_outbattle(message)
             except (CloseServer, websockets.ConnectionClosedOK, websockets.ConnectionClosedError):
                 logging.info("connection closed")
                 break
@@ -86,8 +87,8 @@ class InbattleHandler:
         self.answer_handlers[name] = handler
     
     async def send_and_recv(self, message):
-        await self.websocket.send(json.dumps(message))
-        return json.loads(await self.websocket.recv())
+        await self.websocket.send(msgpack.packb(message))
+        return msgpack.unpackb(await self.websocket.recv())
     
     async def check_client_query(self, message):
         if message["type"] != "query":

@@ -2,6 +2,7 @@ import websockets.sync.client as websockets
 from websockets import ConnectionClosedOK
 import asyncio
 import json
+import msgpack
 
 from rich.console import Console
 from rich.layout import Layout
@@ -299,12 +300,12 @@ class Client:
         self.websocket = None
     
     def send_message(self, message):
-        self.websocket.send(json.dumps(message))
+        self.websocket.send(msgpack.packb(message))
     
     def query(self, message):
         message["type"] = "query"
         self.send_message(message)
-        return json.loads(self.websocket.recv())
+        return msgpack.unpackb(self.websocket.recv())
     
     def collect_targets(self, config):
         for record in config["characters"]:
@@ -332,7 +333,7 @@ class Client:
                 self.send_message({"type": "use_feature", "feature": feature})
             self.send_message({"type": "start_battle"})
             while True:
-                message = json.loads(self.websocket.recv())
+                message = msgpack.unpackb(self.websocket.recv())
                 response = None
                 if message["type"] == "update":
                     response = self.update_handler.handle(message)

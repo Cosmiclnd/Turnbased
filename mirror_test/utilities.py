@@ -2,15 +2,16 @@ import sys
 import os
 import websockets
 import json
+import msgpack
 import pytest
 
 port = 55716
 
 async def send_message(websocket, message):
-    await websocket.send(json.dumps(message))
+    await websocket.send(msgpack.packb(message))
 
 async def recv_message(websocket):
-    return json.loads(await websocket.recv())
+    return msgpack.unpackb(await websocket.recv())
 
 async def start(name, gen_data=False):
     if gen_data:
