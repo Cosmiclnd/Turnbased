@@ -113,7 +113,7 @@ class Firefly(base.Character):
                 dmg.hit_split_ratio = ratio
                 await battle.current.event_bus.dispatch("hit", dmg)
             await battle.current.event_bus.dispatch("attack_end", self.target)
-            await battle.current.event_bus.dispatch("action_advance", self.target.cur_normal_turn, self.get_value("advance_scale"))
+            self.target.cur_normal_turn.advance_next_turn(self.get_value("advance_scale"))
     
     class EnhancedSkill(FireflyEnhancedSkill):
         def __init__(self, t, skill_name):
@@ -192,11 +192,11 @@ class Firefly(base.Character):
                 return
             max_reduction = self.target.get_current_skill("talent").get_value("max_dmg_reduction")
             if self.target.effects.has_effect(self.target.effect_types.get(self.target.nameid, "complete_combustion")):
-                dmg.factors[damage.DamageFactorType.DMG_MITIGATION] *= 1 - max_reduction
+                dmg.factors[damage.DamageFactorType.MITIGATION] *= 1 - max_reduction
                 return
             threshold = self.target.get_current_skill("talent").get_value("hp_threshold")
             hp_rate = max(self.target.cur_hp / self.target.stats["max_hp"].calculate(), threshold)
-            dmg.factors[damage.DamageFactorType.DMG_MITIGATION] *= 1 - max_reduction / (threshold - 1) * (hp_rate - 1)
+            dmg.factors[damage.DamageFactorType.MITIGATION] *= 1 - max_reduction / (threshold - 1) * (hp_rate - 1)
     
         @event.member_listener(event.ListenerPriority.POST_PROCESS)
         async def regen_energy(self, t, amount, fixed=False):

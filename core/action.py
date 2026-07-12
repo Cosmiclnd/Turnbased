@@ -27,7 +27,7 @@ class NormalTurn(item.Item):
         self.spd = spd_stat.calculate()
         self.action_value = self.base_action_value()
         self.order = next_add_order()
-        self.next_scale = 1  # 用于实现“下一次行动提前X%”的效果
+        self.next_advance = 0  # 用于实现“下一次行动提前X%”的效果
     
     def get_num_actions(self):
         return 1
@@ -41,20 +41,27 @@ class NormalTurn(item.Item):
             self.action_value *= self.spd / spd
             self.spd = spd
     
-    def next_run(self):
+    async def next_run(self):
         self.spd = self.spd_stat.calculate()
-        self.action_value = self.next_scale * self.base_action_value()
-        self.next_scale = 1
+        self.action_value = self.base_action_value()
         self.order = next_order()
+        if self.next_advance > 0:
+            await battle.current.event_bus.dispatch("action_advance", self, self.next_advance)
+        elif self.next_advance < 0:
+            await battle.current.event_bus.dispatch("action_delay", self, -self.next_advance)
+        self.next_advance = 0
     
     def advance(self, scale):
-        if self.cur_action is None:
-            self.action_value = max(0, self.action_value - self.base_action_value() * scale)
-        else:
-            self.next_scale = max(0, self.next_scale - scale)
+        self.action_value = max(0, self.action_value - self.base_action_value() * scale)
     
     def delay(self, scale):
         self.advance(-scale)
+    
+    def advance_next_turn(self, scale):
+        self.next_advance += scale
+    
+    def delay_next_turn(self, scale):
+        self.next_advance -= scale
     
     def sort_key(self):
         if self.cur_action is not None:
@@ -102,13 +109,16 @@ class ActionList:
 
         server.handler.add_answer_handler("action_order", self.respond_action_order)
     
-    async def refresh_targets(self):
-        for turn in self.normals:
-            turn.refresh()
+    def refresh_turns(self):
         self.normals.refresh()
         self.normals.sort(key=NormalTurn.sort_key)
         self.extras.refresh()
         self.extras.sort(key=ExtraTurn.sort_key)
+    
+    async def refresh_targets(self):
+        for turn in self.normals:
+            turn.refresh()
+        self.refresh_turns()
         await battle.current.check_targets()
     
     async def check_extra_turns(self):
@@ -166,13 +176,14 @@ class ActionList:
         current.cur_action = -1  # 回合已经开始但是还没有行动
         num_actions = current.get_num_actions()
         for i in range(num_actions):
+            self.refresh_turns()
             if not current.target.can_act() or current is not self.normals[0]:
                 break
             await self.action_unit_interval()
             current.cur_action = i
             await battle.current.event_bus.dispatch("normal_turn", current)
         if current is self.normals[0]:
-            current.next_run()
+            await current.next_run()
             current.cur_action = None
         await self.action_unit_interval()
         await battle.current.event_bus.dispatch("normal_turn_end", current)
@@ -203,6 +214,7 @@ class ActionList:
     @classmethod
     async def respond_action_order(cls, message):
         self = battle.current.action_list
+        self.refresh_turns()
         extras = [turn.get_info() for turn in self.extras]
         normals = [turn.get_info() | {"num_actions": turn.get_num_actions(), "cur_action": turn.cur_action, "action_value": turn.action_value}
             for turn in self.normals]
