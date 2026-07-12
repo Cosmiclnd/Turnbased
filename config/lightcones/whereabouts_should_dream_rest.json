@@ -1,0 +1,38 @@
+{
+    "nameid": "whereabouts_should_dream_rest",
+    "name": "Whereabouts Should Dream Rest",
+    "rarity": 5,
+    "path": "destruction",
+    "base_stat_scales": {
+        "hp": 11,
+        "atk": 9,
+        "def": 8
+    },
+    "skills": {
+        "skill": {
+            "nameid": "metamorphosis",
+            "name": "Metamorphosis",
+            "desc": "Increases the wearer's Break Effect by {break_eff_boost:.2%}. When the wearer deals Break DMG to an enemy target, inflicts Routed on the enemy, lasting for {duration} turn(s). Targets afflicted with Routed receive {break_dmg_vulnerability:.2%} increased Break DMG from the wearer, and their SPD is lowered by {spd_reduction:.2%}. Effects of the same type cannot be stacked.",
+            "values": {
+                "break_eff_boost": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.6, 0.7, 0.8, 0.9, 1]
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "break_dmg_vulnerability": {
+                    "is_dynamic": true,
+                    "key": "stacks",
+                    "values": [0.24, 0.28, 0.32, 0.36, 0.4]
+                },
+                "spd_reduction": {
+                    "is_dynamic": false,
+                    "value": 0.2
+                }
+            }
+        }
+    }
+}
