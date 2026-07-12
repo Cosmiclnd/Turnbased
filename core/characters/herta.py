@@ -117,9 +117,9 @@ class Herta(base.Character):
                 if self is not turn:
                     return
                 await server.handler.update_client({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
-                self.master.dead_toggle = True
                 self.skill.follow_up_launched = False
                 await battle.current.event_bus.dispatch("skill_trigger", self.skill)
+                self.master.dead_toggle = True
 
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)

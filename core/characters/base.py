@@ -84,8 +84,8 @@ class Character(target.Target):
         async def extra_turn(self, turn):
             if self is not turn:
                 return
-            self.master.dead_toggle = True
             await battle.current.event_bus.dispatch("ultimate_turn", self)
+            self.master.dead_toggle = True
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def new_wave_start(self):

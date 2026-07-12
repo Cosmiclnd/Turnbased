@@ -84,8 +84,8 @@ class Target(item.Item):
             if self is not turn:
                 return
             await server.handler.update_client({"name": "extra_normal_turn", "target": str(self.target.uuid)})
-            self.master.dead_toggle = True
             await battle.current.event_bus.dispatch("target_action", self.target)
+            self.master.dead_toggle = True
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
         async def new_wave_start(self):

@@ -1,71 +1,14 @@
 import websockets.sync.client as websockets
 from websockets import ConnectionClosedOK
-import asyncio
 import json
 import msgpack
+import sys
 
-from rich.console import Console
-from rich.layout import Layout
-from rich.panel import Panel
-from rich.live import Live
-from rich.text import Text
-import keyboard
+from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtCore import Qt, QThread, pyqtSignal
 
 import config
-
-console = Console()
-live = Live(console, auto_refresh=False)
-layout = Layout()
-action_order = Text()
-battle_log = Text()
-input_text = ""
-inputing = False
-
-def refresh_screen():
-    layout.split_row(
-        Layout(Panel(action_order, title="Action Order"), size=50),
-        Layout(Panel(battle_log + input_text, title="Battle Log"), ratio=1),
-    )
-    live.update(layout, refresh=True)
-
-def print_battle_log(str, style=None, end="\n"):
-    global battle_log
-    battle_log.append(console.render_str(f"[{style}]{str}[/]" if style else str))
-    if end is not None:
-        battle_log.append(end)
-    lines = battle_log.split(allow_blank=True)
-    max_lines = 50
-    if len(lines) > max_lines:
-        battle_log = Text("\n").join(lines[-max_lines:])
-    refresh_screen()
-
-def on_key_press(event):
-    global input_text
-    if inputing:
-        if event.name == "backspace":
-            input_text = input_text[:-1]
-            refresh_screen()
-            return
-        text = None
-        if len(event.name) == 1:
-            text = event.name
-        elif event.name == "space":
-            text = " "
-        if text is not None:
-            input_text += text
-            refresh_screen()
-keyboard.on_press(on_key_press)
-
-def input(prompt=""):
-    global inputing, input_text
-    print_battle_log(prompt, end=None)
-    inputing = True
-    keyboard.wait("enter")
-    inputing = False
-    print_battle_log(input_text)
-    result = input_text
-    input_text = ""
-    return result
 
 class Target:
     def __init__(self, uuid, nameid, is_character):
@@ -84,7 +27,7 @@ class UpdateHandler:
         return method(message, *words[1:])
     
     def handle_new_wave(self, message):
-        print_battle_log(f"*** Wave {message['wave']}/{message['total']} ***", style="bold yellow")
+        self.client.print_battle_log(f"*** Wave {message['wave']}/{message['total']} ***", color="#f8f045", bold=True)
         return {"type": "empty"}
     
     def handle_normal_turn_start(self, message):
@@ -100,8 +43,8 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def handle_skill_trigger(self, message):
-        print_battle_log(f"{self.client.targets[message['target']].nameid} triggered skill", style="#6055f0", end=" ")
-        print_battle_log(message['skill'], style="italic #6055f0")
+        self.client.print_battle_log(f"{self.client.targets[message['target']].nameid} triggered skill", color="#6055f0", end=" ")
+        self.client.print_battle_log(message['skill'], color="#6055f0", italic=True)
         return {"type": "empty"}
     
     def handle_damage(self, message):
@@ -113,13 +56,13 @@ class UpdateHandler:
             info += " Break!"
         if "super_break" in message["damage"]["types"]:
             info += " Super Break!"
-        print_battle_log(info, style="#f0806f")
+        self.client.print_battle_log(info, color="#f0806f")
         return {"type": "empty"}
     
     def handle_heal(self, message):
         info = (f"{self.client.targets[message['healer']].nameid} heals {round(message['amount'], 2)} HP to " +
             f"{self.client.targets[message['target']].nameid}")
-        print_battle_log(info, style="#6ff076")
+        self.client.print_battle_log(info, color="#6ff076")
         return {"type": "empty"}
     
     def handle_reduce_toughness(self, message):
@@ -130,7 +73,7 @@ class UpdateHandler:
             name = f"{self.client.targets[message['turn']['target']].nameid}'s action"
         else:
             name = message['turn']['name']
-        print_battle_log(f"{name} is advanced by {round(100 * message['scale'], 2)}%", style="yellow")
+        self.client.print_battle_log(f"{name} is advanced by {round(100 * message['scale'], 2)}%", color="yellow")
         return {"type": "empty"}
     
     def handle_action_delay(self, message):
@@ -138,28 +81,28 @@ class UpdateHandler:
             name = f"{self.client.targets[message['turn']['target']].nameid}'s action"
         else:
             name = message['turn']['name']
-        print_battle_log(f"{name} is delayed by {round(100 * message['scale'], 2)}%", style="yellow")
+        self.client.print_battle_log(f"{name} is delayed by {round(100 * message['scale'], 2)}%", color="yellow")
         return {"type": "empty"}
     
     def handle_add_effect(self, message):
-        print_battle_log(f"{self.client.targets[message['target']].nameid} is affected by", style="#90d050", end=" ")
-        print_battle_log(f"{message['effect']}", style="italic #90d050")
+        self.client.print_battle_log(f"{self.client.targets[message['target']].nameid} is affected by", color="#90d050", end=" ")
+        self.client.print_battle_log(f"{message['effect']}", color="#90d050", italic=True)
         return {"type": "empty"}
     
     def handle_weakness_break(self, message):
-        print_battle_log(f"{self.client.targets[message['target']].nameid}'s weakness is broken", style="#f08080")
+        self.client.print_battle_log(f"{self.client.targets[message['target']].nameid}'s weakness is broken", color="#f08080")
         return {"type": "empty"}
     
     def handle_die(self, message):
-        print_battle_log(f"{self.client.targets[message['target']].nameid} dies", style="bold red")
+        self.client.print_battle_log(f"{self.client.targets[message['target']].nameid} dies", color="red", bold=True)
         return {"type": "empty"}
     
     def handle_battle_lose(self, message):
-        print_battle_log("Battle Lose!", style="bold red")
+        self.client.print_battle_log("Battle Lose!", color="red", bold=True)
         return {"type": "empty"}
     
     def handle_battle_win(self, message):
-        print_battle_log("Battle Win!", style="bold green")
+        self.client.print_battle_log("Battle Win!", color="bold green")
         return {"type": "empty"}
     
     def handle_firefly(self, message, *args):
@@ -178,115 +121,133 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def on_new_turn(self, info):
-        print_battle_log(f"> {info} <", style="bold blue")
+        self.client.print_battle_log(f"&gt; {info} &lt;", color="blue", bold=True)
     
     def update_action_order(self):
-        global action_order
-        action_order = Text()
         ao = self.client.query({"name": "action_order"})
+        lines = []
         for extra in ao["extras"]:
-            action_order.append(f"{extra['name']} <extra>\n")
+            lines.append(f"{extra['name']} <extra>")
         for normal in ao["normals"]:
-            action_order.append(f"{normal['name']} | {round(normal['action_value'], 2)}\n")
-        refresh_screen()
+            lines.append(f"{normal['name']} | {round(normal['action_value'], 2)}")
+        self.client.update_action_order_text.emit("\n".join(lines))
 
 class AskHandler:
     def __init__(self, client):
         self.client = client
+        self.input_prompt = None
+        self.input_func = None
+    
+    def setup_input(self, prompt, func):
+        self.input_prompt = prompt
+        self.input_func = func
+        if prompt is not None:
+            self.client.print_battle_log(prompt, color="black", end=None)
+        self.client.set_input_state.emit(prompt is not None)
     
     def handle(self, message):
         method = getattr(self, "handle_" + message["name"])
-        return method(message)
+        method(message)
     
     def handle_ultimate(self, message):
         if message["info"] is not None:
-            print_battle_log(f"Error: {message['info']}", style="bold red")
+            self.client.print_battle_log(f"Error: {message['info']}", color="red", bold=True)
         characters = self.print_current_characters(lambda c: c["cur_energy"] >= c["energy"])
         if not characters:
-            return {"type": "empty"}
-        while True:
-            raw = input("ultimate> ").strip()
+            return
+        def func(raw):
+            raw = raw.strip()
             if not raw:
-                return {"type": "empty"}
+                self.setup_input(None, None)
+                return
             try:
-                return {"type": "ask", "name": "ultimate", "character": characters[int(raw)]["uuid"]}
+                response = {"type": "ask", "name": "ultimate", "character": characters[int(raw)]["uuid"]}
+                self.setup_input(None, None)
+                return response
             except (ValueError, IndexError):
-                print_battle_log(f"Invalid index: {raw}", style="bold red")
+                self.client.print_battle_log(f"Invalid index: {raw}", color="red", bold=True)
+                self.setup_input("ultimate> ", func)
+                return
+        self.setup_input("ultimate> ", func)
     
     def handle_ultimate_target(self, message):
         if message["info"] is not None:
-            print_battle_log(f"Error: {message['info']}", style="bold red")
+            self.client.print_battle_log(f"Error: {message['info']}", color="red", bold=True)
         if message["target_info"]["type"] == "character":
             target_list = self.print_current_characters()
         elif message["target_info"]["type"] == "monster":
             target_list = self.print_current_monsters()
-        response = {"type": "ask", "name": "ultimate_target"}
-        while True:
-            raw = input("target> ").strip()
+        def func(raw):
+            raw = raw.strip()
+            response = {"type": "ask", "name": "ultimate_target"}
             if raw:
                 try:
                     response["target"] = target_list[int(raw)]["uuid"]
                 except (ValueError, IndexError):
-                    print_battle_log(f"Invalid index: {raw}", style="bold red")
-                    continue
-            break
-        return response
+                    self.client.print_battle_log(f"Invalid index: {raw}", color="red", bold=True)
+                    self.setup_input("target> ", func)
+                    return
+            self.setup_input(None, None)
+            return response
+        self.setup_input("target> ", func)
     
     def handle_character_skill_option(self, message):
         if message["info"] is not None:
-            print_battle_log(f"Error: {message['info']}", style="bold red")
+            self.client.print_battle_log(f"Error: {message['info']}", color="red", bold=True)
         options = self.client.query({"name": "character_skill_options", "target": message["target"]})["options"]
         target_lists = {}
         for option, skill in options.items():
-            print_battle_log(f"\\[{option}] {skill['name']}", style="#d037f4")
+            self.client.print_battle_log(f"[{option}] {skill['name']}", color="#d037f4")
             if skill["target_info"]["type"] == "character":
                 target_lists[option] = self.print_current_characters()
             elif skill["target_info"]["type"] == "monster":
                 target_lists[option] = self.print_current_monsters()
-        option = ""
-        target = None
-        while True:
-            raw = input("option> ")
+        def func(raw):
             words = raw.strip().lower().split()
             if not words:
-                continue
+                self.setup_input("option>", func)
+                return
             option = words[0]
             if option == "q":
                 option = "basic_atk"
             elif option == "e":
                 option = "skill"
             if option not in target_lists:
-                print_battle_log(f"Invalid option: {option}", style="bold red")
-                continue
+                self.client.print_battle_log(f"Invalid option: {option}", color="red", bold=True)
+                self.setup_input("option> ", func)
+                return
+            target = None
             if len(words) == 2:
                 try:
                     idx = int(words[1])
                     target = target_lists[option][idx]["uuid"]
                 except (ValueError, IndexError):
-                    print_battle_log(f"Invalid index: {words[1]}", style="bold red")
-                    continue
-            break
-        response = {"type": "ask", "name": "character_skill_option", "option": option}
-        if target is not None:
-            response["target"] = target
-        return response
+                    self.client.print_battle_log(f"Invalid index: {words[1]}", color="red", bold=True)
+                    self.setup_input("option> ", func)
+                    return
+            self.setup_input(None, None)
+            response = {"type": "ask", "name": "character_skill_option", "option": option}
+            if target is not None:
+                response["target"] = target
+            return response
+        self.setup_input("option>", func)
     
     def print_current_characters(self, filter=None):
         result = self.client.query({"name": "current_characters"})
         characters = [c for c in result["characters"] if filter is None or filter(c)]
         for i, character in enumerate(characters):
-            print_battle_log(f"\\[{i}] {self.client.targets[character['uuid']].nameid} "
+            self.client.print_battle_log(f"[{i}] {self.client.targets[character['uuid']].nameid} "
                 f"HP: {round(character['cur_hp'], 2)}/{round(character['hp'], 2)} "
-                f"Energy: {round(character['cur_energy'], 2)}/{round(character['max_energy'], 2)}", style="#a0a0a0")
+                f"Energy: {round(character['cur_energy'], 2)}/{round(character['max_energy'], 2)}", color="#a0a0a0")
         return characters
     
     def print_current_monsters(self, filter=None):
         result = self.client.query({"name": "current_monsters"})
         monsters = [m for m in result["monsters"] if filter is None or filter(m)]
         for i, monster in enumerate(monsters):
-            print_battle_log(f"\\[{i}] {self.client.targets[monster['uuid']].nameid} "
+            self.client.print_battle_log(f"[{i}] {self.client.targets[monster['uuid']].nameid} "
                 f"HP: {round(monster['cur_hp'], 2)}/{round(monster['hp'], 2)} "
-                f"Toughness: {round(monster['cur_toughness'], 2)}/{round(monster['toughness'], 2)}", style="#a0a0a0")
+                f"Toughness: {round(monster['cur_toughness'], 2)}/{round(monster['toughness'], 2)}", color="#a0a0a0")
         return monsters
 
 class InbattleMessageHandler:
@@ -314,8 +275,13 @@ class InbattleMessageHandler:
             self.websocket.send(msgpack.packb(self.response or {"type": "empty"}))
             self.response = None
 
-class Client:
+class Client(QThread):
+    update_action_order_text = pyqtSignal(str)
+    append_battle_log = pyqtSignal(str)
+    set_input_state = pyqtSignal(bool)
+
     def __init__(self, url):
+        super().__init__()
         self.url = url
         self.targets = {}
         self.update_handler = UpdateHandler(self)
@@ -338,7 +304,9 @@ class Client:
                 for record in group["monsters"]:
                     self.targets[record["uuid"]] = Target(record["uuid"], record["name"], False)
 
-    def start(self, config):
+    def run(self):
+        with open("client/userdata/config.json", "r", encoding="utf-8") as f:
+            config = json.load(f)
         with websockets.connect(self.url) as websocket:
             self.websocket = websocket
             self.send_message({"type": "init_battle"})
@@ -357,20 +325,102 @@ class Client:
             self.send_message({"type": "start_battle"})
             self.handler = InbattleMessageHandler(websocket)
             while True:
-                message = self.handler.recv_message()
-                self.update_handler.update_action_order()
-                response = None
-                if message["type"] == "update":
-                    self.handler.respond(self.update_handler.handle(message))
-                elif message["type"] == "ask":
-                    self.handler.respond(self.ask_handler.handle(message))
+                if self.ask_handler.input_prompt is None:
+                    message = self.handler.recv_message()
+                    self.update_handler.update_action_order()
+                    response = None
+                    if message["type"] == "update":
+                        self.handler.respond(self.update_handler.handle(message))
+                    elif message["type"] == "ask":
+                        response = self.ask_handler.handle(message)
+                        if self.ask_handler.input_prompt is None:
+                            self.handler.respond(response)
+    
+    def print_battle_log(self, text, color, bold=False, italic=False, end="<br>"):
+        text += end or ""
+        if bold:
+            text = f"<b color=\"color: {color};\">{text}</b>"
+        elif italic:
+            text = f"<i color=\"color: {color};\">{text}</i>"
+        else:
+            text = f"<span color=\"color: {color};\">{text}</span>"
+        self.append_battle_log.emit(text)
+    
+    def submit_input(self, text):
+        response = self.ask_handler.input_func(text)
+        if self.ask_handler.input_prompt is None:
+            self.handler.respond(response)
 
-live.start()
-client = Client("ws://localhost:55716")
-with open("client/userdata/config.json", "r", encoding="utf-8") as f:
-    try:
-        client.start(json.load(f))
-    except ConnectionClosedOK:
-        pass
-    finally:
-        live.stop()
+class MainWindow(QMainWindow):
+    def __init__(self):
+        super().__init__()
+        self.setWindowTitle("Turnbased Battle Client")
+        self.resize(900, 600)
+
+        central = QWidget()
+        self.setCentralWidget(central)
+        layout = QHBoxLayout(central)
+        layout.setContentsMargins(5, 5, 5, 5)
+
+        self.action_order_text = QTextEdit()
+        self.action_order_text.setReadOnly(True)
+        self.action_order_text.setLineWrapMode(QTextEdit.NoWrap)
+        self.action_order_text.setMaximumWidth(500)
+
+        right_widget = QWidget()
+        right_layout = QVBoxLayout(right_widget)
+        right_layout.setContentsMargins(0, 0, 0, 0)
+        right_layout.setSpacing(2)
+
+        self.log = []
+        self.log_text = QTextEdit()
+        self.log_text.setReadOnly(True)
+        self.log_text.setLineWrapMode(QTextEdit.WidgetWidth)
+
+        self.input_line = QLineEdit()
+        self.input_line.returnPressed.connect(self.submit_input)
+        self.input_line.setEnabled(False)
+
+        right_layout.addWidget(self.log_text)
+        right_layout.addWidget(self.input_line)
+
+        splitter = QSplitter(Qt.Horizontal)
+        splitter.addWidget(self.action_order_text)
+        splitter.addWidget(right_widget)
+        splitter.setStretchFactor(0, 1)
+        splitter.setStretchFactor(1, 3)
+        layout.addWidget(splitter)
+        
+        self.client = Client("ws://localhost:55716")
+        self.client.update_action_order_text.connect(self.update_action_order_text)
+        self.client.append_battle_log.connect(self.append_battle_log)
+        self.client.set_input_state.connect(self.set_input_state)
+        self.client.start()
+    
+    def update_action_order_text(self, text):
+        self.action_order_text.setText(text)
+    
+    def append_battle_log(self, text):
+        # TODO: performance...?!!!!
+        self.log.append(text)
+        self.log_text.setHtml("".join(self.log))
+        self.log_text.moveCursor(QTextCursor.End)
+    
+    def set_input_state(self, state):
+        self.input_line.setEnabled(state)
+        if state:
+            self.input_line.setPlaceholderText(self.client.ask_handler.input_prompt)
+        else:
+            self.input_line.setPlaceholderText("")
+        self.input_line.setFocus()
+    
+    def submit_input(self):
+        text = self.input_line.text()
+        self.input_line.setText("")
+        self.append_battle_log(text + "<br>")
+        self.client.submit_input(text)
+
+app = QApplication(sys.argv)
+window = MainWindow()
+window.show()
+sys.exit(app.exec_())

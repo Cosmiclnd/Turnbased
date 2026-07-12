@@ -79,12 +79,12 @@ class RuanMei(base.Character):
                 if self is not turn:
                     return
                 await server.handler.update_client({"name": f"{self.target.nameid}.technique_turn", "target": str(self.target.uuid)})
-                self.master.dead_toggle = True
                 delta_skillpoints = self.skill.delta_skillpoints
                 self.skill.delta_skillpoints = 0
                 battle.current.cur_main_target = self.target
                 await battle.current.event_bus.dispatch("skill_trigger", self.skill)
                 self.skill.delta_skillpoints = delta_skillpoints
+                self.master.dead_toggle = True
 
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
