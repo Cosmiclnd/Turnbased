@@ -191,7 +191,7 @@
         },
         "talent": {
             "nameid": "possession_ethereal_metaflow",
-            "name": "Posession: Ethereal Metaflow",
+            "name": "Possession: Ethereal Metaflow",
             "category": "talent",
             "type": "restore",
             "delta_skillpoints": 0,

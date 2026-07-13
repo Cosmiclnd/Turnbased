@@ -34,8 +34,8 @@ def get_modifier(type, name, t, bases, steps):
 def get_main_modifier(name, t, level):
     return get_modifier("main", name, t, 1, level)
 
-def get_sub_modifier(name, t, enhancemets):
-    return get_modifier("sub", name, t, len(enhancemets), sum(enhancemets))
+def get_sub_modifier(name, t, enhancements):
+    return get_modifier("sub", name, t, len(enhancements), sum(enhancements))
 
 class RelicSet(item.Item):
     class RelicSetConfig(config.SkillsConfig):

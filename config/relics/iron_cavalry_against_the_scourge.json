@@ -1,0 +1,40 @@
+{
+    "nameid": "iron_cavalry_against_the_scourge",
+    "name": "Iron Cavalry Against the Scourge",
+    "skills": {
+        "2pc": {
+            "nameid": "2pc_effect",
+            "name": "2-Pc Effect",
+            "desc": "Increases Break Effect by {break_eff_boost:.2%}.",
+            "values": {
+                "break_eff_boost": {
+                    "is_dynamic": false,
+                    "value": 0.16
+                }
+            }
+        },
+        "4pc": {
+            "nameid": "4pc_effect",
+            "name": "4-Pc Effect",
+            "desc": "If the wearer's Break Effect is {break_eff_threshold1:.2%} or higher, the Break DMG dealt to the enemy target ignores {def_ignore1:.2%} of their DEF. If the wearer's Break Effect is {break_eff_threshold2:.2%} or higher, the Super Break DMG dealt to the enemy target additionally ignores {def_ignore2:.2%} of their DEF.",
+            "values": {
+                "break_eff_threshold1": {
+                    "is_dynamic": false,
+                    "value": 1.5
+                },
+                "def_ignore1": {
+                    "is_dynamic": false,
+                    "value": 0.1
+                },
+                "break_eff_threshold2": {
+                    "is_dynamic": false,
+                    "value": 2.5
+                },
+                "def_ignore2": {
+                    "is_dynamic": false,
+                    "value": 0.15
+                }
+            }
+        }
+    }
+}
