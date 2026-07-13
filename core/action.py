@@ -123,7 +123,7 @@ class ActionList:
     
     async def check_extra_turns(self):
         while self.extras:
-            extra = self.extras.pop(0)
+            extra = self.extras[0]
             await battle.current.event_bus.dispatch("extra_turn", extra)
             await self.refresh_targets()
             await self.ask_ultimate()

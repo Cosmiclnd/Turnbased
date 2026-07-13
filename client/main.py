@@ -121,7 +121,7 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def on_new_turn(self, info):
-        self.client.print_battle_log(f"&gt; {info} &lt;", color="blue", bold=True)
+        self.client.print_battle_log(f"&gt; {info} &lt;", color="#a0a4f5", bold=True)
     
     def update_action_order(self):
         ao = self.client.query({"name": "action_order"})
@@ -142,7 +142,7 @@ class AskHandler:
         self.input_prompt = prompt
         self.input_func = func
         if prompt is not None:
-            self.client.print_battle_log(prompt, color="black", end=None)
+            self.client.print_battle_log(prompt, color="white", end=None)
         self.client.set_input_state.emit(prompt is not None)
     
     def handle(self, message):
@@ -205,7 +205,7 @@ class AskHandler:
         def func(raw):
             words = raw.strip().lower().split()
             if not words:
-                self.setup_input("option>", func)
+                self.setup_input("option> ", func)
                 return
             option = words[0]
             if option == "q":
@@ -230,7 +230,7 @@ class AskHandler:
             if target is not None:
                 response["target"] = target
             return response
-        self.setup_input("option>", func)
+        self.setup_input("option> ", func)
     
     def print_current_characters(self, filter=None):
         result = self.client.query({"name": "current_characters"})
@@ -339,11 +339,11 @@ class Client(QThread):
     def print_battle_log(self, text, color, bold=False, italic=False, end="<br>"):
         text += end or ""
         if bold:
-            text = f"<b color=\"color: {color};\">{text}</b>"
+            text = f"<b style=\"color: {color};\">{text}</b>"
         elif italic:
-            text = f"<i color=\"color: {color};\">{text}</i>"
+            text = f"<i style=\"color: {color};\">{text}</i>"
         else:
-            text = f"<span color=\"color: {color};\">{text}</span>"
+            text = f"<span style=\"color: {color};\">{text}</span>"
         self.append_battle_log.emit(text)
     
     def submit_input(self, text):
@@ -374,6 +374,12 @@ class MainWindow(QMainWindow):
 
         self.log = []
         self.log_text = QTextEdit()
+        palette = self.log_text.palette()
+        palette.setColor(QPalette.Base, QColor(20, 20, 20))
+        self.log_text.setPalette(palette)
+        font = self.log_text.font()
+        font.setPointSize(12)
+        self.log_text.setFont(font)
         self.log_text.setReadOnly(True)
         self.log_text.setLineWrapMode(QTextEdit.WidgetWidth)
 
@@ -401,10 +407,11 @@ class MainWindow(QMainWindow):
         self.action_order_text.setText(text)
     
     def append_battle_log(self, text):
-        # TODO: performance...?!!!!
-        self.log.append(text)
-        self.log_text.setHtml("".join(self.log))
-        self.log_text.moveCursor(QTextCursor.End)
+        cursor = self.log_text.textCursor()
+        cursor.movePosition(QTextCursor.End)
+        cursor.insertHtml(text)
+        self.log_text.setTextCursor(cursor)
+        self.log_text.ensureCursorVisible()
     
     def set_input_state(self, state):
         self.input_line.setEnabled(state)
@@ -417,7 +424,7 @@ class MainWindow(QMainWindow):
     def submit_input(self):
         text = self.input_line.text()
         self.input_line.setText("")
-        self.append_battle_log(text + "<br>")
+        self.append_battle_log(f"<span style=\"color: white;\">{text}</span><br>")
         self.client.submit_input(text)
 
 app = QApplication(sys.argv)
