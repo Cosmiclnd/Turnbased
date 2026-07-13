@@ -109,6 +109,10 @@ class ActionList:
 
         server.handler.add_answer_handler("action_order", self.respond_action_order)
     
+    def clear(self):
+        self.normals.clear()
+        self.extras.clear()
+    
     def refresh_turns(self):
         self.normals.refresh()
         self.normals.sort(key=NormalTurn.sort_key)

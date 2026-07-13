@@ -3,6 +3,7 @@ from websockets import ConnectionClosedOK
 import json
 import msgpack
 import sys
+import time
 
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import *
@@ -102,7 +103,7 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def handle_battle_win(self, message):
-        self.client.print_battle_log("Battle Win!", color="bold green")
+        self.client.print_battle_log("Battle Win!", color="green", bold=True)
         return {"type": "empty"}
     
     def handle_firefly(self, message, *args):
@@ -197,7 +198,13 @@ class AskHandler:
         options = self.client.query({"name": "character_skill_options", "target": message["target"]})["options"]
         target_lists = {}
         for option, skill in options.items():
-            self.client.print_battle_log(f"[{option}] {skill['name']}", color="#d037f4")
+            if option == "basic_atk":
+                option_info = "basic_atk/q"
+            elif option == "skill":
+                option_info = "skill/e"
+            else:
+                option_info = option
+            self.client.print_battle_log(f"[{option_info}] {skill['name']}", color="#d037f4")
             if skill["target_info"]["type"] == "character":
                 target_lists[option] = self.print_current_characters()
             elif skill["target_info"]["type"] == "monster":
@@ -326,7 +333,10 @@ class Client(QThread):
             self.handler = InbattleMessageHandler(websocket)
             while True:
                 if self.ask_handler.input_prompt is None:
-                    message = self.handler.recv_message()
+                    try:
+                        message = self.handler.recv_message()
+                    except ConnectionClosedOK:
+                        break
                     self.update_handler.update_action_order()
                     response = None
                     if message["type"] == "update":
@@ -335,6 +345,8 @@ class Client(QThread):
                         response = self.ask_handler.handle(message)
                         if self.ask_handler.input_prompt is None:
                             self.handler.respond(response)
+                else:
+                    time.sleep(0.0001)
     
     def print_battle_log(self, text, color, bold=False, italic=False, end="<br>"):
         text += end or ""
@@ -355,7 +367,8 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self.setWindowTitle("Turnbased Battle Client")
-        self.resize(900, 600)
+        self.setGeometry(100, 100, 1200, 900)
+        self.showMaximized()
 
         central = QWidget()
         self.setCentralWidget(central)

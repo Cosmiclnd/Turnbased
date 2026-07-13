@@ -259,6 +259,9 @@ class Damage:
     def is_break_dmg(self):
         return self.types in ({DmgType.BREAK}, {DmgType.ADDITIONAL, DmgType.BREAK}, {DmgType.SUPER_BREAK})
     
+    def is_super_break_dmg(self):
+        return self.types == {DmgType.SUPER_BREAK}
+    
     def is_from_basic_atk(self):
         return self.source in (damage.DmgSource.BASIC_ATK, damage.DmgSource.ENHANCED_BASIC_ATK)
     

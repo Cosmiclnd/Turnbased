@@ -195,7 +195,7 @@ class Firefly(base.Character):
                 dmg.factors[damage.DamageFactorType.MITIGATION] *= 1 - max_reduction
                 return
             threshold = self.target.get_current_skill("talent").get_value("hp_threshold")
-            hp_rate = max(self.target.cur_hp / self.target.stats["max_hp"].calculate(), threshold)
+            hp_rate = max(self.target.cur_hp / self.target.stats["hp"].calculate(), threshold)
             dmg.factors[damage.DamageFactorType.MITIGATION] *= 1 - max_reduction / (threshold - 1) * (hp_rate - 1)
     
         @event.member_listener(event.ListenerPriority.POST_PROCESS)
