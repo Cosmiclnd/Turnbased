@@ -25,8 +25,9 @@ class DmgSource(enums.Enum):
     ULTIMATE = item.Item("ultimate", "Ultimate")
     FOLLOW_UP = item.Item("follow_up", "Follow-Up")
     WEAKNESS_BREAK = item.Item("weakness_break", "Weakness Break")
+    DOT = item.Item("dot", "DoT")
     MONSTER = item.Item("monster", "Monster")
-    ALL = (BASIC_ATK, ENHANCED_BASIC_ATK, SKILL, ENHANCED_SKILL, ULTIMATE, FOLLOW_UP, WEAKNESS_BREAK, MONSTER)
+    ALL = (BASIC_ATK, ENHANCED_BASIC_ATK, SKILL, ENHANCED_SKILL, ULTIMATE, FOLLOW_UP, WEAKNESS_BREAK, DOT, MONSTER)
 DmgSource.init()
 
 class DamageFactorType:
@@ -110,28 +111,35 @@ DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS = DamageFactorType(async_func(lambda 
 DamageFactorType.SUPER_BREAK_DMG_BOOST = DamageFactorType(async_func(lambda dmg, value: 1 + value), async_func(lambda dmg: 0))
 
 @dataclass(slots=True, eq=False)
+class DamageContext:
+    source: DmgSource
+    effect: object | None = None
+    effect_instance: object | None = None
+
+@dataclass(slots=True, eq=False)
 class DamageDesc:
     dealer: object
     stat_desc: modifier.StatDesc
     element: enums.Element
     types: Set[DmgType]
-    source: DmgSource
+    context: DamageContext
     can_kill: bool = True
     
-    async def summon(self, t):
-        return await Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.source, self.can_kill)
+    async def summon(self, t, effect_instance=None):
+        self.context.effect_instance = effect_instance
+        return await Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.context, self.can_kill)
 
 class Damage:
-    __slots__ = ("dealer", "target", "stat_desc", "element", "types", "source", "factors", "toughness_reduction", "hit_split_ratio",
+    __slots__ = ("dealer", "target", "stat_desc", "element", "types", "context", "factors", "toughness_reduction", "hit_split_ratio",
         "energy_regen", "damage", "crit", "can_kill")
 
-    def __init__(self, dealer, t, stat_desc, element, types, source, can_kill=True):
+    def __init__(self, dealer, t, stat_desc, element, types, context, can_kill=True):
         self.dealer = dealer
         self.target = t
         self.stat_desc = stat_desc
         self.element = element
         self.types = set(types) if isinstance(types, Iterable) else {types}
-        self.source = source
+        self.context = context
         self.can_kill = can_kill
         self.factors = {}
         self.toughness_reduction = None
@@ -141,8 +149,10 @@ class Damage:
         self.crit = False
     
     @classmethod
-    async def create(cls, dealer, t, stat_desc, element, types, source, can_kill=True):
-        dmg = cls(dealer, t, stat_desc, element, types, source, can_kill)
+    async def create(cls, dealer, t, stat_desc, element, types, context, can_kill=True):
+        if context in DmgSource.ALL:
+            context = DamageContext(context)
+        dmg = cls(dealer, t, stat_desc, element, types, context, can_kill)
         await dmg.init()
         return dmg
 
@@ -259,14 +269,17 @@ class Damage:
     def is_break_dmg(self):
         return self.types in ({DmgType.BREAK}, {DmgType.ADDITIONAL, DmgType.BREAK}, {DmgType.SUPER_BREAK})
     
+    def is_dot_dmg(self):
+        return self.types in ({DmgType.DOT}, {DmgType.DOT, DmgType.BREAK})
+    
     def is_super_break_dmg(self):
         return self.types == {DmgType.SUPER_BREAK}
     
     def is_from_basic_atk(self):
-        return self.source in (damage.DmgSource.BASIC_ATK, damage.DmgSource.ENHANCED_BASIC_ATK)
+        return self.context.source in (damage.DmgSource.BASIC_ATK, damage.DmgSource.ENHANCED_BASIC_ATK)
     
     def is_from_skill(self):
-        return self.source in (damage.DmgSource.SKILL, damage.DmgSource.ENHANCED_SKILL)
+        return self.context.source in (damage.DmgSource.SKILL, damage.DmgSource.ENHANCED_SKILL)
 
 @dataclass(slots=True, eq=False)
 class ToughnessReduction:
@@ -292,7 +305,7 @@ class ToughnessReduction:
     
     async def to_super_break_dmg(self, multiplier):
         dmg = await Damage.create(self.dealer, self.target,
-            modifier.StatDesc((self.dealer.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, multiplier)), self.element, {DmgType.SUPER_BREAK}, self.damage.source, False)
+            modifier.StatDesc((self.dealer.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, multiplier)), self.element, {DmgType.SUPER_BREAK}, self.damage.context, False)
         dmg.factors[DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS] = self.calculate() / 10
         return dmg
 

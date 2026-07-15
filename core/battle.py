@@ -54,7 +54,7 @@ class Random:
         return response["result"]
     
     @server.server_handler
-    async def monster_target_handler(self, message):
+    async def target_handler(self, message):
         try:
             self.temp_target = target.from_uuid(uuid.UUID(message["result"]))
             if self.temp_target is None:
@@ -63,10 +63,16 @@ class Random:
         except KeyError:
             return "invalid_message"
     
+    async def character_target(self, choices):
+        if self.use_random:
+            return self.random.choice(choices)
+        response = await server.handler.ask_client({"name": "random_character_target"}, self.target_handler)
+        return self.temp_target
+    
     async def monster_target(self, choices, weights):
         if self.use_random:
             return self.random.choices(choices, weights=weights)[0]
-        response = await server.handler.ask_client({"name": "random_monster_target"}, self.monster_target_handler)
+        response = await server.handler.ask_client({"name": "random_monster_target"}, self.target_handler)
         return self.temp_target
 
 class BattleType(enums.Enum):

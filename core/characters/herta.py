@@ -109,7 +109,7 @@ class Herta(base.Character):
                 if list is battle.current.action_list.extras:
                     self.skill.follow_up_launched = False
             
-            def is_followup(self):
+            def is_follow_up(self):
                 return True
             
             @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -125,9 +125,10 @@ class Herta(base.Character):
             super().__init__(t, skill_name)
             self.attacks = 0
             self.follow_up_launched = False
+            self.immune_targets = []
 
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
-            battle.current.event_bus.add_member_listener(self.cur_hp_modify, t)
+            battle.current.event_bus.add_member_listener(self.hit, t)
             if not battle.current.features.get("herta_follow_up_not_reset_at_new_wave"):
                 battle.current.event_bus.add_member_listener(self.new_wave_start, t)
         
@@ -155,12 +156,13 @@ class Herta(base.Character):
             self.attacks = 0
         
         @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-        async def cur_hp_modify(self, t, amount):
-            if not isinstance(t, monster.Monster):
+        async def hit(self, dmg):
+            if dmg.target in self.immune_targets or not isinstance(dmg.target, monster.Monster):
                 return
-            hp_threshold = t.stats["hp"].calculate() * self.get_value("hp_threshold")
-            if t.cur_hp <= hp_threshold and t.cur_hp - amount > hp_threshold:
+            hp_threshold = dmg.target.stats["hp"].calculate() * self.get_value("hp_threshold")
+            if dmg.target.cur_hp <= hp_threshold:
                 self.attacks += 1
+                self.immune_targets.append(dmg.target)
                 if not self.follow_up_launched:
                     self.follow_up_launched = True
                     battle.current.action_list.extras.append(Herta.Talent.FollowUp(self.target, self))

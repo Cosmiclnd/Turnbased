@@ -281,7 +281,7 @@ class Firefly(base.Character):
             
             @event.member_listener(event.ListenerPriority.EXECUTE - 1)
             async def weakness_break(self, tr):
-                if self.target is not tr.dealer or tr.damage is None or tr.damage.source not in (damage.DmgSource.ENHANCED_BASIC_ATK,
+                if self.target is not tr.dealer or tr.damage is None or tr.damage.context.source not in (damage.DmgSource.ENHANCED_BASIC_ATK,
                     damage.DmgSource.ENHANCED_SKILL):
                     return
                 if self.delay_triggers > 0:
@@ -334,7 +334,7 @@ class Firefly(base.Character):
     def set_effect_types(self):
         self.effect_types.add_unique(self.CompleteCombustionEffect())
         self.effect_types.add_unique(effect.AdditionalWeaknessEffect("fire_weakness", "Fire Weakness", 
-            effect.Effect.DurationType.TURN_END, self, enums.Element.FIRE, False))
+            effect.Effect.DurationType.TURN_END, enums.Element.FIRE, False))
     
     def basic_atk_selector(self, group):
         if self.effects.has_effect(self.effect_types.get(self.nameid, "complete_combustion")):

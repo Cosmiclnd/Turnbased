@@ -42,8 +42,9 @@ class Effect(item.Item):
     
     # 表示已经应用到某个target的状态效果
     class Instance:
-        def __init__(self, eff, t):
+        def __init__(self, eff, caster, t):
             self.effect = eff
+            self.caster = caster
             self.target = t
             self.old_stacks = 0
         
@@ -70,8 +71,8 @@ class Effect(item.Item):
     def full_name(self):
         return f"{self.group_name}.{self.nameid}" if self.group_name is not None else self.nameid
     
-    def new_instance(self, t):
-        return self.Instance(self, t)
+    def new_instance(self, caster, t):
+        return self.Instance(self, caster, t)
     
     def is_debuff_type(self, type):
         return False
@@ -123,11 +124,12 @@ class FrozenEffect(Effect):
             if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
                 return
             if self.effect.dmg_desc is not None:
-                await battle.current.event_bus.dispatch("additional_damage", await self.effect.dmg_desc.summon(self.target))
+                await battle.current.event_bus.dispatch("additional_damage", await self.effect.dmg_desc.summon(self.target, effect_instance=self))
 
     def __init__(self, dmg_desc=None, dispellable=True):
         super().__init__("frozen", "Frozen", Effect.Type.DEBUFF, Effect.DurationType.TURN_END, 1, dispellable)
         self.dmg_desc = dmg_desc
+        self.dmg_desc.context.effect = self
 
     def is_debuff_type(self, type):
         return type in (Debuff.FROZEN, Debuff.CONTROL)
@@ -151,11 +153,12 @@ class DotEffect(Effect):
             if self.target is not dot.target or not dot.filter(self.effect):
                 return
             await battle.current.event_bus.dispatch("additional_damage",
-                (await self.effect.dmg_desc.summon(self.target)).scale(dot.percentage * self.old_stacks))
+                (await self.effect.dmg_desc.summon(self.target, effect_instance=self)).scale(dot.percentage * self.old_stacks))
 
     def __init__(self, nameid, name, dmg_desc, debuff_type, max_stacks, dispellable=True):
         super().__init__(nameid, name, Effect.Type.DEBUFF, Effect.DurationType.TURN_END, max_stacks, dispellable)
         self.dmg_desc = dmg_desc
+        self.dmg_desc.context.effect = self
         self.debuff_type = debuff_type
     
     def is_dot(self, t):
@@ -171,15 +174,14 @@ class AdditionalWeaknessEffect(Effect):
             if self.old_stacks == 0 and stacks != 0:
                 self.eff_dead = item.DeadToggle(self.target)
                 from monsters import base as monster  # TODO: Python 3.15 lazy import
-                self.target.weaknesses.additions.append(monster.AdditionalWeakness(self.effect.nameid, self.effect.name, self.effect.caster,
+                self.target.weaknesses.additions.append(monster.AdditionalWeakness(self.effect.nameid, self.effect.name, self.caster,
                     self.target, self.effect.element, self.eff_dead))
             elif self.old_stacks != 0 and stacks == 0:
                 self.eff_dead.dead_toggle = True
             self.old_stacks = stacks
 
-    def __init__(self, nameid, name, duration_type, caster, element, dispellable=True):
+    def __init__(self, nameid, name, duration_type, element, dispellable=True):
         super().__init__(nameid, name, Effect.Type.DEBUFF, duration_type, 1, dispellable)
-        self.caster = caster
         self.element = element
 
 class EffectTypes:
@@ -234,11 +236,11 @@ class EffectList:
                 else:
                     print(" " * (indent + 4) + f"{duration} turn(s): {stacks}")
     
-    async def add(self, eff, duration, stacks=1):
+    async def add(self, eff, adder, duration, stacks=1):
         if eff.is_immune(self.target):
             return False
         if eff not in self.instances:
-            self.instances[eff] = eff.new_instance(self.target)
+            self.instances[eff] = eff.new_instance(adder, self.target)
         if eff not in self.effects:
             self.effects[eff] = EffectInfo(duration, stacks)
         else:

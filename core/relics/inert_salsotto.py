@@ -20,7 +20,7 @@ class InertSalsotto(base.RelicSet):
             if dmg is None:
                 return False
             return (stat.target.stats["crt_rate"].calculate() >= self.get_value_2pc("crt_rate_threshold") and
-                dmg.source in (damage.DmgSource.ULTIMATE, damage.DmgSource.FOLLOW_UP))
+                dmg.context.source in (damage.DmgSource.ULTIMATE, damage.DmgSource.FOLLOW_UP))
 
     def __init__(self):
         super().__init__("inert_salsotto")

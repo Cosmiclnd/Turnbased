@@ -25,9 +25,6 @@ class Skill(item.Item):
         self.type = type
         self.target = t
         self.level = level
-    
-    def available(self):
-        return "ok"
 
 class SkillGroup:
     def __init__(self, t, selector=lambda group: group.skills[0]):
@@ -38,9 +35,6 @@ class SkillGroup:
     
     def current_skill(self):
         return self.selector(self)
-    
-    def available(self):
-        return self.current_skill().available()
     
     def add(self, skill):
         self.skills.append(skill)

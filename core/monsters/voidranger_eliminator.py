@@ -52,7 +52,6 @@ class VoidrangerEliminator(base.Monster):
                 stacks = self.target.effects.get_stacks(self.effect)
                 if self.old_stacks == 0 and stacks != 0:
                     self.listener_dead = item.DeadToggle(self.target)
-                    self.dmg = await self.effect.dmg_desc.summon(self.target)
                     battle.current.event_bus.add_member_listener(self.hit, self.listener_dead)
                 elif self.old_stacks != 0 and stacks == 0:
                     self.listener_dead.dead_toggle = True
@@ -62,7 +61,7 @@ class VoidrangerEliminator(base.Monster):
             async def hit(self, dmg):
                 if self.target is not dmg.target:
                     return
-                await battle.current.event_bus.dispatch("additional_damage", self.dmg)
+                await battle.current.event_bus.dispatch("additional_damage", await self.effect.dmg_desc.summon(self.target))
                 await self.target.effects.remove(self.effect, 1)
 
         def __init__(self, dmg_desc):

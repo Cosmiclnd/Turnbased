@@ -2,7 +2,7 @@
     "characters": [
         {
             "uuid": "092cda29-80ed-4162-9661-93d7ad183d34",
-            "name": "firefly",
+            "name": "kafka",
             "level": 80,
             "eidolons": 6,
             "basic_atk_level": 6,
@@ -34,7 +34,7 @@
                     "name": "iron_cavalry_against_the_scourge",
                     "level": 12,
                     "main_stat_type": "atk",
-                    "sub_stat_types": ["hp", "atk%", "crt_dmg", "crt_rate"],
+                    "sub_stat_types": ["hp", "atk%", "eff_hr", "crt_rate"],
                     "enhancements": [
                         [0],
                         [1, 1, 1],
@@ -45,7 +45,7 @@
                 "body": {
                     "name": "iron_cavalry_against_the_scourge",
                     "level": 15,
-                    "main_stat_type": "crt_rate",
+                    "main_stat_type": "eff_hr",
                     "sub_stat_types": ["atk", "atk%", "spd", "eff_res"],
                     "enhancements": [
                         [1, 2],
@@ -58,7 +58,7 @@
                     "name": "iron_cavalry_against_the_scourge",
                     "level": 15,
                     "main_stat_type": "atk%",
-                    "sub_stat_types": ["hp%", "spd", "crt_rate", "eff_res"],
+                    "sub_stat_types": ["hp%", "spd", "eff_hr", "eff_res"],
                     "enhancements": [
                         [0, 0],
                         [0, 1],
@@ -69,7 +69,7 @@
                 "planar_sphere": {
                     "name": "forge_of_the_kalpagni_lantern",
                     "level": 15,
-                    "main_stat_type": "atk%",
+                    "main_stat_type": "lightning_dmg_boost",
                     "sub_stat_types": ["hp%", "spd", "eff_res", "break_eff"],
                     "enhancements": [
                         [2],
@@ -81,8 +81,8 @@
                 "link_rope": {
                     "name": "forge_of_the_kalpagni_lantern",
                     "level": 15,
-                    "main_stat_type": "break_eff",
-                    "sub_stat_types": ["hp%", "atk%", "spd", "eff_res"],
+                    "main_stat_type": "energy_regen_rate",
+                    "sub_stat_types": ["hp%", "atk%", "eff_hr", "eff_res"],
                     "enhancements": [
                         [2],
                         [2, 2],
@@ -107,7 +107,7 @@
             "lightcone": {
                 "name": "night_of_fright",
                 "level": 80,
-                "stacks": 1
+                "stacks": 5
             },
             "relics": {
                 "head": {
@@ -188,7 +188,7 @@
             "uuid": "a83159db-4fda-4b6c-9c5f-cf06f0c9dd0e",
             "name": "ruan_mei",
             "level": 80,
-            "eidolons": 0,
+            "eidolons": 6,
             "basic_atk_level": 6,
             "skill_level": 10,
             "ultimate_level": 10,
@@ -199,7 +199,7 @@
             "lightcone": {
                 "name": "past_self_in_mirror",
                 "level": 80,
-                "stacks": 1
+                "stacks": 5
             },
             "relics": {
                 "head": {
@@ -342,7 +342,5 @@
         "type": "default",
         "trigger": null
     },
-    "features": [
-        "extra_normal_turn_not_reset_at_new_wave"
-    ]
+    "features": []
 }

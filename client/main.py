@@ -57,6 +57,8 @@ class UpdateHandler:
             info += " Break!"
         if "super_break" in message["damage"]["types"]:
             info += " Super Break!"
+        if "dot" in message["damage"]["types"]:
+            info += " DoT"
         self.client.print_battle_log(info, color="#f0806f")
         return {"type": "empty"}
     
@@ -112,6 +114,11 @@ class UpdateHandler:
         return {"type": "empty"}
     
     def handle_herta(self, message, *args):
+        if args[0] == "follow_up_turn":
+            self.on_new_turn(f"Follow-Up Attack: {self.client.targets[message['target']].nameid}")
+        return {"type": "empty"}
+    
+    def handle_kafka(self, message, *args):
         if args[0] == "follow_up_turn":
             self.on_new_turn(f"Follow-Up Attack: {self.client.targets[message['target']].nameid}")
         return {"type": "empty"}

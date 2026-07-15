@@ -293,5 +293,6 @@ class RuanMei(base.Character):
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
     async def before_weakness_break(self, tr):
-        eff_add = effect.EffectAddition(self, self, self.effect_types["eidolon4"], self.config.get_skill_value("eidolon4", "duration"))
+        eff_add = effect.EffectAddition(self, self, self.effect_types.get(self.nameid, "eidolon4"),
+            self.config.get_skill_value("eidolon4", "duration"))
         await battle.current.event_bus.dispatch("add_effect", eff_add)

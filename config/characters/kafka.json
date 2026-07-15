@@ -1,0 +1,385 @@
+{
+    "nameid": "kafka",
+    "name": "Kafka",
+    "rarity": 5,
+    "element": "lightning",
+    "path": "nihility",
+    "base_stat_scales": {
+        "hp": 28,
+        "atk": 35,
+        "def": 20
+    },
+    "base_stats": {
+        "spd": 100,
+        "taunt": 1,
+        "energy": 120,
+        "max_energy": 120
+    },
+    "traces_stats": [
+        {
+            "nameid": "kafka_trace1",
+            "name": "ATK Boost",
+            "stat_name": "atk",
+            "is_percentage": true,
+            "value": 0.04
+        },
+        {
+            "nameid": "kafka_trace2",
+            "name": "Effect Hit Rate Boost",
+            "stat_name": "eff_hr",
+            "is_percentage": false,
+            "value": 0.04
+        },
+        {
+            "nameid": "kafka_trace3",
+            "name": "ATK Boost",
+            "stat_name": "atk",
+            "is_percentage": true,
+            "value": 0.04
+        },
+        {
+            "nameid": "kafka_trace4",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.04
+        },
+        {
+            "nameid": "kafka_trace5",
+            "name": "ATK Boost",
+            "stat_name": "atk",
+            "is_percentage": true,
+            "value": 0.06
+        },
+        {
+            "nameid": "kafka_trace6",
+            "name": "Effect Hit Rate Boost",
+            "stat_name": "eff_hr",
+            "is_percentage": false,
+            "value": 0.06
+        },
+        {
+            "nameid": "kafka_trace7",
+            "name": "ATK Boost",
+            "stat_name": "atk",
+            "is_percentage": true,
+            "value": 0.06
+        },
+        {
+            "nameid": "kafka_trace8",
+            "name": "HP Boost",
+            "stat_name": "hp",
+            "is_percentage": true,
+            "value": 0.06
+        },
+        {
+            "nameid": "kafka_trace9",
+            "name": "Effect Hit Rate Boost",
+            "stat_name": "eff_hr",
+            "is_percentage": false,
+            "value": 0.08
+        },
+        {
+            "nameid": "kafka_trace10",
+            "name": "ATK Boost",
+            "stat_name": "atk",
+            "is_percentage": true,
+            "value": 0.08
+        }
+    ],
+    "skills": {
+        "basic_atk": {
+            "nameid": "midnight_tumult",
+            "name": "Midnight Tumult",
+            "category": "basic_atk",
+            "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
+            "delta_skillpoints": 1,
+            "desc": "Deals Lightning DMG equal to {percentage:.2%} of Kafka's ATK to one designated enemy.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
+                },
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "skill": {
+            "nameid": "caressing_moonlight",
+            "name": "Caressing Moonlight",
+            "category": "skill",
+            "type": "blast",
+            "target": {
+                "type": "monster",
+                "selection": "blast"
+            },
+            "delta_skillpoints": -1,
+            "desc": "Deals Lightning DMG equal to {main_percentage:.2%} of Kafka's ATK to one designated enemy and Lightning DMG equal to {sub_percentage:.2%} of Kafka's ATK to adjacent targets.\nIf the designated enemy or the adjacent targets are currently afflicted with DoT, all DoTs currently placed on those enemies immediately produces DMG equal to {main_dot_tick_percentage:.2%} or {sub_dot_tick_percentage:.2%} of the original DMG.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
+                "main_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.8, 0.88, 0.96, 1.04, 1.12, 1.2, 1.3, 1.4, 1.5, 1.6, 1.68, 1.76, 1.84, 1.92, 2]
+                },
+                "sub_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.3, 0.33, 0.36, 0.39, 0.42, 0.45, 0.4875, 0.525, 0.5625, 0.6, 0.63, 0.66, 0.69, 0.72, 0.75]
+                },
+                "main_dot_tick_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.6, 0.615, 0.63, 0.645, 0.66, 0.675, 0.69375, 0.7125, 0.73125, 0.75, 0.765, 0.78, 0.795, 0.81, 0.825]
+                },
+                "sub_dot_tick_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.4, 0.41, 0.42, 0.43, 0.44, 0.45, 0.4625, 0.475, 0.4875, 0.5, 0.51, 0.52, 0.53, 0.54, 0.55]
+                },
+                "main_toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "sub_toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "ultimate": {
+            "nameid": "twilight_triumph",
+            "name": "Twilight Triumph",
+            "category": "ultimate",
+            "type": "aoe",
+            "target": {
+                "type": "monster",
+                "selection": "all"
+            },
+            "delta_skillpoints": 0,
+            "desc": "Deals Lightning DMG equal to {percentage:.2%} of Kafka's ATK to all enemies, with a {base_chance:.2%} base chance for enemy targets hit to become Shocked and immediately take DMG from their current DoT debuff(s), equal to {dot_tick_percentage:.2%} of the original DMG. Shock lasts for {duration} turn(s).\nWhile Shocked, enemy targets receive Lightning DoT equal to {dot_percentage:.2%} of Kafka's ATK at the beginning of each turn.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.48, 0.512, 0.544, 0.576, 0.608, 0.64, 0.68, 0.72, 0.76, 0.8, 0.832, 0.864, 0.896, 0.928, 0.96]
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "dot_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [1.16, 1.26875, 1.3775, 1.48625, 1.595, 1.758125, 1.975625, 2.2475, 2.57375, 2.9, 3.041375, 3.18275, 3.324125, 3.4655, 3.606875]
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "dot_tick_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [1, 1.02, 1.04, 1.06, 1.08, 1.1, 1.125, 1.15, 1.175, 1.2, 1.22, 1.24, 1.26, 1.28, 1.3]
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                }
+            }
+        },
+        "talent": {
+            "nameid": "gentle_but_cruel",
+            "name": "Gentle but Cruel",
+            "category": "talent",
+            "type": "single",
+            "delta_skillpoints": 0,
+            "desc": "After Kafka's teammate uses an attack on an enemy target, Kafka immediately launches Follow-Up ATK and deals Lightning DMG equal to {percentage:.2%} of Kafka's ATK to the primary target, with a {base_chance:.2%} base chance to inflict Shock (equivalent to that applied by her Ultimate) on the attacked enemy target for {duration} turn(s). This effect can trigger up to {trigger_count} time(s), 1 of which can be regained at the end of Kafka's turn.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.75, 0.7875, 0.825, 0.8625, 0.9, 0.9375, 0.975, 1.0125, 1.05, 1.0875, 1.125, 1.1625, 1.2]
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "trigger_count": {
+                    "is_dynamic": false,
+                    "value": 2
+                },
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "technique": {
+            "nameid": "mercy_is_not_forgiveness",
+            "name": "Mercy Is Not Forgiveness",
+            "category": "technique",
+            "type": "technique",
+            "delta_skillpoints": 0,
+            "desc": "Immediately attacks all enemies within a set range. After entering combat, deals Lightning DMG equal to {percentage:.2%} of Kafka's ATK to all enemies, with a {base_chance:.2%} base chance to inflict Shock (equivalent to that applied by her Ultimate) on every enemy target for {duration} turn(s).",
+            "values": {
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 3
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                }
+            }
+        },
+        "bonus_trace1": {
+            "nameid": "torture",
+            "name": "Torture",
+            "category": "trace",
+            "desc": "When an ally target's Effect Hit Rate is {eff_hr_threshold:.2%} or higher, Kafka increases that target's ATK by {atk_boost:.2%}.",
+            "values": {
+                "eff_hr_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.75
+                },
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        },
+        "bonus_trace2": {
+            "nameid": "plunder",
+            "name": "Plunder",
+            "category": "trace",
+            "desc": "If an enemy target is defeated while Shocked, Kafka additionally regenerates {energy_regen} Energy.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                }
+            }
+        },
+        "bonus_trace3": {
+            "nameid": "thorn",
+            "name": "Thorn",
+            "category": "trace",
+            "desc": "After using Ultimate, restores the triggerable count of Talent's Follow-Up ATK by 1. And the Talent's Follow-Up ATK can cause all DoTs debuffs currently on the target to immediately produce DMG equal to {dot_tick_percentage:.2%} of the original DMG.",
+            "values": {
+                "dot_tick_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.8
+                }
+            }
+        },
+        "eidolon1": {
+            "nameid": "da_capo",
+            "name": "Da Capo",
+            "category": "eidolon",
+            "desc": "When using an attack, has a {base_chance:.2%} base chance to increase the DoT taken by the target by {dot_dmg_vulnerability:.2%} for {duration} turn(s).",
+            "values": {
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "dot_dmg_vulnerability": {
+                    "is_dynamic": false,
+                    "value": 0.3
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "eidolon2": {
+            "nameid": "fortississimo",
+            "name": "Fortississimo",
+            "category": "eidolon",
+            "desc": "While Kafka is on the field, DoT dealt by all allies increases by {dot_dmg_boost:.2%}.",
+            "values": {
+                "dot_dmg_boost": {
+                    "is_dynamic": false,
+                    "value": 0.33
+                }
+            }
+        },
+        "eidolon3": {
+            "nameid": "capriccio",
+            "name": "Capriccio",
+            "category": "eidolon",
+            "desc": "Skill Lv. +2, up to a maximum of Lv. 15.\nBasic ATK Lv. +1, up to a maximum of Lv. 10.",
+            "values": {}
+        },
+        "eidolon4": {
+            "nameid": "recitativo",
+            "name": "Recitativo",
+            "category": "eidolon",
+            "desc": "When an enemy target takes DMG from the Shock status inflicted by Kafka, Kafka additionally regenerates {energy_regen} Energy.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "eidolon5": {
+            "nameid": "doloroso",
+            "name": "Doloroso",
+            "category": "eidolon",
+            "desc": "Ultimate Lv. +2, up to a maximum of Lv. 15.\nTalent Lv. +2, up to a maximum of Lv. 15.",
+            "values": {}
+        },
+        "eidolon6": {
+            "nameid": "leggiero",
+            "name": "Leggiero",
+            "category": "eidolon",
+            "desc": "The Shock state inflicted on the enemy target by the Ultimate, Technique, or the Talent-triggered Follow-Up ATK has a DMG multiplier increase of {percentage:.2%} and lasts {duration} turn(s) longer.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 1.56
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        }
+    }
+}

@@ -23,10 +23,10 @@ class TheBirthOfTheSelf(base.LightCone):
         dmg = kwargs.get("damage", None)
         if dmg is None:
             return False
-        return dmg.source is damage.DmgSource.FOLLOW_UP
+        return dmg.context.source is damage.DmgSource.FOLLOW_UP
     
     def validator_mod2(self, stat, **kwargs):
         dmg = kwargs.get("damage", None)
         if dmg is None:
             return False
-        return dmg.source is damage.DmgSource.FOLLOW_UP and dmg.target.cur_hp <= dmg.target.stats["hp"].calculate() * self.get_value("hp_threshold")
+        return dmg.context.source is damage.DmgSource.FOLLOW_UP and dmg.target.cur_hp <= dmg.target.stats["hp"].calculate() * self.get_value("hp_threshold")

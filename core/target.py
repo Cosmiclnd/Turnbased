@@ -102,7 +102,7 @@ class Target(item.Item):
             stat_names.append(f"{e.nameid}_dmg_boost")
             stat_names.append(f"{e.nameid}_res")
             stat_names.append(f"{e.nameid}_res_pen")
-        stat_names.extend(["eff_hr", "eff_res", "break_dmg_boost"])
+        stat_names.extend(["eff_hr", "eff_res"])
         for e in effect.Debuff.ALL:
             stat_names.append(f"{e.nameid}_res")
         self.stats.new_stats(stat_names, self)
@@ -235,9 +235,8 @@ class Target(item.Item):
     async def die(self, t):
         if self is not t:
             return
-        if not self.death_state.alive:
-            await server.handler.update_client({"name": "die", "target": str(self.uuid)})
-            await battle.current.event_bus.dispatch("clean", self)
+        await server.handler.update_client({"name": "die", "target": str(self.uuid)})
+        await battle.current.event_bus.dispatch("clean", self)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     async def clean(self, t):
@@ -261,7 +260,7 @@ class Target(item.Item):
             return
         await server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
             "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
-        await self.effects.add(eff_add.effect, eff_add.duration, eff_add.stacks)
+        await self.effects.add(eff_add.effect, eff_add.adder, eff_add.duration, eff_add.stacks)
 
 def lerp(a, b, t):
     return a + (b - a) * t

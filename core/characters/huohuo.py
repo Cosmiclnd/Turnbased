@@ -135,8 +135,9 @@ class Huohuo(base.Character):
                 heal = healing.Healing(self.target, t,
                     modifier.StatDesc((t.stats["hp"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon2", "percentage"))))
                 await battle.current.event_bus.dispatch("heal", heal)
-                await self.target.effects.advance_turn(self.target.effect_types["divine_provision"])
+                await self.target.effects.advance_turn(self.target.effect_types.get(self.target.nameid, "divine_provision"))
                 self.target.revive_count -= 1
+                battle.current.event_bus.interrupt("die")
     
     class Technique(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):

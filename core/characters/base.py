@@ -188,7 +188,7 @@ class Character(target.Target):
         # wb_eff = Weakness Break Efficiency
         self.stats.new_stats(
             ["crt_rate", "crt_dmg", "taunt", "energy", "max_energy", "energy_regen_rate", "break_eff", "wb_eff", "base_break_dmg",
-            "outgoing_healing_boost", "incoming_healing_boost"], self)
+            "outgoing_healing_boost", "incoming_healing_boost", "break_dmg_boost"], self)
         self.eidolons = None
         self.traces_stats_unlocked = None
         self.traces_unlocked = None

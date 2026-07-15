@@ -70,6 +70,9 @@ class EventBus:
                     if e.name != event_name:
                         self.stack.pop()
                         raise
+                    else:
+                        self.stack.pop()
+                        break
                 self.stack.pop()
         if LOG_NO_LISTENER and (event_name not in self.listeners or not self.listeners[event_name]):
             logging.warning(f"No listener for event {event_name}")
@@ -94,6 +97,9 @@ class EventBus:
                     if e.name != event_name:
                         self.stack.pop()
                         raise
+                    else:
+                        self.stack.pop()
+                        break
                 self.stack.pop()
         if event_name not in self.listeners or not self.listeners[event_name]:
             logging.warning(f"No resolver for event {event_name}")
