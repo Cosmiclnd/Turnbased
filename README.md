@@ -1,13 +1,26 @@
 # Turnbased: A Battle Simulator
 
+[简体中文](README-zh.md)
+
 ![Static Badge](https://img.shields.io/badge/License-MIT-yellow)
 ![Static Badge](https://img.shields.io/badge/python-3.11+-blue)
+![Static Badge](https://img.shields.io/badge/status-alpha-red)
 
 A high-fidelity turn-based battle simulation engine written in Python.
 
-> Inspired by the mechanics of Honkai: Star Rail.
+> Inspired by the intricate mechanics of Honkai: Star Rail.
+
+## How It Works
+
+- **Event Bus**: All in‑game events (`hit`, `heal`, `weakness_break`, etc.) are dispatched by the event bus, allowing clean separation of concerns.
+
+- **Modifier System**: Every stat (`ATK`, `SPD`, etc.) is a `Stat` object with a list of `Modifiers`. `Modifiers` can have dynamic validators (e.g., only apply when in Complete Combustion state).
+
+- **Damage Pipeline**: Damage calculation is decomposed into independent factors (`DMG_BOOST`, `DEFENCE`, `RESISTANCE`, etc.), each with its own base function and modifier logic.
 
 ## Quick Start
+
+![Demo Image](docs/screenshots/demo.png)
 
 ### Prerequisites
 
@@ -51,7 +64,7 @@ client/         # PyQt5 frontend
 config/         # All static game data in JSON
 core/           # Backend server
 docs/           # Documentation (currently under work)
-mirror_test/    # Test scenarios
+mirror_test/    # Pre‑recorded test scenarios (manually crafted)
 utilities/      # Utility scripts
 ```
 
