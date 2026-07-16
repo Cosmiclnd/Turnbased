@@ -36,9 +36,9 @@ def parse(f, path, type):
             cur_listener.priority = priority[23:].strip().lower()
             constants = {"start": 1000, "pre_process": 100, "execute": 0, "post_process": -100, "end": -1000}
             cur_listener.priority_number = eval(cur_listener.priority, constants)
-        elif line.startswith("async def") and cur_listener is not None:
+        elif line.startswith("def ") and cur_listener is not None:
             end = line.find("(")
-            func_name = line[9:end].strip()
+            func_name = line[4:end].strip()
             cur_listener.namespace = root + ".".join(namespace[:num_indents])
             cur_listener.name = func_name
             if cur_listener.event_name is None:
