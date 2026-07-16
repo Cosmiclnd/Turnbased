@@ -48,7 +48,7 @@ class SkillGroup:
             skill.bonus_level += level
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def skill_group_trigger(self, skill_group):
+    def skill_group_trigger(self, skill_group):
         if self is not skill_group:
             return
-        await battle.current.event_bus.dispatch("skill_trigger", self.current_skill())
+        battle.current.event_bus.dispatch("skill_trigger", self.current_skill())

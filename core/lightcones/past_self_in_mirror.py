@@ -23,16 +23,16 @@ class PastSelfInMirror(base.LightCone):
             battle.current.event_bus.add_member_listener(self.new_wave_start, self.target, unique=True)
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS)
-    async def ultimate_turn(self, turn):
+    def ultimate_turn(self, turn):
         if self.target is not turn.target:
             return
         for c in battle.current.characters:
             eff_add = effect.EffectAddition(self.target, c, self.effect_types.get(self.nameid, "eff"), self.get_value("duration"))
-            await battle.current.event_bus.dispatch("add_effect", eff_add)
+            battle.current.event_bus.dispatch("add_effect", eff_add)
         if self.target.stats["break_eff"].calculate() >= self.get_value("break_eff_threshold"):
             battle.current.skillpoints.modify(1)
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-    async def new_wave_start(self):
+    def new_wave_start(self):
         for c in battle.current.characters:
-            await battle.current.event_bus.dispatch("regen_energy", c, self.get_value("energy_regen"), True)
+            battle.current.event_bus.dispatch("regen_energy", c, self.get_value("energy_regen"), True)

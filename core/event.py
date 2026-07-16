@@ -53,7 +53,7 @@ class EventBus:
     
     add_member_resolver = add_member_listener
     
-    async def dispatch(self, event_name, *args, **kwargs):
+    def dispatch(self, event_name, *args, **kwargs):
         if event_name in self.listeners:
             self.listeners[event_name].refresh()
             self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
@@ -65,7 +65,7 @@ class EventBus:
                     self.stack.pop()
                     return
                 try:
-                    await listener.callback(*args, **kwargs)
+                    listener.callback(*args, **kwargs)
                 except EventInterrupt as e:
                     if e.name != event_name:
                         self.stack.pop()
@@ -77,7 +77,7 @@ class EventBus:
         if LOG_NO_LISTENER and (event_name not in self.listeners or not self.listeners[event_name]):
             logging.warning(f"No listener for event {event_name}")
     
-    async def query(self, event_name, *args, **kwargs):
+    def query(self, event_name, *args, **kwargs):
         if event_name in self.listeners:
             self.listeners[event_name].refresh()
             self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
@@ -89,7 +89,7 @@ class EventBus:
                     self.stack.pop()
                     return
                 try:
-                    result = await listener.callback(*args, **kwargs)
+                    result = listener.callback(*args, **kwargs)
                     if type(result) is QueryResult:
                         self.stack.pop()
                         return result.result

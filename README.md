@@ -45,7 +45,7 @@ pip install -r requirements.txt
 python core/main.py
 ```
 
-This starts a WebSocket server on `ws://localhost:55716`.
+This starts a WebSocket server on `ws://127.0.0.1:55716`.
 
 2. **Launch the client** (in another terminal):
 

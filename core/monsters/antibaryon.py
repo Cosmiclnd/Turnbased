@@ -15,17 +15,17 @@ class Antibaryon(base.Monster):
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def skill_trigger(self, skill):
+        def skill_trigger(self, skill):
             if self is not skill:
                 return
-            t = await battle.current.event_bus.query("get_monster_target", self.target)
-            await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = await damage.Damage.create(self.target, t,
+            t = battle.current.event_bus.query("get_monster_target", self.target)
+            battle.current.event_bus.dispatch("attack_start", self.target)
+            dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.IMAGINARY, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
-            await battle.current.event_bus.dispatch("hit", dmg)
-            await battle.current.event_bus.dispatch("attack_end", self.target)
+            battle.current.event_bus.dispatch("hit", dmg)
+            battle.current.event_bus.dispatch("attack_end", self.target)
 
     def __init__(self, uuid, level, moc, stat_scales, stat_flats):
         super().__init__(uuid, "antibaryon", level, moc, stat_scales, stat_flats)

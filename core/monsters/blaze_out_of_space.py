@@ -17,19 +17,19 @@ class BlazeOutOfSpace(base.Monster):
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def skill_trigger(self, skill):
+        def skill_trigger(self, skill):
             if self is not skill:
                 return
-            t = await battle.current.event_bus.query("get_monster_target", self.target)
-            await battle.current.event_bus.dispatch("attack_start", self.target)
-            dmg = await damage.Damage.create(self.target, t,
+            t = battle.current.event_bus.query("get_monster_target", self.target)
+            battle.current.event_bus.dispatch("attack_start", self.target)
+            dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
-            await battle.current.event_bus.dispatch("hit", dmg)
+            battle.current.event_bus.dispatch("hit", dmg)
             eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "enkindle"),
                 self.target.config.get_skill_value("talent", "duration"))
-            await self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
-            await battle.current.event_bus.dispatch("attack_end", self.target)
+            self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
+            battle.current.event_bus.dispatch("attack_end", self.target)
     
     class Skill2(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -37,12 +37,12 @@ class BlazeOutOfSpace(base.Monster):
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def skill_trigger(self, skill):
+        def skill_trigger(self, skill):
             if self is not skill:
                 return
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "spontaneous_combustion"),
                 -1)
-            await battle.current.event_bus.dispatch("add_effect", eff_add)
+            battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class Skill3(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -50,22 +50,22 @@ class BlazeOutOfSpace(base.Monster):
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def skill_trigger(self, skill):
+        def skill_trigger(self, skill):
             if self is not skill:
                 return
-            await battle.current.event_bus.dispatch("attack_start", self.target)
+            battle.current.event_bus.dispatch("attack_start", self.target)
             for i in range(self.get_value("times")):
-                t = await battle.current.event_bus.query("get_monster_target", self.target)
+                t = battle.current.event_bus.query("get_monster_target", self.target)
                 if t is None:
                     break
-                dmg = await damage.Damage.create(self.target, t,
+                dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
-                await battle.current.event_bus.dispatch("hit", dmg)
+                battle.current.event_bus.dispatch("hit", dmg)
                 eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "enkindle"),
                     self.target.config.get_skill_value("talent", "duration"))
-                await self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
-            await battle.current.event_bus.dispatch("attack_end", self.target)
+                self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
+            battle.current.event_bus.dispatch("attack_end", self.target)
     
     class Skill4(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -73,12 +73,12 @@ class BlazeOutOfSpace(base.Monster):
             battle.current.event_bus.add_member_listener(self.skill_trigger, t)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def skill_trigger(self, skill):
+        def skill_trigger(self, skill):
             if self is not skill:
                 return
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "atk_boost"),
                 self.get_value("duration"))
-            await battle.current.event_bus.dispatch("add_effect", eff_add)
+            battle.current.event_bus.dispatch("add_effect", eff_add)
     
     class NormalTurn(target.Target.NormalTurn):
         def get_num_actions(self):
@@ -120,14 +120,14 @@ class BlazeOutOfSpace(base.Monster):
             return group.skills[0]
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn")
-    async def reset_next_skill(self, turn):
+    def reset_next_skill(self, turn):
         if not isinstance(turn, target.Target.NormalTurn) or self is not turn.target or turn.cur_action != 0:
             return
         self.next_skill = None
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "weakness_break")
-    async def discharge(self, tr):
+    def discharge(self, tr):
         if self is not tr.target:
             return
-        await self.effects.delete(self.effect_types.get(self.nameid, "spontaneous_combustion"))
-        await self.effects.delete(self.effect_types.get(self.nameid, "atk_boost"))
+        self.effects.delete(self.effect_types.get(self.nameid, "spontaneous_combustion"))
+        self.effects.delete(self.effect_types.get(self.nameid, "atk_boost"))

@@ -52,7 +52,7 @@ class Effect(item.Item):
         # 要求多次调用无副作用
         # 不要通过super()调用父类的refresh
         # 初始状态的设置也应该在refresh中进行
-        async def refresh(self):
+        def refresh(self):
             self.old_stacks = self.target.effects.get_stacks(self.effect)
 
     def __init__(self, nameid, name, type, duration_type, max_stacks, dispellable=True):
@@ -88,7 +88,7 @@ class Effect(item.Item):
 
 class ModifierEffect(Effect):
     class Instance(Effect.Instance):
-        async def refresh(self):
+        def refresh(self):
             stacks = self.target.effects.get_stacks(self.effect)
             stat = self.target.stats[self.effect.stat_name]
             if self.old_stacks == 0 and stacks != 0:
@@ -110,7 +110,7 @@ class ModifierEffect(Effect):
 
 class FrozenEffect(Effect):
     class Instance(Effect.Instance):
-        async def refresh(self):
+        def refresh(self):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
@@ -120,11 +120,11 @@ class FrozenEffect(Effect):
             self.old_stacks = stacks
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def normal_turn_start(self, turn):
+        def normal_turn_start(self, turn):
             if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
                 return
             if self.effect.dmg_desc is not None:
-                await battle.current.event_bus.dispatch("additional_damage", await self.effect.dmg_desc.summon(self.target, effect_instance=self))
+                battle.current.event_bus.dispatch("additional_damage", self.effect.dmg_desc.summon(self.target, effect_instance=self))
 
     def __init__(self, dmg_desc=None, dispellable=True):
         super().__init__("frozen", "Frozen", Effect.Type.DEBUFF, Effect.DurationType.TURN_END, 1, dispellable)
@@ -139,7 +139,7 @@ class FrozenEffect(Effect):
 
 class DotEffect(Effect):
     class Instance(Effect.Instance):
-        async def refresh(self):
+        def refresh(self):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
@@ -149,11 +149,11 @@ class DotEffect(Effect):
             self.old_stacks = stacks
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def tick_dot(self, dot):
+        def tick_dot(self, dot):
             if self.target is not dot.target or not dot.filter(self.effect):
                 return
-            await battle.current.event_bus.dispatch("additional_damage",
-                (await self.effect.dmg_desc.summon(self.target, effect_instance=self)).scale(dot.percentage * self.old_stacks))
+            battle.current.event_bus.dispatch("additional_damage",
+                (self.effect.dmg_desc.summon(self.target, effect_instance=self)).scale(dot.percentage * self.old_stacks))
 
     def __init__(self, nameid, name, dmg_desc, debuff_type, max_stacks, dispellable=True):
         super().__init__(nameid, name, Effect.Type.DEBUFF, Effect.DurationType.TURN_END, max_stacks, dispellable)
@@ -169,7 +169,7 @@ class DotEffect(Effect):
 
 class AdditionalWeaknessEffect(Effect):
     class Instance(Effect.Instance):
-        async def refresh(self):
+        def refresh(self):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.eff_dead = item.DeadToggle(self.target)
@@ -236,7 +236,7 @@ class EffectList:
                 else:
                     print(" " * (indent + 4) + f"{duration} turn(s): {stacks}")
     
-    async def add(self, eff, adder, duration, stacks=1):
+    def add(self, eff, adder, duration, stacks=1):
         if eff.is_immune(self.target):
             return False
         if eff not in self.instances:
@@ -249,27 +249,27 @@ class EffectList:
             else:
                 self.effects[eff].stacks += stacks
             self.effects[eff].refresh_duration(duration)
-        await self.instances[eff].refresh()
+        self.instances[eff].refresh()
         return True
     
-    async def remove(self, eff, stacks):
+    def remove(self, eff, stacks):
         if eff in self.effects:
             self.effects[eff].stacks -= stacks
             if self.effects[eff].stacks <= 0:
                 del self.effects[eff]
-            await self.instances[eff].refresh()
+            self.instances[eff].refresh()
     
-    async def delete(self, eff):
+    def delete(self, eff):
         if eff in self.effects:
             del self.effects[eff]
-            await self.instances[eff].refresh()
+            self.instances[eff].refresh()
     
-    async def advance_turn(self, eff):
+    def advance_turn(self, eff):
         if self.effects[eff].duration != -1:
             self.effects[eff].duration -= 1
             if self.effects[eff].duration == 0:
-                await self.delete(eff)
-        await self.instances[eff].refresh()
+                self.delete(eff)
+        self.instances[eff].refresh()
     
     def has_effect(self, eff):
         return eff in self.effects
@@ -291,7 +291,7 @@ class EffectList:
                 return False
         return True
     
-    async def dispel(self, count, f=None):
+    def dispel(self, count, f=None):
         # count=0表示全部驱散
         dispelled = 0
         while True:
@@ -304,33 +304,33 @@ class EffectList:
                 return dispelled
             import random  # TODO: battle.current.random
             eff = random.choice(effects)
-            await self.delete(eff)
+            self.delete(eff)
             dispelled += 1
         return dispelled
     
-    async def die(self):
+    def die(self):
         for eff in list(self.effects.keys()):
-            await self.delete(eff)
+            self.delete(eff)
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-    async def normal_turn_start(self, turn):
+    def normal_turn_start(self, turn):
         if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
             return
-        await battle.current.event_bus.dispatch("tick_dot", damage.DotTick(self.target, lambda x: True, 1))
+        battle.current.event_bus.dispatch("tick_dot", damage.DotTick(self.target, lambda x: True, 1))
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_START:
-                await self.advance_turn(eff)
+                self.advance_turn(eff)
         self.start_effects = list(self.effects.keys())
     
     @event.member_listener(event.ListenerPriority.POST_PROCESS)
-    async def normal_turn_end(self, turn):
+    def normal_turn_end(self, turn):
         if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
             return
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_END:
-                await self.advance_turn(eff)
+                self.advance_turn(eff)
             elif eff.duration_type == Effect.DurationType.TURN_END_CHECK_START and eff in self.start_effects:
-                await self.advance_turn(eff)
+                self.advance_turn(eff)
 
 @dataclass(slots=True, eq=False)
 class EffectAddition:

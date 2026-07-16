@@ -123,69 +123,69 @@ class Monster(target.Target):
         return True
     
     @event.member_listener(event.ListenerPriority.START, "battle_start")
-    async def set_initial_state(self):
+    def set_initial_state(self):
         # 这个listener在Target类中已经被添加
-        await super().set_initial_state()
+        super().set_initial_state()
         self.cur_toughness = self.stats["toughness"].calculate()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def target_action(self, t):
+    def target_action(self, t):
         if self is not t:
             return
         if self.weakness_broken:
-            await battle.current.event_bus.dispatch("weakness_recover", self)
-        await battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+            battle.current.event_bus.dispatch("weakness_recover", self)
+        battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def reduce_toughness(self, tr):
+    def reduce_toughness(self, tr):
         if self is not tr.target:
             return
-        await server.handler.update_client({"name": "reduce_toughness", "dealer": str(tr.dealer.uuid), "target": str(self.uuid),
+        server.handler.update_client({"name": "reduce_toughness", "dealer": str(tr.dealer.uuid), "target": str(self.uuid),
             "amount": tr.calculate()})
         self.cur_toughness -= tr.calculate()
 
     @event.member_listener(event.ListenerPriority.POST_PROCESS, "reduce_toughness")
-    async def check_weakness_break(self, tr):
+    def check_weakness_break(self, tr):
         if self is not tr.target:
             return
         if self.cur_toughness <= 0:
             self.cur_toughness = 0
             if not self.weakness_broken:
-                await battle.current.event_bus.dispatch("weakness_break", tr)
+                battle.current.event_bus.dispatch("weakness_break", tr)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def weakness_break(self, tr):
+    def weakness_break(self, tr):
         if self is not tr.target:
             return
-        await server.handler.update_client({"name": "weakness_break", "target": str(self.uuid)})
+        server.handler.update_client({"name": "weakness_break", "target": str(self.uuid)})
         self.weakness_broken = True
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def weakness_recover(self, t):
+    def weakness_recover(self, t):
         if self is not t:
             return
         self.cur_toughness = self.stats["toughness"].calculate()
         self.weakness_broken = False
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS, "clean")
-    async def killed_energy_regen(self, t):
+    def killed_energy_regen(self, t):
         if self is not t:
             return
-        await battle.current.event_bus.dispatch("regen_energy", self.death_state.killing_dmg.dealer, 10)
+        battle.current.event_bus.dispatch("regen_energy", self.death_state.killing_dmg.dealer, 10)
 
     @event.member_resolver(event.ListenerPriority.EXECUTE)
-    async def get_monster_target(self, t):
+    def get_monster_target(self, t):
         if self is not t:
             return
         targets = [c for c in battle.current.characters if c.death_state.alive]
         if not targets:
             return
         taunts = [c.stats["taunt"].calculate() for c in targets]
-        return event.QueryResult(await battle.current.random.monster_target(targets, taunts))
+        return event.QueryResult(battle.current.random.monster_target(targets, taunts))
 
     @server.server_responder
     @classmethod
-    async def respond_current_monsters(self, message):
+    def respond_current_monsters(self, message):
         result = []
         for m in battle.current.monsters:
             result.append({"uuid": str(m.uuid), "cur_hp": m.cur_hp, "hp": m.stats["hp"].calculate(), "cur_toughness": m.cur_toughness,
@@ -248,7 +248,7 @@ class Setup:
         for wave in record:
             self.waves.append(Wave(wave))
     
-    async def check_add_monsters(self):
+    def check_add_monsters(self):
         for group in self.current_wave().check():
             for monster in group.monsters:
                 self.monster_queue.append(monster)
@@ -256,19 +256,19 @@ class Setup:
         while battle.current.count_monsters() < 5:
             if len(self.monster_queue) == 0:
                 break
-            await battle.current.event_bus.dispatch("add_monster", self.monster_queue.pop(0))
+            battle.current.event_bus.dispatch("add_monster", self.monster_queue.pop(0))
             added = True
         if added:
-            await battle.current.action_list.refresh_targets()
+            battle.current.action_list.refresh_targets()
     
-    async def check(self):
+    def check(self):
         if self.cur_wave >= 0:
-            await self.check_add_monsters()
+            self.check_add_monsters()
         if not battle.current.monsters:
             self.cur_wave += 1
             if self.cur_wave >= len(self.waves):
                 return True
-            await self.check_add_monsters()
-            await server.handler.update_client({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
-            await battle.current.event_bus.dispatch("new_wave_start")
+            self.check_add_monsters()
+            server.handler.update_client({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
+            battle.current.event_bus.dispatch("new_wave_start")
         return False

@@ -6,7 +6,7 @@ from relics import base
 
 class FleetOfTheAgeless(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):
-        async def effect_2pc(self):
+        def effect_2pc(self):
             mod1 = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.BASE, self.get_value_2pc("hp_boost"))),
                 None, self.target)

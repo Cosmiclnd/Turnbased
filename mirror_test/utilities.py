@@ -13,7 +13,7 @@ async def send_message(websocket, message):
 async def start(name, gen_data=False):
     if gen_data:
         os.system(f"python mirror_test/gen_data.py {name}")
-    async with websockets.connect(f'ws://localhost:{port}') as websocket:
+    async with websockets.connect(f'ws://127.0.0.1:{port}') as websocket:
         await send_message(websocket, {"type": "init_battle"})
         with open(f"mirror_test/{name}/data.json") as f:
             data = json.load(f)

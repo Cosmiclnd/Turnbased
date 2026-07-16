@@ -5,7 +5,7 @@ from relics import base
 
 class InertSalsotto(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):
-        async def effect_2pc(self):
+        def effect_2pc(self):
             mod1 = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                 modifier.StatDesc((None, None, self.get_value_2pc("crt_rate_boost"))),
                 None, self.target)

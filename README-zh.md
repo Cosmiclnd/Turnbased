@@ -45,7 +45,7 @@ pip install -r requirements.txt
 python core/main.py
 ```
 
-该命令会启动一个 WebSocket 服务器，地址为 `ws://localhost:55716`。
+该命令会启动一个 WebSocket 服务器，地址为 `ws://127.0.0.1:55716`。
 
 2. **启动客户端**（在另一个终端中）：
 

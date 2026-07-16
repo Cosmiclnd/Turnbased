@@ -81,14 +81,14 @@ class Character(target.Target):
             return True
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def extra_turn(self, turn):
+        def extra_turn(self, turn):
             if self is not turn:
                 return
-            await battle.current.event_bus.dispatch("ultimate_turn", self)
+            battle.current.event_bus.dispatch("ultimate_turn", self)
             self.master.dead_toggle = True
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def new_wave_start(self):
+        def new_wave_start(self):
             self.master.dead_toggle = True
 
     class CharacterSkill(skill.Skill):
@@ -127,7 +127,7 @@ class Character(target.Target):
             return result
         
         @server.server_handler
-        async def target_validator(self, target):
+        def target_validator(self, target):
             if self.target_info is None:
                 return "internal_error"
             type = self.target_info["type"]
@@ -152,28 +152,28 @@ class Character(target.Target):
                 return "ok"
             return "internal_error"
         
-        async def before_skill_trigger(self):
+        def before_skill_trigger(self):
             self.skill_dead = item.DeadToggle(self.target)
             battle.current.skillpoints.modify(self.delta_skillpoints)
         
-        async def after_skill_trigger(self):
+        def after_skill_trigger(self):
             self.skill_dead.dead_toggle = True
         
         @event.member_listener(event.ListenerPriority.PRE_PROCESS, "skill_trigger")
-        async def skill_trigger_pre(self, skill):
+        def skill_trigger_pre(self, skill):
             if self is not skill:
                 return
-            await self.before_skill_trigger()
+            self.before_skill_trigger()
         
         @event.member_listener(event.ListenerPriority.POST_PROCESS, "skill_trigger")
-        async def skill_trigger_post(self, skill):
+        def skill_trigger_post(self, skill):
             if self is not skill:
                 return
-            await self.after_skill_trigger()
+            self.after_skill_trigger()
     
     class CharacterUltimate(CharacterSkill):
-        async def before_skill_trigger(self):
-            await super().before_skill_trigger()
+        def before_skill_trigger(self):
+            super().before_skill_trigger()
             self.target.cur_energy -= self.target.stats["energy"].calculate()
             self.target.ultimate_activated = False
 
@@ -315,9 +315,9 @@ class Character(target.Target):
         return result
 
     @event.member_listener(event.ListenerPriority.START, "battle_start")
-    async def set_initial_state(self):
+    def set_initial_state(self):
         # 这个listener在Target类中已经被添加
-        await super().set_initial_state()
+        super().set_initial_state()
         if "cur_energy" in self.initial_state:
             self.cur_energy = self.initial_state["cur_energy"]
         elif "cur_energy_rate" in self.initial_state:
@@ -325,9 +325,9 @@ class Character(target.Target):
         else:
             self.cur_energy = 0.5 * self.stats["energy"].calculate()
     
-    async def check_technique(self):
+    def check_technique(self):
         if self.use_technique:
-            await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["technique"])
+            battle.current.event_bus.dispatch("skill_group_trigger", self.skills["technique"])
     
     def check_ultimate_energy(self):
         return self.cur_energy >= self.stats["energy"].calculate()
@@ -336,7 +336,7 @@ class Character(target.Target):
         return self.can_act()
 
     @server.server_handler
-    async def check_ultimate(self, message):
+    def check_ultimate(self, message):
         if self.ultimate_activated:
             return "ultimate_activated"
         if not self.check_ultimate_energy():
@@ -346,18 +346,18 @@ class Character(target.Target):
         return "ok"
     
     @server.server_handler
-    async def check_ultimate_target(self, message):
+    def check_ultimate_target(self, message):
         ultimate = self.get_current_skill("ultimate")
         battle.current.cur_main_target = None
         if "target" in message:
             battle.current.cur_main_target = target.from_uuid(uuid.UUID(message["target"]))
             if battle.current.cur_main_target is None:
                 return "target_not_found"
-        info = await ultimate.target_validator(battle.current.cur_main_target)
+        info = ultimate.target_validator(battle.current.cur_main_target)
         return info
     
     @server.server_handler
-    async def character_skill_option_handler(self, message):
+    def character_skill_option_handler(self, message):
         if message.get("type") != "ask" or message.get("name") != "character_skill_option":
             return "invalid_message_type"
         try:
@@ -372,7 +372,7 @@ class Character(target.Target):
                 battle.current.cur_main_target = None
             skill_group = self.skills[option]
             skill = skill_group.current_skill()
-            info = await skill.target_validator(battle.current.cur_main_target)
+            info = skill.target_validator(battle.current.cur_main_target)
             if info != "ok":
                 return info
             if not battle.current.skillpoints.available(skill.delta_skillpoints):
@@ -383,27 +383,27 @@ class Character(target.Target):
             return "invalid_message"
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def target_action(self, t):
+    def target_action(self, t):
         if self is not t:
             return
-        await server.handler.ask_client({"name": "character_skill_option", "target": str(self.uuid)}, self.character_skill_option_handler)
-        await battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
+        server.handler.ask_client({"name": "character_skill_option", "target": str(self.uuid)}, self.character_skill_option_handler)
+        battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
-    async def break_weakness(self, tr):
+    def break_weakness(self, tr):
         if self is not tr.dealer:
             return
-        dmg = await damage.Damage.create(self, tr.target,
+        dmg = damage.Damage.create(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK, False)
-        await battle.current.event_bus.dispatch("additional_damage", dmg)
-        await battle.current.event_bus.dispatch("action_delay", tr.target.cur_normal_turn, 0.25)
+        battle.current.event_bus.dispatch("additional_damage", dmg)
+        battle.current.event_bus.dispatch("action_delay", tr.target.cur_normal_turn, 0.25)
         if self.element is enums.Element.ICE:
             eff_add = effect.EffectAddition(self, tr.target, self.effect_types.get("break", "frozen"), 1)
-            await self.try_apply_debuff(eff_add, 1.5)
+            self.try_apply_debuff(eff_add, 1.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def regen_energy(self, t, amount, fixed=False):
+    def regen_energy(self, t, amount, fixed=False):
         if self is not t:
             return
         if fixed:
@@ -415,24 +415,24 @@ class Character(target.Target):
             self.cur_energy = max
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def prepare_ultimate(self, t):
+    def prepare_ultimate(self, t):
         if self is not t:
             return
         self.ultimate_activated = True
         battle.current.action_list.extras.append(Character.UltimateTurn(self))
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def ultimate_turn(self, turn):
+    def ultimate_turn(self, turn):
         if self is not turn.target:
             return
-        await server.handler.update_client({"name": "ultimate_turn", "target": str(self.uuid)})
+        server.handler.update_client({"name": "ultimate_turn", "target": str(self.uuid)})
         ultimate = self.get_current_skill("ultimate")
-        await server.handler.ask_client({"name": "ultimate_target", "target_info": ultimate.target_info}, self.check_ultimate_target)
-        await battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
+        server.handler.ask_client({"name": "ultimate_target", "target_info": ultimate.target_info}, self.check_ultimate_target)
+        battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
     
     @server.server_responder
     @classmethod
-    async def respond_current_characters(cls, message):
+    def respond_current_characters(cls, message):
         result = []
         for c in battle.current.characters:
             result.append({"uuid": str(c.uuid), "cur_hp": c.cur_hp, "hp": c.stats["hp"].calculate(), "cur_energy": c.cur_energy,
@@ -441,7 +441,7 @@ class Character(target.Target):
     
     @server.server_responder
     @classmethod
-    async def respond_skill_options(cls, message):
+    def respond_skill_options(cls, message):
         self = target.from_uuid(uuid.UUID(message["target"]))
         result = {}
         for option in self.skill_options:

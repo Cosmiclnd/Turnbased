@@ -61,10 +61,10 @@ class Target(item.Item):
             return {"target": str(self.target.uuid)} | super().get_info()
     
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def normal_turn(self, turn):
+        def normal_turn(self, turn):
             if self is not turn:
                 return
-            await battle.current.event_bus.dispatch("target_action", self.target)
+            battle.current.event_bus.dispatch("target_action", self.target)
     
     class ExtraTurn(action.ExtraTurn):
         def __init__(self, nameid, name, priority, t):
@@ -80,15 +80,15 @@ class Target(item.Item):
                 battle.current.event_bus.add_member_listener(self.new_wave_start, self)
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def extra_turn(self, turn):
+        def extra_turn(self, turn):
             if self is not turn:
                 return
-            await server.handler.update_client({"name": "extra_normal_turn", "target": str(self.target.uuid)})
-            await battle.current.event_bus.dispatch("target_action", self.target)
+            server.handler.update_client({"name": "extra_normal_turn", "target": str(self.target.uuid)})
+            battle.current.event_bus.dispatch("target_action", self.target)
             self.master.dead_toggle = True
         
         @event.member_listener(event.ListenerPriority.EXECUTE)
-        async def new_wave_start(self):
+        def new_wave_start(self):
             self.master.dead_toggle = True
 
     def __init__(self, uuid, nameid, name, level):
@@ -150,11 +150,11 @@ class Target(item.Item):
         elif new_hp < old_hp:
             self.cur_hp = min(self.cur_hp, new_hp)
     
-    async def check_death(self):
+    def check_death(self):
         if not self.death_state.alive:
-            await battle.current.event_bus.dispatch("die", self)
+            battle.current.event_bus.dispatch("die", self)
     
-    async def try_apply_debuff(self, eff_add, base_chance):
+    def try_apply_debuff(self, eff_add, base_chance):
         chance = base_chance
         chance *= 1 + self.stats["eff_hr"].calculate(effect=eff_add.effect)
         chance *= max(1 - eff_add.target.stats["eff_res"].calculate(effect=eff_add.effect), 0)
@@ -163,16 +163,16 @@ class Target(item.Item):
             if eff_add.effect.is_debuff_type(debuff):
                 debuff_res += eff_add.target.stats[f"{debuff.nameid}_res"].calculate(effect=eff_add.effect)
         chance *= max(1 - debuff_res, 0)
-        if await battle.current.random.rate(chance):
-            await battle.current.event_bus.dispatch("add_effect", eff_add)
+        if battle.current.random.rate(chance):
+            battle.current.event_bus.dispatch("add_effect", eff_add)
     
-    async def consume_hp(self, amount):
+    def consume_hp(self, amount):
         # 主动消耗生命值，最多使生命值降低至1点
-        await battle.current.event_bus.dispatch("cur_hp_modify", self, -amount)
+        battle.current.event_bus.dispatch("cur_hp_modify", self, -amount)
         self.cur_hp = max(1, self.cur_hp)
     
     @event.member_listener(event.ListenerPriority.START, "battle_start")
-    async def set_initial_state(self):
+    def set_initial_state(self):
         if "cur_hp" in self.initial_state:
             self.cur_hp = self.initial_state["cur_hp"]
         elif "cur_hp_rate" in self.initial_state:
@@ -182,7 +182,7 @@ class Target(item.Item):
         self.death_state.clear()
 
     @event.member_listener(event.ListenerPriority.PRE_PROCESS, "normal_turn_end")
-    async def check_frozen(self, turn):
+    def check_frozen(self, turn):
         if not isinstance(turn, self.NormalTurn) or self is not turn.target:
             return
         frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
@@ -190,40 +190,40 @@ class Target(item.Item):
             turn.advance(0.5)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def attack_end(self, t):
+    def attack_end(self, t):
         if self is not t:
             return
         for t in battle.current.all_targets():
-            await t.check_death()
+            t.check_death()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def hit(self, damage):
+    def hit(self, damage):
         if self is not damage.target:
             return
-        await damage.on_hit()
+        damage.on_hit()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def additional_damage(self, damage):
+    def additional_damage(self, damage):
         if self is not damage.dealer:
             return
-        await battle.current.event_bus.dispatch("deal_damage", damage)
+        battle.current.event_bus.dispatch("deal_damage", damage)
         if damage.can_kill:
-            await damage.target.check_death()
+            damage.target.check_death()
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "deal_damage")
-    async def receive_damage(self, damage):
+    def receive_damage(self, damage):
         if self is not damage.target:
             return
-        dmg = await damage.calculate()
-        await server.handler.update_client({"name": "damage", "dealer": str(damage.dealer.uuid), "target": str(self.uuid),
+        dmg = damage.calculate()
+        server.handler.update_client({"name": "damage", "dealer": str(damage.dealer.uuid), "target": str(self.uuid),
             "damage": damage.get_info()})
-        await battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
+        battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
         if self.cur_hp <= 0 and self.death_state.alive:
             self.death_state.alive = False
             self.death_state.killing_dmg = damage
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def cur_hp_modify(self, t, amount):
+    def cur_hp_modify(self, t, amount):
         if self is not t:
             return
         self.cur_hp += amount
@@ -232,35 +232,35 @@ class Target(item.Item):
             self.cur_hp = hp
         
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def die(self, t):
+    def die(self, t):
         if self is not t:
             return
-        await server.handler.update_client({"name": "die", "target": str(self.uuid)})
-        await battle.current.event_bus.dispatch("clean", self)
+        server.handler.update_client({"name": "die", "target": str(self.uuid)})
+        battle.current.event_bus.dispatch("clean", self)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def clean(self, t):
+    def clean(self, t):
         if self is not t:
             return
         self.death_state.need_clean = True
-        await self.effects.die()
+        self.effects.die()
         battle.current.refresh()
     
     @event.member_listener(event.ListenerPriority.EXECUTE, "heal")
-    async def receive_heal(self, heal):
+    def receive_heal(self, heal):
         if self is not heal.target:
             return
         amount = heal.calculate()
-        await server.handler.update_client({"name": "heal", "healer": str(heal.healer.uuid), "target": str(self.uuid), "amount": amount})
-        await battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
+        server.handler.update_client({"name": "heal", "healer": str(heal.healer.uuid), "target": str(self.uuid), "amount": amount})
+        battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def add_effect(self, eff_add):
+    def add_effect(self, eff_add):
         if self is not eff_add.target:
             return
-        await server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
+        server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
             "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
-        await self.effects.add(eff_add.effect, eff_add.adder, eff_add.duration, eff_add.stacks)
+        self.effects.add(eff_add.effect, eff_add.adder, eff_add.duration, eff_add.stacks)
 
 def lerp(a, b, t):
     return a + (b - a) * t

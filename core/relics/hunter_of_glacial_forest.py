@@ -7,13 +7,13 @@ from relics import base
 
 class HunterOfGlacialForest(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):
-        async def effect_2pc(self):
+        def effect_2pc(self):
             mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                 modifier.StatDesc((None, None, self.get_value_2pc("dmg_boost"))),
                 None, self.target)
             self.target.stats["ice_dmg_boost"].modifiers.append(mod)
 
-        async def effect_4pc(self):
+        def effect_4pc(self):
             mod = modifier.Modifier(self.relic_set.nameid, self.relic_set.name,
                 modifier.StatDesc((None, None, self.get_value_4pc("crt_dmg_boost"))))
             self.effect_types.add_unique(effect.ModifierEffect("4pc_effect", self.relic_set.name, effect.Effect.Type.BUFF,
@@ -21,12 +21,12 @@ class HunterOfGlacialForest(base.RelicSet):
             battle.current.event_bus.add_member_listener(self.ultimate_turn, self.target)
         
         @event.member_listener(event.ListenerPriority.EXECUTE + 1)
-        async def ultimate_turn(self, turn):
+        def ultimate_turn(self, turn):
             if self.target is not turn.target:
                 return
             eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.relic_set.nameid, "4pc"),
                 self.get_value_4pc("duration"))
-            await battle.current.event_bus.dispatch("add_effect", eff_add)
+            battle.current.event_bus.dispatch("add_effect", eff_add)
 
     def __init__(self):
         super().__init__("hunter_of_glacial_forest")

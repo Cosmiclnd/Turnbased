@@ -39,7 +39,7 @@ class Random:
             self.random = random.Random(config.get("seed"))
     
     @server.server_handler
-    async def rate_handler(self, message):
+    def rate_handler(self, message):
         try:
             if type(message["result"]) is not bool:
                 return "invalid_message"
@@ -47,14 +47,14 @@ class Random:
         except KeyError:
             return "invalid_message"
     
-    async def rate(self, rate):
+    def rate(self, rate):
         if self.use_random:
             return self.random.random() < rate
-        response = await server.handler.ask_client({"name": "random_rate"}, self.rate_handler)
+        response = server.handler.ask_client({"name": "random_rate"}, self.rate_handler)
         return response["result"]
     
     @server.server_handler
-    async def target_handler(self, message):
+    def target_handler(self, message):
         try:
             self.temp_target = target.from_uuid(uuid.UUID(message["result"]))
             if self.temp_target is None:
@@ -63,16 +63,16 @@ class Random:
         except KeyError:
             return "invalid_message"
     
-    async def character_target(self, choices):
+    def character_target(self, choices):
         if self.use_random:
             return self.random.choice(choices)
-        response = await server.handler.ask_client({"name": "random_character_target"}, self.target_handler)
+        response = server.handler.ask_client({"name": "random_character_target"}, self.target_handler)
         return self.temp_target
     
-    async def monster_target(self, choices, weights):
+    def monster_target(self, choices, weights):
         if self.use_random:
             return self.random.choices(choices, weights=weights)[0]
-        response = await server.handler.ask_client({"name": "random_monster_target"}, self.target_handler)
+        response = server.handler.ask_client({"name": "random_monster_target"}, self.target_handler)
         return self.temp_target
 
 class BattleType(enums.Enum):
@@ -121,56 +121,56 @@ class Battle:
     def all_targets(self):
         return self.characters + self.monsters
     
-    async def finish(self, win):
+    def finish(self, win):
         self.action_list.clear()
         if win:
-            await server.handler.update_client({"name": "battle_win"})
+            server.handler.update_client({"name": "battle_win"})
         else:
-            await server.handler.update_client({"name": "battle_lose"})
-        await server.handler.flush_updates()
+            server.handler.update_client({"name": "battle_lose"})
+        server.handler.flush_updates()
         server.handler.close()
     
-    async def check_targets(self):
-        if await self.monster_setup.check():
-            await self.finish(True)
+    def check_targets(self):
+        if self.monster_setup.check():
+            self.finish(True)
         if not self.characters:
-            await self.finish(False)
+            self.finish(False)
     
-    async def start(self):
-        await self.event_bus.dispatch("battle_start")
+    def start(self):
+        self.event_bus.dispatch("battle_start")
         while True:
-            await self.action_list.next_normal_turn()
+            self.action_list.next_normal_turn()
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-    async def battle_start(self):
+    def battle_start(self):
         for t in self.characters[::-1]:
             self.action_list.normals.append(t.new_normal_turn())
-        await self.monster_setup.check()
+        self.monster_setup.check()
     
     @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-    async def new_wave_start(self):
-        await self.action_list.reset()
+    def new_wave_start(self):
+        self.action_list.reset()
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS - 1, "battle_start")
-    async def check_techniques(self):
+    def check_techniques(self):
         for c in self.characters:
-            await c.check_technique()
+            c.check_technique()
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
-    async def add_monster(self, m):
+    def add_monster(self, m):
         self.monsters.append(m)
         turn = m.new_normal_turn()
         self.action_list.normals.append(turn)
         turn.advance(1 - m.first_turn_delay)
     
     @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
-    async def normal_turn_start_message(self, turn):
+    def normal_turn_start_message(self, turn):
         if not isinstance(turn, target.Target.NormalTurn):
             return
-        await server.handler.update_client({"name": "normal_turn_start", "target": str(turn.target.uuid)})
+        server.handler.update_client({"name": "normal_turn_start", "target": str(turn.target.uuid)})
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 2, "skill_trigger")
-    async def skill_trigger_message(self, skill):
-        await server.handler.update_client({"name": "skill_trigger", "target": str(skill.target.uuid), "skill": skill.nameid})
+    def skill_trigger_message(self, skill):
+        server.handler.update_client({"name": "skill_trigger", "target": str(skill.target.uuid), "skill": skill.nameid})
 
 current = None

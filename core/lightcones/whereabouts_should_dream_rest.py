@@ -15,7 +15,7 @@ class WhereaboutsShouldDreamRest(base.LightCone):
 
     class RoutedEffect(effect.Effect):
         class Instance(effect.Effect.Instance):
-            async def refresh(self):
+            def refresh(self):
                 stacks = self.target.effects.get_stacks(self.effect)
                 if self.old_stacks == 0 and stacks != 0:
                     self.eff_dead = item.DeadToggle(self.target)
@@ -29,7 +29,7 @@ class WhereaboutsShouldDreamRest(base.LightCone):
                 self.old_stacks = stacks
             
             @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-            async def deal_damage(self, dmg):
+            def deal_damage(self, dmg):
                 if self.target is not dmg.target or self.effect.lightcone.target is not dmg.dealer:
                     return
                 if dmg.is_break_dmg():
@@ -59,8 +59,8 @@ class WhereaboutsShouldDreamRest(base.LightCone):
         self.effect_types.add_unique(cls.effect_types.get(self.nameid, "routed"))
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS + 1)
-    async def deal_damage(self, dmg):
+    def deal_damage(self, dmg):
         if self.target is not dmg.dealer or not dmg.is_break_dmg():
             return
         eff_add = effect.EffectAddition(self.target, dmg.target, self.effect_types.get(self.nameid, "routed"), self.get_value("duration"))
-        await battle.current.event_bus.dispatch("add_effect", eff_add)
+        battle.current.event_bus.dispatch("add_effect", eff_add)

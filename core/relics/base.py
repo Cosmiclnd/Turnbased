@@ -60,18 +60,18 @@ class RelicSet(item.Item):
         def get_value_4pc(self, name):
             return self.relic_set.config.get_skill_value("4pc", name)
         
-        async def effect_2pc(self):
+        def effect_2pc(self):
             pass
             
-        async def effect_4pc(self):
+        def effect_4pc(self):
             pass
             
         @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-        async def battle_start(self):
+        def battle_start(self):
             if self.pieces >= 2:
-                await self.effect_2pc()
+                self.effect_2pc()
             if self.pieces >= 4:
-                await self.effect_4pc()
+                self.effect_4pc()
     
     def __init__(self, nameid):
         self.config = self.RelicSetConfig(config.load_config_data("relics", nameid), self)

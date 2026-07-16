@@ -417,7 +417,7 @@ class MainWindow(QMainWindow):
         splitter.setStretchFactor(1, 3)
         layout.addWidget(splitter)
         
-        self.client = Client("ws://localhost:55716")
+        self.client = Client("ws://127.0.0.1:55716")
         self.client.update_action_order_text.connect(self.update_action_order_text)
         self.client.append_battle_log.connect(self.append_battle_log)
         self.client.set_input_state.connect(self.set_input_state)
