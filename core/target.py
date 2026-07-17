@@ -8,7 +8,7 @@ import action
 import effect
 import event
 import battle
-import server
+from decision import base as decision
 
 all_targets = {}
 
@@ -83,7 +83,7 @@ class Target(item.Item):
         def extra_turn(self, turn):
             if self is not turn:
                 return
-            server.handler.update_client({"name": "extra_normal_turn", "target": str(self.target.uuid)})
+            decision.provider.notify({"name": "extra_normal_turn", "target": str(self.target.uuid)})
             battle.current.event_bus.dispatch("target_action", self.target)
             self.master.dead_toggle = True
         
@@ -215,7 +215,7 @@ class Target(item.Item):
         if self is not damage.target:
             return
         dmg = damage.calculate()
-        server.handler.update_client({"name": "damage", "dealer": str(damage.dealer.uuid), "target": str(self.uuid),
+        decision.provider.notify({"name": "damage", "dealer": str(damage.dealer.uuid), "target": str(self.uuid),
             "damage": damage.get_info()})
         battle.current.event_bus.dispatch("cur_hp_modify", self, -dmg)
         if self.cur_hp <= 0 and self.death_state.alive:
@@ -235,7 +235,7 @@ class Target(item.Item):
     def die(self, t):
         if self is not t:
             return
-        server.handler.update_client({"name": "die", "target": str(self.uuid)})
+        decision.provider.notify({"name": "die", "target": str(self.uuid)})
         battle.current.event_bus.dispatch("clean", self)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -251,14 +251,14 @@ class Target(item.Item):
         if self is not heal.target:
             return
         amount = heal.calculate()
-        server.handler.update_client({"name": "heal", "healer": str(heal.healer.uuid), "target": str(self.uuid), "amount": amount})
+        decision.provider.notify({"name": "heal", "healer": str(heal.healer.uuid), "target": str(self.uuid), "amount": amount})
         battle.current.event_bus.dispatch("cur_hp_modify", self, amount)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     def add_effect(self, eff_add):
         if self is not eff_add.target:
             return
-        server.handler.update_client({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
+        decision.provider.notify({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
             "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
         self.effects.add(eff_add.effect, eff_add.adder, eff_add.duration, eff_add.stacks)
 

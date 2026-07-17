@@ -7,7 +7,7 @@ import modifier
 import enums
 import effect
 import action
-import server
+from decision import base as decision
 from monsters import base as monster
 
 from characters import base
@@ -116,7 +116,7 @@ class Herta(base.Character):
             def extra_turn(self, turn):
                 if self is not turn:
                     return
-                server.handler.update_client({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
+                decision.provider.notify({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
                 self.skill.follow_up_launched = False
                 battle.current.event_bus.dispatch("skill_trigger", self.skill)
                 self.master.dead_toggle = True

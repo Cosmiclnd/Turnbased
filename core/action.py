@@ -3,8 +3,8 @@ import math
 
 import item
 import battle
-import server
 import event
+from decision import base as decision
 
 order = -1
 add_order = 0
@@ -106,8 +106,6 @@ class ActionList:
 
         battle.current.event_bus.add_member_listener(self.action_advance, nameid="action_list", name="Action List")
         battle.current.event_bus.add_member_listener(self.action_delay, nameid="action_list", name="Action List")
-
-        server.handler.add_answer_handler("action_order", self.respond_action_order)
     
     def clear(self):
         self.normals.clear()
@@ -123,7 +121,7 @@ class ActionList:
         for turn in self.normals:
             turn.refresh()
         self.refresh_turns()
-        battle.current.check_targets()
+        battle.current.refresh()
     
     def check_extra_turns(self):
         while self.extras:
@@ -133,35 +131,12 @@ class ActionList:
             self.ask_ultimate()
             self.refresh_targets()
     
-    @server.server_handler
-    def ultimate_handler(self, message):
-        if message.get("type") == "empty":
-            return "ok"
-        if message.get("type") != "ask" or message.get("name") != "ultimate":
-            return "invalid_message_type"
-        try:
-            id = uuid.UUID(message["character"])
-            import target  # TODO: Python 3.15 lazy import
-            c = target.from_uuid(id)
-            if c is None:
-                return "target_not_found"
-            from characters import base as character  # TODO: Python 3.15 lazy import
-            if not isinstance(c, character.Character):
-                return "target_not_character"
-            info = c.check_ultimate(message)
-            if info == "ok":
-                battle.current.event_bus.dispatch("prepare_ultimate", c)
-                return "ok"
-            else:
-                return info
-        except KeyError:
-            return "invalid_message"
-        return "internal_error"
-    
     def ask_ultimate(self):
         while True:
-            response = server.handler.ask_client({"name": "ultimate"}, self.ultimate_handler)
-            if response["type"] == "empty":
+            character = decision.provider.provide_ultimate()
+            if character is not None:
+                battle.current.event_bus.dispatch("prepare_ultimate", character)
+            else:
                 break
     
     def action_unit_interval(self):
@@ -206,20 +181,10 @@ class ActionList:
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     def action_advance(self, turn, scale):
-        server.handler.update_client({"name": "action_advance", "scale": scale, "turn": turn.get_info()})
+        decision.provider.notify({"name": "action_advance", "scale": scale, "turn": turn.get_info()})
         turn.advance(scale)
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     def action_delay(self, turn, scale):
-        server.handler.update_client({"name": "action_delay", "scale": scale, "turn": turn.get_info()})
+        decision.provider.notify({"name": "action_delay", "scale": scale, "turn": turn.get_info()})
         turn.delay(scale)
-
-    @server.server_responder
-    @classmethod
-    def respond_action_order(cls, message):
-        self = battle.current.action_list
-        self.refresh_turns()
-        extras = [turn.get_info() for turn in self.extras]
-        normals = [turn.get_info() | {"num_actions": turn.get_num_actions(), "cur_action": turn.cur_action, "action_value": turn.action_value}
-            for turn in self.normals]
-        return {"extras": extras, "normals": normals}

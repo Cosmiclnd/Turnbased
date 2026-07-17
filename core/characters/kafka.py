@@ -7,7 +7,7 @@ import modifier
 import damage
 import effect
 import action
-import server
+from decision import base as decision
 from monsters import base as monster
 
 from characters import base
@@ -119,7 +119,7 @@ class Kafka(base.Character):
             def extra_turn(self, turn):
                 if self is not turn:
                     return
-                server.handler.update_client({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
+                decision.provider.notify({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
                 self.skill.follow_up_launched = False
                 battle.current.event_bus.dispatch("skill_trigger", self.skill)
                 self.master.dead_toggle = True
@@ -213,7 +213,7 @@ class Kafka(base.Character):
         battle.current.event_bus.add_member_listener(self.battle_start, self)
         battle.current.event_bus.add_member_listener(self.normal_turn_end, self)
         if self.traces_unlocked[1]:
-            battle.current.event_bus.add_member_listener(self.clean, self)
+            battle.current.event_bus.add_member_listener(self.monster_cleaned, self)
         if self.eidolons >= 2:
             battle.current.event_bus.add_member_listener(self.deal_damage_eidolon2, self)
         if self.eidolons >= 4:
@@ -266,8 +266,8 @@ class Kafka(base.Character):
             return
         self.regain_follow_up_count()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-    def clean(self, t):
+    @event.member_listener(event.ListenerPriority.EXECUTE - 1, "clean")
+    def monster_cleaned(self, t):
         if not isinstance(t, monster.Monster):
             return
         context = t.death_state.killing_dmg.context

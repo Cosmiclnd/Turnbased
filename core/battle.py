@@ -6,9 +6,9 @@ import action
 import item
 import target
 import modifier
-import server
 import enums
 import features
+from decision import base as decision
 from monsters import base as monster
 
 class Skillpoints:
@@ -38,42 +38,20 @@ class Random:
         if self.use_random:
             self.random = random.Random(config.get("seed"))
     
-    @server.server_handler
-    def rate_handler(self, message):
-        try:
-            if type(message["result"]) is not bool:
-                return "invalid_message"
-            return "ok"
-        except KeyError:
-            return "invalid_message"
-    
     def rate(self, rate):
         if self.use_random:
             return self.random.random() < rate
-        response = server.handler.ask_client({"name": "random_rate"}, self.rate_handler)
-        return response["result"]
-    
-    @server.server_handler
-    def target_handler(self, message):
-        try:
-            self.temp_target = target.from_uuid(uuid.UUID(message["result"]))
-            if self.temp_target is None:
-                return "target_not_found"
-            return "ok"
-        except KeyError:
-            return "invalid_message"
+        return decision.provider.provide_random_rate()
     
     def character_target(self, choices):
         if self.use_random:
             return self.random.choice(choices)
-        response = server.handler.ask_client({"name": "random_character_target"}, self.target_handler)
-        return self.temp_target
+        return decision.provider.provide_random_character_target()
     
     def monster_target(self, choices, weights):
         if self.use_random:
             return self.random.choices(choices, weights=weights)[0]
-        response = server.handler.ask_client({"name": "random_monster_target"}, self.target_handler)
-        return self.temp_target
+        return decision.provider.provide_random_monster_target()
 
 class BattleType(enums.Enum):
     DEFAULT = item.Item("default", "Default")
@@ -111,10 +89,6 @@ class Battle:
     def type(self):
         return self.config["type"]
     
-    def refresh(self):
-        self.characters.refresh()
-        self.monsters.refresh()
-    
     def count_monsters(self):
         return sum(1 for m in self.monsters if m.countable())
     
@@ -124,11 +98,10 @@ class Battle:
     def finish(self, win):
         self.action_list.clear()
         if win:
-            server.handler.update_client({"name": "battle_win"})
+            decision.provider.notify({"name": "battle_win"})
         else:
-            server.handler.update_client({"name": "battle_lose"})
-        server.handler.flush_updates()
-        server.handler.close()
+            decision.provider.notify({"name": "battle_lose"})
+        decision.provider.stop()
     
     def check_targets(self):
         if self.monster_setup.check():
@@ -136,7 +109,13 @@ class Battle:
         if not self.characters:
             self.finish(False)
     
+    def refresh(self):
+        self.characters.refresh()
+        self.monsters.refresh()
+        self.check_targets()
+    
     def start(self):
+        decision.provider.on_battle_start()  # 必须单独通知，因为provider初始化比event_bus早
         self.event_bus.dispatch("battle_start")
         while True:
             self.action_list.next_normal_turn()
@@ -167,10 +146,10 @@ class Battle:
     def normal_turn_start_message(self, turn):
         if not isinstance(turn, target.Target.NormalTurn):
             return
-        server.handler.update_client({"name": "normal_turn_start", "target": str(turn.target.uuid)})
+        decision.provider.notify({"name": "normal_turn_start", "target": str(turn.target.uuid)})
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 2, "skill_trigger")
     def skill_trigger_message(self, skill):
-        server.handler.update_client({"name": "skill_trigger", "target": str(skill.target.uuid), "skill": skill.nameid})
+        decision.provider.notify({"name": "skill_trigger", "target": str(skill.target.uuid), "skill": skill.nameid})
 
 current = None

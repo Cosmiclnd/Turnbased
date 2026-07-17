@@ -9,11 +9,11 @@ import battle
 import config
 import enums
 import modifier
-import server
 import damage
 import effect
 import action
 import item
+from decision import base as decision
 from relics import base as relic
 
 class Character(target.Target):
@@ -126,32 +126,6 @@ class Character(target.Target):
                     result.append(targets[idx + i])
             return result
         
-        @server.server_handler
-        def target_validator(self, target):
-            if self.target_info is None:
-                return "internal_error"
-            type = self.target_info["type"]
-            selection = self.target_info["selection"]
-            if type == "monster":
-                if target is not None and isinstance(target, Character):
-                    return "bad_target"
-                if selection == "all" and target is not None:
-                    return "bad_target"
-                if selection != "all" and target is None:
-                    return "bad_target"
-                return "ok"
-            elif type == "character":
-                if target is not None and not isinstance(target, Character):
-                    return "bad_target"
-                if selection == "self" and target is not self.target:
-                    return "bad_target"
-                if selection == "all" and target is not None:
-                    return "bad_target"
-                if selection != "all" and target is None:
-                    return "bad_target"
-                return "ok"
-            return "internal_error"
-        
         def before_skill_trigger(self):
             self.skill_dead = item.DeadToggle(self.target)
             battle.current.skillpoints.modify(self.delta_skillpoints)
@@ -206,9 +180,6 @@ class Character(target.Target):
         battle.current.event_bus.add_member_listener(self.regen_energy, self)
         battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
         battle.current.event_bus.add_member_listener(self.ultimate_turn, self)
-
-        server.handler.add_answer_handler("current_characters", self.respond_current_characters)
-        server.handler.add_answer_handler("character_skill_options", self.respond_skill_options)
 
         self.init_skills()
         self.set_record(record)
@@ -334,60 +305,12 @@ class Character(target.Target):
     
     def ultimate_available(self):
         return self.can_act()
-
-    @server.server_handler
-    def check_ultimate(self, message):
-        if self.ultimate_activated:
-            return "ultimate_activated"
-        if not self.check_ultimate_energy():
-            return "not_enough_energy"
-        if not self.ultimate_available():
-            return "ultimate_not_available"
-        return "ok"
-    
-    @server.server_handler
-    def check_ultimate_target(self, message):
-        ultimate = self.get_current_skill("ultimate")
-        battle.current.cur_main_target = None
-        if "target" in message:
-            battle.current.cur_main_target = target.from_uuid(uuid.UUID(message["target"]))
-            if battle.current.cur_main_target is None:
-                return "target_not_found"
-        info = ultimate.target_validator(battle.current.cur_main_target)
-        return info
-    
-    @server.server_handler
-    def character_skill_option_handler(self, message):
-        if message.get("type") != "ask" or message.get("name") != "character_skill_option":
-            return "invalid_message_type"
-        try:
-            option = message["option"]
-            if option not in self.skill_options:
-                return "bad_option"
-            if "target" in message:
-                battle.current.cur_main_target = target.from_uuid(uuid.UUID(message["target"]))
-                if battle.current.cur_main_target is None:
-                    return "target_not_found"
-            else:
-                battle.current.cur_main_target = None
-            skill_group = self.skills[option]
-            skill = skill_group.current_skill()
-            info = skill.target_validator(battle.current.cur_main_target)
-            if info != "ok":
-                return info
-            if not battle.current.skillpoints.available(skill.delta_skillpoints):
-                return "not_enough_skillpoints"
-            self.selected_skill_group = skill_group
-            return "ok"
-        except KeyError:
-            return "invalid_message"
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
     def target_action(self, t):
         if self is not t:
             return
-        server.handler.ask_client({"name": "character_skill_option", "target": str(self.uuid)}, self.character_skill_option_handler)
-        battle.current.event_bus.dispatch("skill_group_trigger", self.selected_skill_group)
+        battle.current.event_bus.dispatch("skill_group_trigger", decision.provider.provide_character_skill_option(self))
     
     @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
     def break_weakness(self, tr):
@@ -425,29 +348,6 @@ class Character(target.Target):
     def ultimate_turn(self, turn):
         if self is not turn.target:
             return
-        server.handler.update_client({"name": "ultimate_turn", "target": str(self.uuid)})
-        ultimate = self.get_current_skill("ultimate")
-        server.handler.ask_client({"name": "ultimate_target", "target_info": ultimate.target_info}, self.check_ultimate_target)
+        decision.provider.notify({"name": "ultimate_turn", "target": str(self.uuid)})
+        decision.provider.provide_ultimate_target(self)
         battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
-    
-    @server.server_responder
-    @classmethod
-    def respond_current_characters(cls, message):
-        result = []
-        for c in battle.current.characters:
-            result.append({"uuid": str(c.uuid), "cur_hp": c.cur_hp, "hp": c.stats["hp"].calculate(), "cur_energy": c.cur_energy,
-                "energy": c.stats["energy"].calculate(), "max_energy": c.stats["max_energy"].calculate()})
-        return {"characters": result}
-    
-    @server.server_responder
-    @classmethod
-    def respond_skill_options(cls, message):
-        self = target.from_uuid(uuid.UUID(message["target"]))
-        result = {}
-        for option in self.skill_options:
-            skill = self.skills[option].current_skill()
-            result[option] = {
-                "name": skill.nameid,
-                "target_info": skill.target_info
-            }
-        return {"options": result}

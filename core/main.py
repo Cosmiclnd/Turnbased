@@ -1,13 +1,26 @@
 import logging
-from websockets.sync.server import serve
 
-import battle
-import server
+from decision import base as decision
 
-logging.basicConfig(filename="latest.log", level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s", datefmt="%Y-%m-%d %H:%M:%S")
-logging.root.addHandler(logging.StreamHandler())
+def main(provider_name: str, log_to_file: bool):
+    if log_to_file:
+        logging.basicConfig(filename="latest.log", level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S")
+    else:
+        logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s",
+            datefmt="%Y-%m-%d %H:%M:%S")
+    logging.root.addHandler(logging.StreamHandler())
 
-logging.info("Hello world! from Turnbased")
+    logging.info("Hello world! from Turnbased")
 
-with serve(server.handle, "127.0.0.1", server.port) as s:
-    s.serve_forever()
+    decision.start_provider(provider_name)
+
+if __name__ == "__main__":
+    import argparse
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--provider", type=str, default="server_provider")
+    parser.add_argument("--log", type=bool, default=True)
+    args = parser.parse_args()
+
+    main(args.provider, args.log)

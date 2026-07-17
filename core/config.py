@@ -3,7 +3,6 @@ import importlib
 import json
 import enums
 import modifier
-import skill
 
 config_data_cache = {}
 

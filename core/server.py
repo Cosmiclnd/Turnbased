@@ -6,6 +6,7 @@ import sys
 import io
 import uuid
 import msgpack
+import traceback
 
 import battle
 import config
@@ -118,6 +119,8 @@ class InbattleHandler:
                 message["info"] = handler(response)
             except Exception:
                 message["info"] = "internal_error"
+                logging.warning("Server handler raised exception:")
+                logging.warning(traceback.format_exc())
             if message["info"] == "ok":
                 return response
             elif LOG_MESSAGE:

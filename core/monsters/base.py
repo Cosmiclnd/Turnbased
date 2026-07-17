@@ -8,8 +8,8 @@ import battle
 import config
 import enums
 import effect
-import server
 import item
+from decision import base as decision
 
 class AdditionalWeakness(item.Item):
     def __init__(self, nameid, name, adder, t, element, master=None):
@@ -111,8 +111,6 @@ class Monster(target.Target):
         battle.current.event_bus.add_member_listener(self.killed_energy_regen, self)
         battle.current.event_bus.add_member_resolver(self.get_monster_target, self)
 
-        server.handler.add_answer_handler("current_monsters", self.respond_current_monsters)
-
         self.config.set_base_stats()
 
     def init_skills(self, skill_classes):
@@ -140,7 +138,7 @@ class Monster(target.Target):
     def reduce_toughness(self, tr):
         if self is not tr.target:
             return
-        server.handler.update_client({"name": "reduce_toughness", "dealer": str(tr.dealer.uuid), "target": str(self.uuid),
+        decision.provider.notify({"name": "reduce_toughness", "dealer": str(tr.dealer.uuid), "target": str(self.uuid),
             "amount": tr.calculate()})
         self.cur_toughness -= tr.calculate()
 
@@ -157,7 +155,7 @@ class Monster(target.Target):
     def weakness_break(self, tr):
         if self is not tr.target:
             return
-        server.handler.update_client({"name": "weakness_break", "target": str(self.uuid)})
+        decision.provider.notify({"name": "weakness_break", "target": str(self.uuid)})
         self.weakness_broken = True
     
     @event.member_listener(event.ListenerPriority.EXECUTE)
@@ -182,15 +180,6 @@ class Monster(target.Target):
             return
         taunts = [c.stats["taunt"].calculate() for c in targets]
         return event.QueryResult(battle.current.random.monster_target(targets, taunts))
-
-    @server.server_responder
-    @classmethod
-    def respond_current_monsters(self, message):
-        result = []
-        for m in battle.current.monsters:
-            result.append({"uuid": str(m.uuid), "cur_hp": m.cur_hp, "hp": m.stats["hp"].calculate(), "cur_toughness": m.cur_toughness,
-                "toughness": m.stats["toughness"].calculate()})
-        return {"monsters": result}
 
 class Group:
     def __init__(self, name, record):
@@ -269,6 +258,6 @@ class Setup:
             if self.cur_wave >= len(self.waves):
                 return True
             self.check_add_monsters()
-            server.handler.update_client({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
+            decision.provider.notify({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
             battle.current.event_bus.dispatch("new_wave_start")
         return False

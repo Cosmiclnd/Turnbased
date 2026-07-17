@@ -8,7 +8,7 @@ import damage
 import effect
 import healing
 import action
-import server
+from decision import base as decision
 
 from characters import base
 
@@ -241,7 +241,7 @@ class Firefly(base.Character):
         def normal_turn(self, turn):
             if self is not turn:
                 return
-            server.handler.update_client({"name": "firefly.complete_combustion_countdown", "target": str(self.target.uuid)})
+            decision.provider.notify({"name": f"{self.target.nameid}.complete_combustion_countdown", "target": str(self.target.uuid)})
             self.target.effects.delete(self.target.effect_types.get(self.target.nameid, "complete_combustion"))
             self.master.dead_toggle = True
             self.target.complete_combustion_countdown = None

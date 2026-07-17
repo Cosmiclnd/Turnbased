@@ -6,7 +6,7 @@ import modifier
 import damage
 import effect
 import action
-import server
+from decision import base as decision
 from monsters import base as monster
 
 from characters import base
@@ -78,7 +78,7 @@ class RuanMei(base.Character):
             def extra_turn(self, turn):
                 if self is not turn:
                     return
-                server.handler.update_client({"name": f"{self.target.nameid}.technique_turn", "target": str(self.target.uuid)})
+                decision.provider.notify({"name": f"{self.target.nameid}.technique_turn", "target": str(self.target.uuid)})
                 delta_skillpoints = self.skill.delta_skillpoints
                 self.skill.delta_skillpoints = 0
                 battle.current.cur_main_target = self.target
