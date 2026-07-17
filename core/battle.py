@@ -122,7 +122,7 @@ class Battle:
     
     @event.member_listener(event.ListenerPriority.PRE_PROCESS)
     def battle_start(self):
-        for t in self.characters[::-1]:
+        for t in self.characters:
             self.action_list.normals.append(t.new_normal_turn())
         self.monster_setup.check()
     

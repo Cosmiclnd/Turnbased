@@ -103,6 +103,7 @@ class ActionList:
     def __init__(self):
         self.normals = item.ItemList()
         self.extras = item.ItemList()
+        self.cur_action_value = 0
 
         battle.current.event_bus.add_member_listener(self.action_advance, nameid="action_list", name="Action List")
         battle.current.event_bus.add_member_listener(self.action_delay, nameid="action_list", name="Action List")
@@ -149,6 +150,7 @@ class ActionList:
         self.check_extra_turns()
         current = self.normals[0]
         delta = current.action_value
+        self.cur_action_value += delta
         for turn in self.normals:
             turn.action_value -= delta
         battle.current.event_bus.dispatch("normal_turn_start", current)

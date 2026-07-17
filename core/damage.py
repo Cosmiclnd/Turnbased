@@ -229,6 +229,9 @@ class Damage:
         self.damage = damage
         return damage
     
+    def get_damage(self):
+        return self.damage
+    
     def on_hit(self):
         if self.hit_split_ratio == 1:
             dmg = self
