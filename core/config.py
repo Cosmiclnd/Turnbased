@@ -5,6 +5,7 @@ import enums
 import modifier
 
 config_data_cache = {}
+core_config = None
 
 def load_config_data(category, nameid):
     name = category + "." + nameid

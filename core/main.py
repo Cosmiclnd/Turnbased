@@ -1,9 +1,10 @@
 import logging
 
 from decision import base as decision
+import config
 
-def main(provider_name: str, log_to_file: bool):
-    if log_to_file:
+def main():
+    if config.core_config["log_to_file"]:
         logging.basicConfig(filename="latest.log", level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s",
             datefmt="%Y-%m-%d %H:%M:%S")
     else:
@@ -13,14 +14,17 @@ def main(provider_name: str, log_to_file: bool):
 
     logging.info("Hello world! from Turnbased")
 
-    decision.start_provider(provider_name)
+    decision.start_provider(config.core_config["provider"])
 
 if __name__ == "__main__":
     import argparse
+    import json
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--provider", type=str, default="server_provider")
-    parser.add_argument("--log", type=bool, default=True)
+    parser.add_argument("--config", type=str, default="core/core_config.json")
     args = parser.parse_args()
 
-    main(args.provider, args.log)
+    with open(args.config) as f:
+        config.core_config = json.load(f)
+
+    main()
