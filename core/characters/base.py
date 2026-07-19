@@ -2,19 +2,19 @@ import collections
 import json
 import uuid
 
-import target
-import skill
-import event
-import battle
-import config
-import enums
-import modifier
-import damage
-import effect
-import action
-import item
-from decision import base as decision
-from relics import base as relic
+from .. import target
+from .. import skill
+from .. import event
+from .. import battle
+from .. import config
+from .. import enums
+from .. import modifier
+from .. import damage
+from .. import effect
+from .. import action
+from .. import item
+from ..decision import base as decision
+from ..relics import base as relic
 
 class Character(target.Target):
     class CharacterConfig(target.Target.TargetConfig):

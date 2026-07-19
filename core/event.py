@@ -1,6 +1,6 @@
 import logging
 
-import item
+from . import item
 
 MAX_STACKS = 32
 LOG_NO_LISTENER = False
@@ -40,6 +40,7 @@ class EventBus:
         if event_name not in self.listeners:
             self.listeners[event_name] = item.ItemList()
         self.listeners[event_name].append(listener)
+        self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
     
     def add_member_listener(self, member_func, master=None, nameid=None, name=None, unique=False):
         # member_func必须是被@member_listener装饰的成员函数
@@ -56,7 +57,6 @@ class EventBus:
     def dispatch(self, event_name, *args, **kwargs):
         if event_name in self.listeners:
             self.listeners[event_name].refresh()
-            self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
             for listener in self.listeners[event_name]:
                 self.stack.append((event_name, listener))
                 if len(self.stack) > MAX_STACKS:
@@ -80,7 +80,6 @@ class EventBus:
     def query(self, event_name, *args, **kwargs):
         if event_name in self.listeners:
             self.listeners[event_name].refresh()
-            self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
             for listener in self.listeners[event_name]:
                 self.stack.append((event_name, listener))
                 if len(self.stack) > MAX_STACKS:

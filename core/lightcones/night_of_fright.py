@@ -1,10 +1,10 @@
-import modifier
-import effect
-import event
-import battle
-import healing
+from .. import modifier
+from .. import effect
+from .. import event
+from .. import battle
+from .. import healing
 
-from lightcones import base
+from . import base
 
 class NightOfFright(base.LightCone):
     def __init__(self, record):

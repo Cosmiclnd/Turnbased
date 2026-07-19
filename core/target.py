@@ -1,14 +1,14 @@
 from dataclasses import dataclass
 
-import item
-import enums
-import config
-import modifier
-import action
-import effect
-import event
-import battle
-from decision import base as decision
+from . import item
+from . import enums
+from . import config
+from . import modifier
+from . import action
+from . import effect
+from . import event
+from . import battle
+from .decision import base as decision
 
 all_targets = {}
 

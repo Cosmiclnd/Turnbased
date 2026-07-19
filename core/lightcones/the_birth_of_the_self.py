@@ -1,11 +1,11 @@
-import target
-import enums
-import modifier
-import event
-import battle
-import damage
+from .. import target
+from .. import enums
+from .. import modifier
+from .. import event
+from .. import battle
+from .. import damage
 
-from lightcones import base
+from . import base
 
 class TheBirthOfTheSelf(base.LightCone):
     def __init__(self, record):

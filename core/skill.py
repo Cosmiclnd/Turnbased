@@ -1,7 +1,7 @@
-import item
-import event
-import battle
-import enums
+from . import item
+from . import event
+from . import battle
+from . import enums
 
 class SkillType(enums.Enum):
     SINGLE = item.Item("single", "Single Target")
@@ -29,7 +29,7 @@ class Skill(item.Item):
 class SkillGroup:
     def __init__(self, t, selector=lambda group: group.skills[0]):
         self.target = t
-        self.skills = item.ItemList()
+        self.skills = []
         self.selector = selector
         battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
     

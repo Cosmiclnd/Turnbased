@@ -1,15 +1,15 @@
-import item
-import target
-import event
-import battle
-import modifier
-import damage
-import effect
-import action
-from decision import base as decision
-from monsters import base as monster
+from .. import item
+from .. import target
+from .. import event
+from .. import battle
+from .. import modifier
+from .. import damage
+from .. import effect
+from .. import action
+from ..decision import base as decision
+from ..monsters import base as monster
 
-from characters import base
+from . import base
 
 class RuanMei(base.Character):
     class BasicAtk(base.Character.CharacterSkill):

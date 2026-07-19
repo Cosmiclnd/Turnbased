@@ -1,9 +1,9 @@
-import modifier
-import battle
-import event
-import effect
+from .. import modifier
+from .. import battle
+from .. import event
+from .. import effect
 
-from relics import base
+from . import base
 
 class HunterOfGlacialForest(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):

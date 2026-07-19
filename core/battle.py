@@ -1,15 +1,15 @@
 import random
 import uuid
 
-import event
-import action
-import item
-import target
-import modifier
-import enums
-import features
-from decision import base as decision
-from monsters import base as monster
+from . import event
+from . import action
+from . import item
+from . import target
+from . import modifier
+from . import enums
+from . import features
+from .decision import base as decision
+from .monsters import base as monster
 
 class Skillpoints:
     __slots__ = ("current", "max")
@@ -93,7 +93,7 @@ class Battle:
         return sum(1 for m in self.monsters if m.countable())
     
     def all_targets(self):
-        return self.characters + self.monsters
+        return self.characters.concat(self.monsters)
     
     def finish(self, win):
         self.action_list.clear()

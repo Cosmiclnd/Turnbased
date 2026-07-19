@@ -1,12 +1,12 @@
-import target
-import event
-import skill
-import battle
-import damage
-import enums
-import modifier
+from .. import target
+from .. import event
+from .. import skill
+from .. import battle
+from .. import damage
+from .. import enums
+from .. import modifier
 
-from monsters import base
+from . import base
 
 class Baryon(base.Monster):
     class Skill(base.Monster.MonsterSkill):

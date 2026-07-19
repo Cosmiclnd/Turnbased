@@ -1,14 +1,14 @@
-import target
-import event
-import skill
-import battle
-import damage
-import enums
-import action
-import modifier
-import effect
+from .. import target
+from .. import event
+from .. import skill
+from .. import battle
+from .. import damage
+from .. import enums
+from .. import modifier
+from .. import effect
+from .. import action
 
-from monsters import base
+from . import base
 
 class BlazeOutOfSpace(base.Monster):
     class Skill1(base.Monster.MonsterSkill):

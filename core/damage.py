@@ -3,10 +3,10 @@ from collections.abc import Iterable
 from dataclasses import dataclass
 from typing import *
 
-import battle
-import enums
-import modifier
-import item
+from . import battle
+from . import enums
+from . import modifier
+from . import item
 
 class DmgType(enums.Enum):
     NORMAL = item.Item("normal", "Normal")
@@ -79,7 +79,7 @@ def resistance_base_func(dmg):
     return value
 
 def mitigation_factor_base_func(dmg):
-    from monsters import base as monster  # TODO: Python 3.15 lazy import
+    from .monsters import base as monster  # TODO: Python 3.15 lazy import
     if isinstance(dmg.target, monster.Monster) and not dmg.target.weakness_broken:
         return 0.9
     return 1
@@ -163,7 +163,7 @@ class Damage:
                 DamageFactorType.MITIGATION
             ):
                 self.new_factor(factor)
-            from characters import base as character  # TODO: Python 3.15 lazy import
+            from .characters import base as character  # TODO: Python 3.15 lazy import
             if isinstance(self.dealer, character.Character):
                 self.new_factor(DamageFactorType.CRIT)
         elif self.types == {DmgType.BREAK}:
@@ -241,7 +241,7 @@ class Damage:
         if self.toughness_reduction is not None and self.target.weaknesses.has_weakness(self.toughness_reduction.element):
             battle.current.event_bus.dispatch("reduce_toughness", dmg.toughness_reduction)
         if self.energy_regen is not None:
-            from characters import base as character  # TODO: Python 3.15 lazy import
+            from .characters import base as character  # TODO: Python 3.15 lazy import
             t = self.target if isinstance(self.target, character.Character) else self.dealer
             battle.current.event_bus.dispatch("regen_energy", t, dmg.energy_regen)
     

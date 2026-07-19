@@ -1,10 +1,10 @@
-import modifier
-import event
-import enums
-import effect
-import battle
+from .. import modifier
+from .. import event
+from .. import enums
+from .. import effect
+from .. import battle
 
-from relics import base
+from . import base
 
 class ForgeOfTheKalpagniLantern(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):

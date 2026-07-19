@@ -1,8 +1,8 @@
-import modifier
-import damage
-import battle
+from .. import modifier
+from .. import damage
+from .. import battle
 
-from relics import base
+from . import base
 
 class FleetOfTheAgeless(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):

@@ -1,7 +1,7 @@
 import logging
 
-import item
-import config
+from .. import item
+from .. import config
 
 class DecisionProvider:
     def set_args(self, args):

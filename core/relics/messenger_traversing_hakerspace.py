@@ -1,9 +1,9 @@
-import modifier
-import effect
-import event
-import battle
+from .. import modifier
+from .. import effect
+from .. import event
+from .. import battle
 
-from relics import base
+from . import base
 
 class MessengerTraversingHakerspace(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):

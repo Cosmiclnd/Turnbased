@@ -3,3 +3,5 @@ msgpack
 PyQt5
 pytest
 pytest-asyncio
+setuptools
+cython

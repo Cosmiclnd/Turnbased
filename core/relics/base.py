@@ -1,10 +1,10 @@
-import item
-import enums
-import modifier
-import config
-import effect
-import event
-import battle
+from .. import item
+from .. import enums
+from .. import modifier
+from .. import config
+from .. import effect
+from .. import event
+from .. import battle
 
 class RelicType(enums.Enum):
     HEAD = item.Item("head", "Head")

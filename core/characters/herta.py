@@ -1,16 +1,16 @@
-import target
-import skill
-import battle
-import event
-import damage
-import modifier
-import enums
-import effect
-import action
-from decision import base as decision
-from monsters import base as monster
+from .. import target
+from .. import skill
+from .. import battle
+from .. import event
+from .. import damage
+from .. import modifier
+from .. import enums
+from .. import effect
+from .. import action
+from ..decision import base as decision
+from ..monsters import base as monster
 
-from characters import base
+from . import base
 
 class Herta(base.Character):
     class BasicAtk(base.Character.CharacterSkill):
@@ -52,7 +52,7 @@ class Herta(base.Character):
                 return
             battle.current.event_bus.dispatch("attack_start", self.target)
             for ratio in (0.3, 0.7):
-                for t in battle.current.monsters[:]:
+                for t in battle.current.monsters.copy():
                     dmg = damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
@@ -77,7 +77,7 @@ class Herta(base.Character):
             if self is not skill:
                 return
             battle.current.event_bus.dispatch("attack_start", self.target)
-            for t in battle.current.monsters[:]:
+            for t in battle.current.monsters.copy():
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
@@ -139,7 +139,7 @@ class Herta(base.Character):
             battle.current.event_bus.dispatch("attack_start", self.target)
             i = 0
             while i < self.attacks:
-                for t in battle.current.monsters[:]:
+                for t in battle.current.monsters.copy():
                     dmg = damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)

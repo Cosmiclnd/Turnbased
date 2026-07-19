@@ -1,15 +1,15 @@
 import json
 import uuid
 
-import target
-import skill
-import event
-import battle
-import config
-import enums
-import effect
-import item
-from decision import base as decision
+from .. import target
+from .. import skill
+from .. import event
+from .. import battle
+from .. import config
+from .. import enums
+from .. import effect
+from .. import item
+from ..decision import base as decision
 
 class AdditionalWeakness(item.Item):
     def __init__(self, nameid, name, adder, t, element, master=None):

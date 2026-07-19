@@ -1,15 +1,15 @@
-import target
-import skill
-import battle
-import event
-import damage
-import healing
-import modifier
-import enums
-import effect
-import item
+from .. import target
+from .. import skill
+from .. import battle
+from .. import event
+from .. import damage
+from .. import healing
+from .. import modifier
+from .. import enums
+from .. import effect
+from .. import item
 
-from characters import base
+from . import base
 
 class Huohuo(base.Character):
     class BasicAtk(base.Character.CharacterSkill):
@@ -76,7 +76,7 @@ class Huohuo(base.Character):
             if self.target.eidolons >= 1:
                 duration += self.target.config.get_skill_value("eidolon1", "duration")
             self.target.gain_divine_provision(duration)
-            for t in battle.current.characters[:]:
+            for t in battle.current.characters.copy():
                 if t is self.target:
                     continue
                 battle.current.event_bus.dispatch("regen_energy", t, t.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"),

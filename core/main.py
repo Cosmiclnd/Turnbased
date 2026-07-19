@@ -1,7 +1,10 @@
 import logging
 
-from decision import base as decision
-import config
+from . import config
+
+config.load_class("decision", "server_provider")
+
+from .decision import base as decision
 
 def main():
     if config.core_config["log_to_file"]:
@@ -19,6 +22,10 @@ def main():
 if __name__ == "__main__":
     import argparse
     import json
+
+    # TODO: debug
+    import faulthandler
+    faulthandler.enable()
 
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="core/core_config.json")

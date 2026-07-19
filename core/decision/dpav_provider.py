@@ -1,39 +1,48 @@
 import uuid
 import sys
+import time
 
-import config
-import battle
-import event
-import target
-import action
+from .. import config
+from .. import battle
+from .. import event
+from .. import target
+from .. import action
 
-from decision import base
+from . import base
+
+class BattleFinished(Exception):
+    pass
 
 class DpavProvider(base.DecisionProvider):
-    def __init__(self):
-        self.dmg_record = {}
-
     def set_args(self, args):
         self.battle_config = args["battle"]
 
     def start(self):
-        battle.current = battle.Battle()
-        battle.current.action_list = action.ActionList()
-        for record in self.battle_config["characters"]:
-            character = config.load_class("characters", record["name"])(record)
-            battle.current.characters.append(character)
-        battle.current.monster_setup.set_record(self.battle_config["monsters"])
-        for id, state in self.battle_config["initial_state"].items():
-            t = target.from_uuid(uuid.UUID(id))
-            t.initial_state = state
-        for id in self.battle_config["techniques"]:
-            t = target.from_uuid(uuid.UUID(id))
-            t.use_technique = True
-        battle.current.random = battle.Random({"use_random": True})
-        battle.current.config = battle.BattleConfig(battle.BattleType.dict_nameid[self.battle_config["battle_config"]["type"]])
-        for feature in self.battle_config["features"]:
-            battle.current.features.use(feature)
-        battle.current.start()
+        start_time = time.time()
+        for i in range(self.battle_config["repeats"]):
+            battle.current = battle.Battle()
+            battle.current.action_list = action.ActionList()
+            for record in self.battle_config["characters"]:
+                character = config.load_class("characters", record["name"])(record)
+                battle.current.characters.append(character)
+            battle.current.monster_setup.set_record(self.battle_config["monsters"])
+            for id, state in self.battle_config["initial_state"].items():
+                t = target.from_uuid(uuid.UUID(id))
+                t.initial_state = state
+            for id in self.battle_config["techniques"]:
+                t = target.from_uuid(uuid.UUID(id))
+                t.use_technique = True
+            battle.current.random = battle.Random({"use_random": True})
+            battle.current.config = battle.BattleConfig(battle.BattleType.dict_nameid[self.battle_config["battle_config"]["type"]])
+            for feature in self.battle_config["features"]:
+                battle.current.features.use(feature)
+            try:
+                print("*" * 20 + f" Battle {i + 1} " + "*" * 20)
+                battle.current.start()
+            except BattleFinished:
+                pass
+        end_time = time.time()
+        print(f"Finished in {end_time - start_time}s")
     
     def stop(self):
         action_value = battle.current.action_list.cur_action_value
@@ -41,9 +50,11 @@ class DpavProvider(base.DecisionProvider):
         print("Damage Record:")
         for t, dmg in self.dmg_record.items():
             print(f"{t.name}: {dmg}  (DPAV = {dmg / action_value})")
-        sys.exit()
+        raise BattleFinished
     
     def on_battle_start(self):
+        self.dmg_record = {}
+
         battle.current.event_bus.add_member_listener(self.deal_damage, nameid="dpav_provider", name="DPAV Provider")
 
     def check_ultimate(self, character):

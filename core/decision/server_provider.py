@@ -2,12 +2,12 @@ import logging
 import uuid
 from websockets.sync.server import serve
 
-import battle
-import server
-import target
-from characters import base as character
+from .. import battle
+from .. import server
+from .. import target
+from ..characters import base as character
 
-from decision import base
+from . import base
 
 class ServerProvider(base.DecisionProvider):
     def start(self):
@@ -73,11 +73,11 @@ class ServerProvider(base.DecisionProvider):
             return "invalid_message_type"
         try:
             id = uuid.UUID(message["character"])
-            import target  # TODO: Python 3.15 lazy import
+            from .. import target  # TODO: Python 3.15 lazy import
             c = target.from_uuid(id)
             if c is None:
                 return "target_not_found"
-            from characters import base as character  # TODO: Python 3.15 lazy import
+            from ..characters import base as character  # TODO: Python 3.15 lazy import
             if not isinstance(c, character.Character):
                 return "target_not_character"
             info = self.check_ultimate(c, message)

@@ -1,13 +1,13 @@
-import target
-import enums
-import modifier
-import event
-import battle
-import damage
-import effect
-import item
+from .. import target
+from .. import enums
+from .. import modifier
+from .. import event
+from .. import battle
+from .. import damage
+from .. import effect
+from .. import item
 
-from lightcones import base
+from . import base
 
 class WhereaboutsShouldDreamRest(base.LightCone):
     inited = False

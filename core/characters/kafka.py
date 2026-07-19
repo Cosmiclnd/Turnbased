@@ -1,16 +1,16 @@
-import item
-import enums
-import target
-import event
-import battle
-import modifier
-import damage
-import effect
-import action
-from decision import base as decision
-from monsters import base as monster
+from .. import item
+from .. import enums
+from .. import target
+from .. import event
+from .. import battle
+from .. import modifier
+from .. import damage
+from .. import effect
+from .. import action
+from ..decision import base as decision
+from ..monsters import base as monster
 
-from characters import base
+from . import base
 
 class Kafka(base.Character):
     class BasicAtk(base.Character.CharacterSkill):
@@ -82,9 +82,9 @@ class Kafka(base.Character):
             if self is not skill:
                 return
             if self.target.eidolons >= 1:
-                self.target.dot_dmg_vulnerability_eidolon1(battle.current.monsters[:])
+                self.target.dot_dmg_vulnerability_eidolon1(battle.current.monsters.copy())
             battle.current.event_bus.dispatch("attack_start", self.target)
-            for t in battle.current.monsters[:]:
+            for t in battle.current.monsters.copy():
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
@@ -92,7 +92,7 @@ class Kafka(base.Character):
                 battle.current.event_bus.dispatch("hit", dmg)
                 self.target.inflict_shock(t, self.get_value("duration"), self.get_value("base_chance"))
             battle.current.event_bus.dispatch("attack_end", self.target)
-            for t in battle.current.monsters[:]:
+            for t in battle.current.monsters.copy():
                 battle.current.event_bus.dispatch("tick_dot", damage.DotTick(t, lambda x: True, self.get_value("dot_tick_percentage")))
             battle.current.event_bus.dispatch("energy_regen", self.target, self.get_value("energy_regen"))
             if self.target.traces_unlocked[2]:
@@ -177,7 +177,7 @@ class Kafka(base.Character):
             if self is not skill:
                 return
             battle.current.event_bus.dispatch("attack_start", self.target)
-            for t in battle.current.monsters[:]:
+            for t in battle.current.monsters.copy():
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)

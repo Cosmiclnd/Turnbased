@@ -1,16 +1,16 @@
-import item
-import enums
-import target
-import event
-import battle
-import modifier
-import damage
-import effect
-import healing
-import action
-from decision import base as decision
+from .. import item
+from .. import enums
+from .. import target
+from .. import event
+from .. import battle
+from .. import modifier
+from .. import damage
+from .. import effect
+from .. import healing
+from .. import action
+from ..decision import base as decision
 
-from characters import base
+from . import base
 
 class Firefly(base.Character):
     class FireflyEnhancedSkill(base.Character.CharacterSkill):

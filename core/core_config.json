@@ -346,7 +346,8 @@
                 "type": "default",
                 "trigger": null
             },
-            "features": []
+            "features": [],
+            "repeats": 200
         }
     }
 }

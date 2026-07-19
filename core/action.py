@@ -1,10 +1,10 @@
 import uuid
 import math
 
-import item
-import battle
-import event
-from decision import base as decision
+from . import item
+from . import battle
+from . import event
+from .decision import base as decision
 
 order = -1
 add_order = 0

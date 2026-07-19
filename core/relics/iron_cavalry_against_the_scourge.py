@@ -1,9 +1,9 @@
-import modifier
-import event
-import battle
-import damage
+from .. import modifier
+from .. import event
+from .. import battle
+from .. import damage
 
-from relics import base
+from . import base
 
 class IronCavalryAgainstTheScourge(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):

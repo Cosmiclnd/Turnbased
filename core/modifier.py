@@ -1,39 +1,9 @@
 from collections.abc import Callable
 
-import item
-import enums
+from . import item
+from . import enums
 
-class ModifierFilter(enums.Enum):
-    BASE = item.Item("base", "Base")
-    SELF_CONVERSION = item.Item("self_conversion", "Self Conversion")
-    CALCULATED = item.Item("calculated", "Calculated")
-    ALL = (BASE, SELF_CONVERSION, CALCULATED)
-ModifierFilter.init()
-
-class Stat:
-    __slots__ = ("name", "target", "base_value", "calculated_value", "modifiers")
-
-    def __init__(self, name, target=None):
-        self.name = name
-        self.target = target
-        self.base_value = 0
-        self.calculated_value = 0
-        self.modifiers = item.ItemList()
-    
-    def calculate(self, filter=ModifierFilter.CALCULATED, **kwargs):
-        if filter is ModifierFilter.BASE:
-            return self.base_value
-        self.calculated_value = self.base_value
-        self.modifiers.refresh()
-        for modifier in self.modifiers:
-            modifier.modify(self, filter, **kwargs)
-        return self.calculated_value
-    
-    def print(self, indent=0):
-        print(" " * indent +
-            f"{self.target.nameid}.{self.name}: {self.calculate()} [{self.calculate(ModifierFilter.SELF_CONVERSION)}] ({self.base_value})")
-        for modifier in self.modifiers:
-            modifier.print(self, indent + 2)
+from ._modifier import ModifierFilter, Stat, StatDescUnit, StatDesc, StatDescFunc
 
 class StatDesc:
     __slots__ = ("desc")
@@ -117,16 +87,16 @@ class Modifier(item.Item):
     
     def modify(self, stat, filter, **kwargs):
         if filter is ModifierFilter.BASE:
-            return
+            return 0
         if self.validator is not None and not self.validator(stat, **kwargs):
-            return
+            return 0
         # 属性相同时filter只能为ModifierFilter.BASE
         # 属性不同时filter只能为ModifierFilter.BASE或ModifierFilter.SELF_CONVERSION
         # 防止循环转化
         if filter is ModifierFilter.SELF_CONVERSION:
-            stat.calculated_value += self.stat_desc.calculate_self_conversion(stat, target=stat.target, **kwargs)
+            return self.stat_desc.calculate_self_conversion(stat, target=stat.target, **kwargs)
         else:
-            stat.calculated_value += self.stat_desc.calculate(target=stat.target, **kwargs)
+            return self.stat_desc.calculate(target=stat.target, **kwargs)
     
     def print(self, stat, indent=0):
         if self.validator is not None:

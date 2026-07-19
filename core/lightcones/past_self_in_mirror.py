@@ -1,10 +1,10 @@
-import item
-import modifier
-import effect
-import event
-import battle
+from .. import item
+from .. import modifier
+from .. import effect
+from .. import event
+from .. import battle
 
-from lightcones import base
+from . import base
 
 class PastSelfInMirror(base.LightCone):
     def __init__(self, record):

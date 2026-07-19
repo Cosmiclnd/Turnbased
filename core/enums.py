@@ -1,4 +1,4 @@
-import item
+from . import item
 
 class Enum:
     @classmethod

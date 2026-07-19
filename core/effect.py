@@ -2,12 +2,12 @@ import copy
 from collections.abc import Iterable
 from dataclasses import dataclass
 
-import item
-import event
-import battle
-import target
-import enums
-import damage
+from . import item
+from . import event
+from . import battle
+from . import target
+from . import enums
+from . import damage
 
 class Debuff(enums.Enum):
     # 在需要时指定
@@ -173,7 +173,7 @@ class AdditionalWeaknessEffect(Effect):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.eff_dead = item.DeadToggle(self.target)
-                from monsters import base as monster  # TODO: Python 3.15 lazy import
+                from .monsters import base as monster  # TODO: Python 3.15 lazy import
                 self.target.weaknesses.additions.append(monster.AdditionalWeakness(self.effect.nameid, self.effect.name, self.caster,
                     self.target, self.effect.element, self.eff_dead))
             elif self.old_stacks != 0 and stacks == 0:

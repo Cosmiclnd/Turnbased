@@ -1,7 +1,7 @@
-import modifier
-import damage
+from .. import modifier
+from .. import damage
 
-from relics import base
+from . import base
 
 class InertSalsotto(base.RelicSet):
     class PiecesEffect(base.RelicSet.PiecesEffect):

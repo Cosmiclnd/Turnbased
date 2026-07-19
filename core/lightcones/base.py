@@ -1,8 +1,8 @@
-import item
-import config
-import enums
-import target
-import effect
+from .. import item
+from .. import config
+from .. import enums
+from .. import target
+from .. import effect
 
 class LightCone(item.Item):
     class LightConeConfig(config.SkillsConfig):

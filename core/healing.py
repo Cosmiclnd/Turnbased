@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 
-import modifier
-from characters import base as character
+from . import modifier
+from .characters import base as character
 
 @dataclass(slots=True, eq=False)
 class Healing:

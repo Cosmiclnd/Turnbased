@@ -1,8 +1,8 @@
 import importlib
-
 import json
-import enums
-import modifier
+
+from . import enums
+from . import modifier
 
 config_data_cache = {}
 core_config = None
@@ -16,7 +16,7 @@ def load_config_data(category, nameid):
 
 def load_class(category, nameid):
     name = nameid.replace("_", " ").title().replace(" ", "")
-    module = importlib.import_module(category + "." + nameid)
+    module = importlib.import_module("." + nameid, package=f"core.{category}")
     return getattr(module, name)
 
 class Config:
