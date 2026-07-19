@@ -41,6 +41,15 @@ cdef class Stat:
     
     def calculate(self, Item filter=ModifierFilter.CALCULATED, **kwargs):
         return self._calculate(filter, kwargs)
+    
+    def format(self, int indent=0):
+        cdef:
+            list lines = []
+        lines.append(" " * indent + f"{self.target.nameid}.{self.name}: {self._calculate(ModifierFilter.CALCULATED, {})} "
+            f"[{self._calculate(ModifierFilter.SELF_CONVERSION, {})}] ({self.base_value})")
+        for modifier in self.modifiers:
+            lines.append(modifier.format(self, indent + 2))
+        return "\n".join(lines)
 
 cdef class StatDescUnit:
     cdef:
@@ -86,6 +95,21 @@ cdef class StatDescUnit:
                 self.is_func, self.func)
         return StatDescUnit(self.is_pure_value, self.value, self.is_stat, self.stat, self.stat_name, self.filter,
             self.is_func, self.func.scale(scale))
+    
+    def format(self, Item target, int indent=0):
+        cdef:
+            str stat_name
+            double value
+        if self.is_pure_value:
+            return " " * indent + str(self.value)
+        if self.is_stat:
+            stat_name = f"{self.stat.target.nameid}.{self.stat.name}"
+        else:
+            stat_name = f"*.{self.stat_name}"
+        value = self._calculate(target, {})
+        if self.is_func:
+            return " " * indent + f"{value} <stat={stat_name}, filter={self.filter.nameid}, func>"
+        return " " * indent + f"{value} <stat={stat_name}, filter={self.filter.nameid}, scale={self.value}>"
 
 cdef class StatDesc:
     cdef:
@@ -171,6 +195,13 @@ cdef class StatDesc:
             unit = <StatDescUnit>PyList_GET_ITEM(self.units, i)
             result.add(unit._scale(scale))
         return result
+    
+    def format(self, Item target, int indent=0):
+        cdef:
+            list lines = []
+        for unit in self.units:
+            lines.append(unit.format(target, indent))
+        return "\n".join(lines)
 
 cdef class StatDescFunc:
     cdef dict __dict__
@@ -182,7 +213,7 @@ cdef class StatDescFunc:
         return self
 
 cdef class Modifier(Item):
-    cdef:
+    cdef public:
         StatDesc stat_desc
         object validator
     
@@ -199,5 +230,12 @@ cdef class Modifier(Item):
             return self.stat_desc._calculate(stat.target, kwargs)
         return self.stat_desc._calculate_self_conversion(stat, stat.target, kwargs)
     
-    def scale(self, double scale):
-        return Modifier(self.nameid, self.name, self.stat_desc.scale(scale), self.validator, self.master)
+    def format(self, Stat stat, int indent=0):
+        cdef:
+            list lines = []
+        if self.validator is not None:
+            lines.append(" " * indent + f"{self.name} ({self.nameid}) <validator={self.validator(stat)}>")
+        else:
+            lines.append(" " * indent + f"{self.name} ({self.nameid})")
+        lines.append(self.stat_desc.format(stat.target, indent + 2))
+        return "\n".join(lines)

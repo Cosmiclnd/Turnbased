@@ -100,7 +100,7 @@ class ModifierEffect(Effect):
             elif self.old_stacks != 0 and stacks == 0:
                 self.mod_dead.dead_toggle = True
             for i in range(len(self.modifiers)):
-                self.modifiers[i] = self.effect.modifiers[i].scale(stacks)
+                self.modifiers[i].stat_desc = self.effect.modifiers[i].stat_desc.scale(stacks)
             self.old_stacks = stacks
 
     def __init__(self, nameid, name, type_, duration_type, max_stacks, stat_name, modifiers, dispellable=True):

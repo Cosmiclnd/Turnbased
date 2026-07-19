@@ -51,8 +51,6 @@ class Herta(base.Character):
             if self is not skill:
                 return
             battle.current.event_bus.dispatch("attack_start", self.target)
-            for stat in ("atk", "crt_rate", "crt_dmg", "dmg_boost", "ice_dmg_boost", "res_pen"):
-                print(f"{stat}: {self.target.stats[stat].calculate()}")
             for ratio in (0.3, 0.7):
                 for t in battle.current.monsters.copy():
                     dmg = damage.Damage.create(self.target, t,
