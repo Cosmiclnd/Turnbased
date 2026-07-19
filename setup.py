@@ -3,6 +3,7 @@ from Cython.Build import cythonize
 import os
 
 extensions = [
+    Extension("core._event", ["core/_event.pyx"]),
     Extension("core._item", ["core/_item.pyx"]),
     Extension("core._modifier", ["core/_modifier.pyx"])
 ]

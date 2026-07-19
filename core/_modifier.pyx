@@ -14,11 +14,11 @@ ModifierFilter.init()
 cdef class Stat:
     cdef public:
         str name
-        object target
+        Item target
         double base_value
         ItemList modifiers
     
-    def __init__(self, str name, object target=None):
+    def __init__(self, str name, Item target=None):
         self.name = name
         self.target = target
         self.base_value = 0
@@ -65,7 +65,7 @@ cdef class StatDescUnit:
         self.is_func = is_func
         self.func = func
     
-    cdef double _calculate(self, object target, dict kwargs):
+    cdef double _calculate(self, Item target, dict kwargs):
         cdef:
             Stat stat
             double stat_value
@@ -132,7 +132,7 @@ cdef class StatDesc:
     cpdef void add(self, StatDescUnit unit):
         self.units.append(unit)
     
-    cdef double _calculate(self, object target, dict kwargs):
+    cdef double _calculate(self, Item target, dict kwargs):
         cdef:
             double result = 0
             StatDescUnit unit
@@ -142,10 +142,10 @@ cdef class StatDesc:
             result += unit._calculate(target, kwargs)
         return result
     
-    def calculate(self, object target=None, **kwargs):
+    def calculate(self, Item target=None, **kwargs):
         return self._calculate(target, kwargs)
     
-    cdef double _calculate_self_conversion(self, Stat stat, object target, dict kwargs):
+    cdef double _calculate_self_conversion(self, Stat stat, Item target, dict kwargs):
         # 只计算自身转化得到的值
         cdef:
             double result = 0
@@ -159,7 +159,7 @@ cdef class StatDesc:
                 result += unit._calculate(target, kwargs)
         return result
     
-    def calculate_self_conversion(self, Stat stat, object target=None, **kwargs):
+    def calculate_self_conversion(self, Stat stat, Item target=None, **kwargs):
         return self._calculate_self_conversion(stat, target, kwargs)
     
     cpdef StatDesc scale(self, double scale):

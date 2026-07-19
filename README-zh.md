@@ -42,7 +42,7 @@ pip install -r requirements.txt
 1. **启动服务器**（在一个终端中）：
 
 ```bash
-python core/main.py
+python -m core.main
 ```
 
 该命令会启动一个 WebSocket 服务器，地址为 `ws://127.0.0.1:55716`。

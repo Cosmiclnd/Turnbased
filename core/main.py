@@ -23,13 +23,14 @@ if __name__ == "__main__":
     import argparse
     import json
 
-    # TODO: debug
-    import faulthandler
-    faulthandler.enable()
-
     parser = argparse.ArgumentParser()
     parser.add_argument("--config", type=str, default="core/core_config.json")
+    parser.add_argument("--debug", action="store_true")
     args = parser.parse_args()
+
+    if args.debug:
+        import faulthandler
+        faulthandler.enable()
 
     with open(args.config) as f:
         config.core_config = json.load(f)

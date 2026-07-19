@@ -42,7 +42,7 @@ pip install -r requirements.txt
 1. **Start the server** (in a terminal):
 
 ```bash
-python core/main.py
+python -m core.main
 ```
 
 This starts a WebSocket server on `ws://127.0.0.1:55716`.
