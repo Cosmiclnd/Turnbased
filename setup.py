@@ -13,8 +13,9 @@ setup(
         extensions,
         language_level=3,
         compiler_directives={
-            'boundscheck': True,
-            'wraparound': True,
+            'boundscheck': False,
+            'wraparound': False,
+            'initializedcheck': False,
             'cdivision': True,
         },
         build_dir="build"
