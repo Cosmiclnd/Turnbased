@@ -101,7 +101,7 @@ class Battle:
             decision.provider.notify({"name": "battle_win"})
         else:
             decision.provider.notify({"name": "battle_lose"})
-        decision.provider.stop()
+        decision.provider.stop(win)
     
     def check_targets(self):
         if self.monster_setup.check():

@@ -10,7 +10,7 @@ class DecisionProvider:
     def start(self):
         pass
 
-    def stop(self):
+    def stop(self, win):
         pass
 
     def on_battle_start(self):

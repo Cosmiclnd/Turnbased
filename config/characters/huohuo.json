@@ -377,5 +377,8 @@
                 }
             }
         }
+    },
+    "auto_battle": {
+        "ultimate_priority": 1
     }
 }

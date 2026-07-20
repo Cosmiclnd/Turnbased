@@ -15,7 +15,7 @@ class ServerProvider(base.DecisionProvider):
             logging.info("Listening on 127.0.0.1:%d", server.port)
             s.serve_forever()
     
-    def stop(self):
+    def stop(self, win):
         server.handler.flush_updates()
         server.handler.close()
 

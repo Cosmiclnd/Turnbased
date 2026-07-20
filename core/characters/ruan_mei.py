@@ -6,6 +6,7 @@ from .. import modifier
 from .. import damage
 from .. import effect
 from .. import action
+from .. import auto_battle
 from ..decision import base as decision
 from ..monsters import base as monster
 
@@ -198,6 +199,7 @@ class RuanMei(base.Character):
                 self.immune_targets.remove(t)
 
     def __init__(self, record):
+        self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("ruan_mei", record)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
@@ -296,3 +298,19 @@ class RuanMei(base.Character):
         eff_add = effect.EffectAddition(self, self, self.effect_types.get(self.nameid, "eidolon4"),
             self.config.get_skill_value("eidolon4", "duration"))
         battle.current.event_bus.dispatch("add_effect", eff_add)
+
+import random
+
+class AutoBattlePolicy(auto_battle.AutoBattlePolicy):
+    def skill_option(self, skill_groups):
+        if battle.current.skillpoints.current == 0:
+            return skill_groups["basic_atk"]
+        if not self.target.effects.has_effect(self.target.effect_types.get(self.target.nameid, "overtone")):
+            return skill_groups["skill"]
+        return skill_groups["basic_atk"]
+
+    def skill_target(self, skill_group):
+        if skill_group is self.target.skills["basic_atk"]:
+            return random.choice(battle.current.monsters)
+        elif skill_group is self.target.skills["skill"]:
+            return self.target

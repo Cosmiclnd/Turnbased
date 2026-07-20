@@ -8,6 +8,7 @@ from .. import damage
 from .. import effect
 from .. import healing
 from .. import action
+from .. import auto_battle
 from ..decision import base as decision
 
 from . import base
@@ -306,6 +307,7 @@ class Firefly(base.Character):
                 effect.Effect.DurationType.PERMANENT, 1, False)
     
     def __init__(self, record):
+        self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("firefly", record)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
@@ -384,3 +386,10 @@ class Firefly(base.Character):
         if self is not turn.target:
             return
         self.extra_normal_turn_triggered = False
+
+import random
+
+class AutoBattlePolicy(auto_battle.AutoBattlePolicy):
+    def skill_target(self, skill_group):
+        if skill_group in (self.target.skills["basic_atk"], self.target.skills["skill"]):
+            return random.choice(battle.current.monsters)

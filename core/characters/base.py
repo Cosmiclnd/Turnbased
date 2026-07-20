@@ -44,6 +44,7 @@ class Character(target.Target):
             for name, value in self.base_stats.items():
                 self.target.stats[name].base_value = value
             self.target.stats["base_break_dmg"].base_value = self.get_base_stat("base_break_dmg", self.target.level)
+            self.target.auto_battle.ultimate_priority = self.data["auto_battle"]["ultimate_priority"]
         
         def set_traces_stats(self):
             for i in range(len(self.traces_stats)):
@@ -118,16 +119,19 @@ class Character(target.Target):
             return battle.current.cur_main_target
         
         def get_adjacent_targets(self, k=1):
-            targets = battle.current.characters if self.is_character_target() else battle.current.monsters
-            idx = targets.index(self.get_main_target())
+            idx = self.skill_targets.index(self.get_main_target())
             result = []
             for i in range(-k, k + 1):
-                if i != 0 and 0 <= idx + i < len(targets):
-                    result.append(targets[idx + i])
+                if i != 0 and 0 <= idx + i < len(self.skill_targets):
+                    result.append(self.skill_targets[idx + i])
             return result
         
         def before_skill_trigger(self):
             self.skill_dead = item.DeadToggle(self.target)
+            if self.target_info is not None:
+                self.skill_targets = battle.current.characters.copy() if self.is_character_target() else battle.current.monsters.copy()
+            else:
+                self.skill_targets = None
             battle.current.skillpoints.modify(self.delta_skillpoints)
         
         def after_skill_trigger(self):
@@ -284,6 +288,9 @@ class Character(target.Target):
                 info["type"] = self.config.skills[skill_name]["type"]
             result[category].append(info)
         return result
+    
+    def set_auto_battle(self, policy):
+        self.auto_battle = policy
 
     @event.member_listener(event.ListenerPriority.START, "battle_start")
     def set_initial_state(self):

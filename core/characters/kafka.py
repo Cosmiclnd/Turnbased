@@ -7,6 +7,7 @@ from .. import modifier
 from .. import damage
 from .. import effect
 from .. import action
+from .. import auto_battle
 from ..decision import base as decision
 from ..monsters import base as monster
 
@@ -208,6 +209,7 @@ class Kafka(base.Character):
             self.amount = amount
     
     def __init__(self, record):
+        self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("kafka", record)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
@@ -299,3 +301,10 @@ class Kafka(base.Character):
             eff_add = effect.EffectAddition(self, t, self.effect_types.get(self.nameid, "eidolon1"),
                 self.config.get_skill_value("eidolon1", "duration"))
             self.try_apply_debuff(eff_add, self.config.get_skill_value("eidolon1", "base_chance"))
+
+import random
+
+class AutoBattlePolicy(auto_battle.AutoBattlePolicy):
+    def skill_target(self, skill_group):
+        if skill_group in (self.target.skills["basic_atk"], self.target.skills["skill"]):
+            return random.choice(battle.current.monsters)

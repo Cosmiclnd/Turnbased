@@ -7,6 +7,7 @@ from .. import modifier
 from .. import enums
 from .. import effect
 from .. import action
+from .. import auto_battle
 from ..decision import base as decision
 from ..monsters import base as monster
 
@@ -186,6 +187,7 @@ class Herta(base.Character):
             battle.current.event_bus.dispatch("add_effect", eff_add)
         
     def __init__(self, record):
+        self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("herta", record)
 
         battle.current.event_bus.add_member_listener(self.battle_start, self)
@@ -227,3 +229,10 @@ class Herta(base.Character):
                 modifier.StatDesc((None, None, self.config.get_skill_value("bonus_trace2", "control_res"))),
                 None, self)
             self.stats["control_res"].modifiers.append(mod)
+
+import random
+
+class AutoBattlePolicy(auto_battle.AutoBattlePolicy):
+    def skill_target(self, skill_group):
+        if skill_group is self.target.skills["basic_atk"]:
+            return random.choice(battle.current.monsters)

@@ -1,12 +1,14 @@
 import uuid
 import sys
 import time
+from tqdm import tqdm
 
 from .. import config
 from .. import battle
 from .. import event
 from .. import target
 from .. import action
+from ..characters import base as character
 
 from . import base
 
@@ -14,12 +16,18 @@ class BattleFinished(Exception):
     pass
 
 class DpavProvider(base.DecisionProvider):
+    def __init__(self):
+        self.total_dmg = {}
+        self.dpavs = {}
+        self.wins = 0
+
     def set_args(self, args):
         self.battle_config = args["battle"]
 
     def start(self):
+        n = self.battle_config["repeats"]
         start_time = time.time()
-        for i in range(self.battle_config["repeats"]):
+        for _ in tqdm(range(n), desc="Simulating"):
             battle.current = battle.Battle()
             battle.current.action_list = action.ActionList()
             for record in self.battle_config["characters"]:
@@ -37,19 +45,40 @@ class DpavProvider(base.DecisionProvider):
             for feature in self.battle_config["features"]:
                 battle.current.features.use(feature)
             try:
-                print("*" * 20 + f" Battle {i + 1} " + "*" * 20)
                 battle.current.start()
             except BattleFinished:
                 pass
         end_time = time.time()
         print(f"Finished in {end_time - start_time}s")
+        print("*" * 50)
+        print(f"Win Rate: {round(100 * self.wins / n, 4)}%")
+        print(f"Average Total DMG:")
+        for t, dmg in self.total_dmg.items():
+            print(f"  {t}:")
+            self.print_array(dmg, indent=4)
+        print(f"Average DPAV:")
+        for t, dpav in self.dpavs.items():
+            print(f"  {t}:")
+            self.print_array(dpav, indent=4)
     
-    def stop(self):
+    def print_array(self, array, indent=0):
+        avg = sum(array) / len(array)
+        min_x = min(array)
+        max_x = max(array)
+        print(" " * indent + f"Min: {min_x}")
+        print(" " * indent + f"Max: {max_x}")
+        print(" " * indent + f"Avg: {avg}")
+    
+    def stop(self, win):
+        self.wins += win
         action_value = battle.current.action_list.cur_action_value
-        print(f"Action Value Elapsed: {action_value}")
-        print("Damage Record:")
         for t, dmg in self.dmg_record.items():
-            print(f"{t.name}: {dmg}  (DPAV = {dmg / action_value})")
+            if t.nameid not in self.total_dmg:
+                self.total_dmg[t.nameid] = []
+            self.total_dmg[t.nameid].append(dmg)
+            if t.nameid not in self.dpavs:
+                self.dpavs[t.nameid] = []
+            self.dpavs[t.nameid].append(dmg / action_value)
         raise BattleFinished
     
     def on_battle_start(self):
@@ -67,18 +96,25 @@ class DpavProvider(base.DecisionProvider):
         return True
     
     def provide_ultimate(self):
+        characters = []
         for c in battle.current.characters:
-            if self.check_ultimate(c):
-                return c
+            if self.check_ultimate(c) and c.auto_battle.ultimate():
+                characters.append(c)
+        if characters:
+            return max(characters, key=lambda c: c.auto_battle.ultimate_priority)
+    
+    def provide_ultimate_target(self, character):
+        battle.current.cur_main_target = character.auto_battle.skill_target(character.skills["ultimate"])
+
+    def provide_character_skill_option(self, character):
+        skill_group = character.auto_battle.skill_option(character.skills)
+        battle.current.cur_main_target = character.auto_battle.skill_target(skill_group)
+        return skill_group
     
     @event.member_listener(event.ListenerPriority.EXECUTE - 1)
     def deal_damage(self, dmg):
+        if not isinstance(dmg.dealer, character.Character):
+            return
         if dmg.dealer not in self.dmg_record:
             self.dmg_record[dmg.dealer] = 0
         self.dmg_record[dmg.dealer] += dmg.get_damage() or 0
-    
-    # TODO: more complex logic
-
-    def provide_character_skill_option(self, character):
-        battle.current.cur_main_target = battle.current.monsters[0]
-        return character.skills["basic_atk"]

@@ -333,5 +333,8 @@
                 }
             }
         }
+    },
+    "auto_battle": {
+        "ultimate_priority": 6
     }
 }

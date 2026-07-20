@@ -1,5 +1,353 @@
 {
     "log_to_file": true,
-    "provider": "server_provider",
-    "provider_args": {}
+    "provider": "dpav_provider",
+    "provider_args": {
+        "battle": {
+            "characters": [
+                {
+                    "uuid": "092cda29-80ed-4162-9661-93d7ad183d34",
+                    "name": "kafka",
+                    "level": 80,
+                    "eidolons": 6,
+                    "basic_atk_level": 6,
+                    "skill_level": 10,
+                    "ultimate_level": 10,
+                    "talent_level": 10,
+                    "technique_level": 1,
+                    "traces_stats_unlocked": [true, true, true, true, true, true, true, true, true, true],
+                    "traces_unlocked": [true, true, true],
+                    "lightcone": {
+                        "name": "whereabouts_should_dream_rest",
+                        "level": 80,
+                        "stacks": 5
+                    },
+                    "relics": {
+                        "head": {
+                            "name": "iron_cavalry_against_the_scourge",
+                            "level": 15,
+                            "main_stat_type": "hp",
+                            "sub_stat_types": ["crt_rate", "atk%", "eff_hr", "break_eff"],
+                            "enhancements": [
+                                [2],
+                                [1, 1, 1, 1],
+                                [1, 2],
+                                [1, 1]
+                            ]
+                        },
+                        "hands": {
+                            "name": "iron_cavalry_against_the_scourge",
+                            "level": 12,
+                            "main_stat_type": "atk",
+                            "sub_stat_types": ["hp", "atk%", "eff_hr", "crt_rate"],
+                            "enhancements": [
+                                [0],
+                                [1, 1, 1],
+                                [1, 2],
+                                [1, 2]
+                            ]
+                        },
+                        "body": {
+                            "name": "iron_cavalry_against_the_scourge",
+                            "level": 15,
+                            "main_stat_type": "eff_hr",
+                            "sub_stat_types": ["atk", "atk%", "spd", "eff_res"],
+                            "enhancements": [
+                                [1, 2],
+                                [1, 1],
+                                [0],
+                                [1, 1, 1, 2]
+                            ]
+                        },
+                        "feet": {
+                            "name": "iron_cavalry_against_the_scourge",
+                            "level": 15,
+                            "main_stat_type": "atk%",
+                            "sub_stat_types": ["hp%", "spd", "eff_hr", "eff_res"],
+                            "enhancements": [
+                                [0, 0],
+                                [0, 1],
+                                [1, 2],
+                                [0, 1]
+                            ]
+                        },
+                        "planar_sphere": {
+                            "name": "forge_of_the_kalpagni_lantern",
+                            "level": 15,
+                            "main_stat_type": "lightning_dmg_boost",
+                            "sub_stat_types": ["hp%", "spd", "eff_res", "break_eff"],
+                            "enhancements": [
+                                [2],
+                                [2, 2],
+                                [2],
+                                [2, 2, 2, 2, 2]
+                            ]
+                        },
+                        "link_rope": {
+                            "name": "forge_of_the_kalpagni_lantern",
+                            "level": 15,
+                            "main_stat_type": "energy_regen_rate",
+                            "sub_stat_types": ["hp%", "atk%", "eff_hr", "eff_res"],
+                            "enhancements": [
+                                [2],
+                                [2, 2],
+                                [2, 2],
+                                [2]
+                            ]
+                        }
+                    }
+                },
+                {
+                    "uuid": "afc9fe20-4932-4234-9bdb-b7e41429c5cc",
+                    "name": "huohuo",
+                    "level": 80,
+                    "eidolons": 6,
+                    "basic_atk_level": 6,
+                    "skill_level": 10,
+                    "ultimate_level": 10,
+                    "talent_level": 10,
+                    "technique_level": 1,
+                    "traces_stats_unlocked": [true, true, true, true, true, true, true, true, true, true],
+                    "traces_unlocked": [true, true, true],
+                    "lightcone": {
+                        "name": "night_of_fright",
+                        "level": 80,
+                        "stacks": 5
+                    },
+                    "relics": {
+                        "head": {
+                            "name": "passerby_of_wandering_cloud",
+                            "level": 15,
+                            "main_stat_type": "hp",
+                            "sub_stat_types": ["hp%", "def%", "spd", "break_eff"],
+                            "enhancements": [
+                                [2],
+                                [2],
+                                [2, 2, 2],
+                                [2, 2, 2, 2]
+                            ]
+                        },
+                        "hands": {
+                            "name": "passerby_of_wandering_cloud",
+                            "level": 15,
+                            "main_stat_type": "atk",
+                            "sub_stat_types": ["hp%", "atk%", "spd", "eff_res"],
+                            "enhancements": [
+                                [2, 2, 2],
+                                [2],
+                                [2, 2, 2],
+                                [2, 2]
+                            ]
+                        },
+                        "body": {
+                            "name": "passerby_of_wandering_cloud",
+                            "level": 15,
+                            "main_stat_type": "outgoing_healing_boost",
+                            "sub_stat_types": ["hp", "hp%", "def%", "eff_res"],
+                            "enhancements": [
+                                [0, 0, 2],
+                                [1, 1],
+                                [1, 2],
+                                [0]
+                            ]
+                        },
+                        "feet": {
+                            "name": "passerby_of_wandering_cloud",
+                            "level": 15,
+                            "main_stat_type": "hp%",
+                            "sub_stat_types": ["def%", "spd", "eff_res", "break_eff"],
+                            "enhancements": [
+                                [1],
+                                [0, 1],
+                                [0],
+                                [0, 0, 1, 1]
+                            ]
+                        },
+                        "planar_sphere": {
+                            "name": "fleet_of_the_ageless",
+                            "level": 15,
+                            "main_stat_type": "hp%",
+                            "sub_stat_types": ["def%", "atk%", "crt_rate", "eff_res"],
+                            "enhancements": [
+                                [0, 1, 1, 2],
+                                [0], 
+                                [1],
+                                [1, 2]
+                            ]
+                        },
+                        "link_rope": {
+                            "name": "fleet_of_the_ageless",
+                            "level": 15,
+                            "main_stat_type": "energy_regen_rate",
+                            "sub_stat_types": ["hp%", "hp", "break_eff", "spd"],
+                            "enhancements": [
+                                [0, 1, 2],
+                                [1, 1],
+                                [2],
+                                [0, 0, 1]
+                            ]
+                        }
+                    }
+                },
+                {
+                    "uuid": "a83159db-4fda-4b6c-9c5f-cf06f0c9dd0e",
+                    "name": "ruan_mei",
+                    "level": 80,
+                    "eidolons": 6,
+                    "basic_atk_level": 6,
+                    "skill_level": 10,
+                    "ultimate_level": 10,
+                    "talent_level": 10,
+                    "technique_level": 1,
+                    "traces_stats_unlocked": [true, true, true, true, true, true, true, true, true, true],
+                    "traces_unlocked": [true, true, true],
+                    "lightcone": {
+                        "name": "past_self_in_mirror",
+                        "level": 80,
+                        "stacks": 5
+                    },
+                    "relics": {
+                        "head": {
+                            "name": "messenger_traversing_hakerspace",
+                            "level": 15,
+                            "main_stat_type": "hp",
+                            "sub_stat_types": ["hp%", "crt_dmg", "eff_hr", "break_eff"],
+                            "enhancements": [
+                                [2],
+                                [1, 1, 1, 1],
+                                [1, 2],
+                                [1, 1]
+                            ]
+                        },
+                        "hands": {
+                            "name": "messenger_traversing_hakerspace",
+                            "level": 12,
+                            "main_stat_type": "atk",
+                            "sub_stat_types": ["hp", "def", "crt_dmg", "eff_hr"],
+                            "enhancements": [
+                                [0],
+                                [1, 1, 1],
+                                [1, 2],
+                                [1, 2]
+                            ]
+                        },
+                        "body": {
+                            "name": "messenger_traversing_hakerspace",
+                            "level": 15,
+                            "main_stat_type": "crt_rate",
+                            "sub_stat_types": ["atk", "atk%", "spd", "eff_res"],
+                            "enhancements": [
+                                [1, 2],
+                                [1, 1],
+                                [0],
+                                [1, 1, 1, 2]
+                            ]
+                        },
+                        "feet": {
+                            "name": "messenger_traversing_hakerspace",
+                            "level": 15,
+                            "main_stat_type": "spd",
+                            "sub_stat_types": ["hp%", "atk%", "crt_rate", "eff_res"],
+                            "enhancements": [
+                                [0, 0],
+                                [0, 1],
+                                [1, 2],
+                                [0, 1]
+                            ]
+                        },
+                        "planar_sphere": {
+                            "name": "forge_of_the_kalpagni_lantern",
+                            "level": 15,
+                            "main_stat_type": "atk%",
+                            "sub_stat_types": ["hp%", "spd", "eff_res", "break_eff"],
+                            "enhancements": [
+                                [2],
+                                [2, 2],
+                                [2],
+                                [2, 2, 2, 2, 2]
+                            ]
+                        },
+                        "link_rope": {
+                            "name": "forge_of_the_kalpagni_lantern",
+                            "level": 15,
+                            "main_stat_type": "break_eff",
+                            "sub_stat_types": ["hp%", "atk%", "spd", "eff_res"],
+                            "enhancements": [
+                                [2],
+                                [2, 2],
+                                [2, 2],
+                                [2]
+                            ]
+                        }
+                    }
+                }
+            ],
+            "monsters": [
+                {
+                    "1": {
+                        "monsters": [
+                            {
+                                "uuid": "e966e9d9-099c-4db1-a31b-384985e21682",
+                                "name": "voidranger_eliminator",
+                                "level": 120,
+                                "moc": true,
+                                "stat_scales": {
+                                    "hp": 6.3,
+                                    "atk": 1.05
+                                }
+                            },
+                            {
+                                "uuid": "ba113b6f-758a-435f-825f-57cf92c520f5",
+                                "name": "voidranger_eliminator",
+                                "level": 120,
+                                "moc": true,
+                                "stat_scales": {
+                                    "hp": 6.3,
+                                    "atk": 1.05
+                                }
+                            },
+                            {
+                                "uuid": "77c8af05-062d-4503-bca3-86c78be4cb07",
+                                "name": "blaze_out_of_space",
+                                "level": 120,
+                                "moc": true,
+                                "stat_scales": {
+                                    "hp": 6.3,
+                                    "atk": 1.05
+                                }
+                            },
+                            {
+                                "uuid": "019a9bb2-1ceb-484b-9e9d-d415d024d644",
+                                "name": "voidranger_eliminator",
+                                "level": 120,
+                                "moc": true,
+                                "stat_scales": {
+                                    "hp": 6.3,
+                                    "atk": 1.05
+                                }
+                            },
+                            {
+                                "uuid": "699a300d-e191-4df3-9ba4-128f169f3207",
+                                "name": "voidranger_eliminator",
+                                "level": 120,
+                                "moc": true,
+                                "stat_scales": {
+                                    "hp": 6.3,
+                                    "atk": 1.05
+                                }
+                            }
+                        ],
+                        "condition": []
+                    }
+                }
+            ],
+            "initial_state": {},
+            "techniques": ["a83159db-4fda-4b6c-9c5f-cf06f0c9dd0e", "092cda29-80ed-4162-9661-93d7ad183d34"],
+            "battle_config": {
+                "type": "default",
+                "trigger": null
+            },
+            "features": [],
+            "repeats": 200
+        }
+    }
 }

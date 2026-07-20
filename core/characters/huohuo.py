@@ -8,6 +8,7 @@ from .. import modifier
 from .. import enums
 from .. import effect
 from .. import item
+from .. import auto_battle
 
 from . import base
 
@@ -179,6 +180,7 @@ class Huohuo(base.Character):
             super().__init__("divine_provision", "Divine Provision", effect.Effect.Type.OTHERS, effect.Effect.DurationType.TURN_END, 1)
     
     def __init__(self, record):
+        self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("huohuo", record)
         
         battle.current.event_bus.add_member_listener(self.battle_start, self)
@@ -260,3 +262,34 @@ class Huohuo(base.Character):
         self.dispel_count = 0
         if self.eidolons >= 2:
             self.revive_count = self.config.get_skill_value("eidolon2", "trigger_count")
+
+import random
+
+class AutoBattlePolicy(auto_battle.AutoBattlePolicy):
+    @staticmethod
+    def skill_target_weight(idx):
+        c = battle.current.characters[idx]
+        w = 1 - c.cur_hp / c.stats["hp"].calculate()
+        if idx > 0:
+            c = battle.current.characters[idx - 1]
+            w += (1 - c.cur_hp / c.stats["hp"].calculate()) * 0.3
+        if idx < len(battle.current.characters) - 1:
+            c = battle.current.characters[idx + 1]
+            w += (1 - c.cur_hp / c.stats["hp"].calculate()) * 0.3
+        return w
+    
+    def skill_option(self, skill_groups):
+        if battle.current.skillpoints.current == 0:
+            return skill_groups["basic_atk"]
+        if max(range(len(battle.current.characters)), key=self.skill_target_weight) > 0.6:
+            return skill_groups["skill"]
+        if not self.target.effects.has_effect(self.target.effect_types.get(self.target.nameid, "divine_provision")):
+            return skill_groups["skill"]
+        return skill_groups["basic_atk"]
+
+    def skill_target(self, skill_group):
+        if skill_group is self.target.skills["basic_atk"]:
+            return random.choice(battle.current.monsters)
+        elif skill_group is self.target.skills["skill"]:
+            idx = max(range(len(battle.current.characters)), key=self.skill_target_weight)
+            return battle.current.characters[idx]
