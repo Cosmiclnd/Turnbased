@@ -1,0 +1,365 @@
+{
+    "nameid": "march_7th_preservation",
+    "name": "March 7th",
+    "rarity": 4,
+    "element": "ice",
+    "path": "preservation",
+    "base_stat_scales": {
+        "hp": 30,
+        "atk": 29,
+        "def": 26
+    },
+    "base_stats": {
+        "spd": 101,
+        "taunt": 1.5,
+        "energy": 120,
+        "max_energy": 120
+    },
+    "traces_stats": [
+        {
+            "nameid": "march_7th_preservation_trace1",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.032
+        },
+        {
+            "nameid": "march_7th_preservation_trace2",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.032
+        },
+        {
+            "nameid": "march_7th_preservation_trace3",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.05
+        },
+        {
+            "nameid": "march_7th_preservation_trace4",
+            "name": "Eff RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": false,
+            "value": 0.04
+        },
+        {
+            "nameid": "march_7th_preservation_trace5",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.048
+        },
+        {
+            "nameid": "march_7th_preservation_trace6",
+            "name": "Eff RES Boost",
+            "stat_name": "eff_res",
+            "is_percentage": false,
+            "value": 0.06
+        },
+        {
+            "nameid": "march_7th_preservation_trace7",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.075
+        },
+        {
+            "nameid": "march_7th_preservation_trace8",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.048
+        },
+        {
+            "nameid": "march_7th_preservation_trace9",
+            "name": "DMG Boost: Ice",
+            "stat_name": "ice_dmg_boost",
+            "is_percentage": false,
+            "value": 0.064
+        },
+        {
+            "nameid": "march_7th_preservation_trace10",
+            "name": "DEF Boost",
+            "stat_name": "def",
+            "is_percentage": true,
+            "value": 0.1
+        }
+    ],
+    "skills": {
+        "basic_atk": {
+            "nameid": "frigid_cold_arrow",
+            "name": "Frigid Cold Arrow",
+            "category": "basic_atk",
+            "type": "single",
+            "target": {
+                "type": "monster",
+                "selection": "single"
+            },
+            "delta_skillpoints": 1,
+            "desc": "Deals Ice DMG equal to {percentage:.2%} of March 7th's ATK to one designated enemy.",
+            "values": {
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.6, 0.7, 0.8, 0.9, 1, 1.1, 1.2, 1.3, 1.4]
+                },
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                }
+            }
+        },
+        "skill": {
+            "nameid": "the_power_of_cuteness",
+            "name": "The Power of Cuteness",
+            "category": "skill",
+            "type": "defense",
+            "target": {
+                "type": "character",
+                "selection": "single"
+            },
+            "delta_skillpoints": -1,
+            "desc": "Provides a single ally with a Shield that can absorb DMG equal to {shield_percentage:.2%} of March 7th's DEF plus {shield_flat} for {duration} turn(s). If the ally's current HP percentage is {hp_threshold:.2%} or higher, greatly increases the chance of enemies attacking that ally.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 30
+                },
+                "shield_percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.38, 0.40375, 0.4275, 0.45125, 0.475, 0.494, 0.513, 0.532, 0.551, 0.57, 0.589, 0.608, 0.627, 0.646, 0.665]
+                },
+                "shield_flat": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [190, 304, 389.5, 475, 532, 589, 631.75, 674.5, 717.25, 760, 802.75, 845.5, 888.25, 931, 973.75]
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 3
+                },
+                "hp_threshold": {
+                    "is_dynamic": false,
+                    "value": 0.3
+                }
+            }
+        },
+        "ultimate": {
+            "nameid": "glacial_cascade",
+            "name": "Glacial Cascade",
+            "category": "ultimate",
+            "type": "aoe",
+            "target": {
+                "type": "monster",
+                "selection": "all"
+            },
+            "delta_skillpoints": 0,
+            "desc": "Deals Ice DMG equal to {percentage:.2%} of March 7th's ATK to all enemies. Hit enemies have a {base_chance:.2%} base chance to be Frozen for {duration} turn(s).\nWhile Frozen, enemies cannot take action and will receive Ice Additional DMG equal to {additional_dmg:.2%} of March 7th's ATK at the beginning of each turn.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 5
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.9, 0.96, 1.02, 1.08, 1.14, 1.2, 1.275, 1.35, 1.425, 1.5, 1.56, 1.62, 1.68, 1.74, 1.8]
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "additional_dmg": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.3, 0.33, 0.36, 0.39, 0.42, 0.45, 0.4875, 0.525, 0.5625, 0.6, 0.63, 0.66, 0.69, 0.72, 0.75]
+                }
+            }
+        },
+        "talent": {
+            "nameid": "girl_power",
+            "name": "Girl Power",
+            "category": "talent",
+            "type": "single",
+            "delta_skillpoints": 0,
+            "desc": "After a Shielded ally is attacked by an enemy, March 7th immediately Counters, dealing Ice DMG equal to {percentage:.2%} of her ATK. This effect can be triggered {trigger_count} time(s) each turn.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 10
+                },
+                "percentage": {
+                    "is_dynamic": true,
+                    "key": "level",
+                    "values": [0.5, 0.55, 0.6, 0.65, 0.7, 0.75, 0.8125, 0.875, 0.9375, 1, 1.05, 1.1, 1.15, 1.2, 1.25]
+                },
+                "trigger_count": {
+                    "is_dynamic": false,
+                    "value": 2
+                }
+            }
+        },
+        "technique": {
+            "nameid": "freezing_beauty",
+            "name": "Freezing Beauty",
+            "category": "technique",
+            "type": "technique",
+            "delta_skillpoints": 0,
+            "desc": "Immediately attacks the enemy. After entering battle, there is a {base_chance:.2%} base chance to Freeze a random enemy for {duration} turn(s).\nWhile Frozen, the enemy cannot take action and will take Ice Additional DMG equal to {additional_dmg:.2%} of March 7th's ATK at the beginning of each turn.",
+            "values": {
+                "toughness_reduction": {
+                    "is_dynamic": false,
+                    "value": 20
+                },
+                "base_chance": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "additional_dmg": {
+                    "is_dynamic": false,
+                    "value": 0.5
+                }
+            }
+        },
+        "bonus_trace1": {
+            "nameid": "purify",
+            "name": "Purify",
+            "category": "trace",
+            "desc": "When using Skill, dispels {num_debuffs} debuff(s) from one designated ally.",
+            "values": {
+                "num_debuffs": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        },
+        "bonus_trace2": {
+            "nameid": "reinforce",
+            "name": "Reinforce",
+            "category": "trace",
+            "desc": "The duration of the Shield generated from Skill is extended for {duration} turn(s).",
+            "values": {
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 1
+                }
+            }
+        },
+        "bonus_trace3": {
+            "nameid": "ice_spell",
+            "name": "Ice Spell",
+            "category": "trace",
+            "desc": "When using Ultimate, increases the base chance to Freeze enemies by {freeze_chance_boost:.2%}.",
+            "values": {
+                "freeze_chance_boost": {
+                    "is_dynamic": false,
+                    "value": 0.15
+                }
+            }
+        },
+        "eidolon1": {
+            "nameid": "memory_of_you",
+            "name": "Memory of You",
+            "category": "eidolon",
+            "desc": "Every time March 7th's Ultimate Freezes a target, she regenerates {energy_regen} Energy.",
+            "values": {
+                "energy_regen": {
+                    "is_dynamic": false,
+                    "value": 6
+                }
+            }
+        },
+        "eidolon2": {
+            "nameid": "memory_of_it",
+            "name": "Memory of It",
+            "category": "eidolon",
+            "desc": "Upon entering battle, grants a Shield equal to {shield_percentage:.2%} of March 7th's DEF plus {shield_flat} to the ally with the lowest HP percentage, lasting for {duration} turn(s).",
+            "values": {
+                "shield_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.24
+                },
+                "shield_flat": {
+                    "is_dynamic": false,
+                    "value": 320
+                },
+                "duration": {
+                    "is_dynamic": false,
+                    "value": 3
+                }
+            }
+        },
+        "eidolon3": {
+            "nameid": "memory_of_everything",
+            "name": "Memory of Everything",
+            "category": "eidolon",
+            "desc": "Ultimate Lv. +2, up to a maximum of Lv. 15.\nBasic ATK Lv. +1, up to a maximum of Lv. 10.",
+            "values": {}
+        },
+        "eidolon4": {
+            "nameid": "never_forfeit_again",
+            "name": "Never Forfeit Again",
+            "category": "eidolon",
+            "desc": "The Talent's Counter effect can be triggered {extra_trigger} more time(s) in each turn. The DMG dealt by Counter increases by an amount that is equal to {percentage:.2%} of March 7th's DEF.",
+            "values": {
+                "extra_trigger": {
+                    "is_dynamic": false,
+                    "value": 1
+                },
+                "percentage": {
+                    "is_dynamic": false,
+                    "value": 0.3
+                }
+            }
+        },
+        "eidolon5": {
+            "nameid": "never_forget_again",
+            "name": "Never Forget Again",
+            "category": "eidolon",
+            "desc": "Skill Lv. +2, up to a maximum of Lv. 15.\nTalent Lv. +2, up to a maximum of Lv. 15.",
+            "values": {}
+        },
+        "eidolon6": {
+            "nameid": "just_like_this_always",
+            "name": "Just Like This, Always...",
+            "category": "eidolon",
+            "desc": "Allies under the protection of the Shield granted by the Skill restores HP equal to {heal_percentage:.2%} of their Max HP plus {heal_flat} at the beginning of each turn.",
+            "values": {
+                "heal_percentage": {
+                    "is_dynamic": false,
+                    "value": 0.04
+                },
+                "heal_flat": {
+                    "is_dynamic": false,
+                    "value": 106
+                }
+            }
+        }
+    },
+    "auto_battle": {
+        "ultimate_priority": 5
+    }
+}
