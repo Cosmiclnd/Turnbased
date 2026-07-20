@@ -1,0 +1,32 @@
+{
+    "nameid": "prisoner_in_deep_confinement",
+    "name": "Prisoner in Deep Confinement",
+    "skills": {
+        "2pc": {
+            "nameid": "2pc_effect",
+            "name": "2-Pc Effect",
+            "desc": "ATK increases by {atk_boost:.2%}.",
+            "values": {
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 0.12
+                }
+            }
+        },
+        "4pc": {
+            "nameid": "4pc_effect",
+            "name": "4-Pc Effect",
+            "desc": "For every DoT the target enemy is afflicted with, the wearer will ignore {def_ignore:.2%} of its DEF when dealing DMG to it. This effect is valid for a max of {max_dots} DoT(s).",
+            "values": {
+                "def_ignore": {
+                    "is_dynamic": false,
+                    "value": 0.06
+                },
+                "max_dots": {
+                    "is_dynamic": false,
+                    "value": 3
+                }
+            }
+        }
+    }
+}

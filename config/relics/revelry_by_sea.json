@@ -1,0 +1,33 @@
+{
+    "nameid": "revelry_by_sea",
+    "name": "Revelry by the Sea",
+    "skills": {
+        "2pc": {
+            "nameid": "2pc_effect",
+            "name": "2-Pc Effect",
+            "desc": "Increases the wearer's ATK by {atk_boost:.2%}. When the wearer's ATK is higher than or equal to {atk_threshold1}/{atk_threshold2}, increases the DoT DMG dealt by {dot_dmg_boost1:.2%}/{dot_dmg_boost2:.2%} respectively.",
+            "values": {
+                "atk_boost": {
+                    "is_dynamic": false,
+                    "value": 0.12
+                },
+                "atk_threshold1": {
+                    "is_dynamic": false,
+                    "value": 2400
+                },
+                "atk_threshold2": {
+                    "is_dynamic": false,
+                    "value": 3600
+                },
+                "dot_dmg_boost1": {
+                    "is_dynamic": false,
+                    "value": 0.12
+                },
+                "dot_dmg_boost2": {
+                    "is_dynamic": false,
+                    "value": 0.24
+                }
+            }
+        }
+    }
+}

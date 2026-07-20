@@ -23,7 +23,7 @@
                     },
                     "relics": {
                         "head": {
-                            "name": "iron_cavalry_against_the_scourge",
+                            "name": "prisoner_in_deep_confinement",
                             "level": 15,
                             "main_stat_type": "hp",
                             "sub_stat_types": ["crt_rate", "atk%", "eff_hr", "break_eff"],
@@ -35,7 +35,7 @@
                             ]
                         },
                         "hands": {
-                            "name": "iron_cavalry_against_the_scourge",
+                            "name": "prisoner_in_deep_confinement",
                             "level": 12,
                             "main_stat_type": "atk",
                             "sub_stat_types": ["hp", "atk%", "eff_hr", "crt_rate"],
@@ -47,7 +47,7 @@
                             ]
                         },
                         "body": {
-                            "name": "iron_cavalry_against_the_scourge",
+                            "name": "prisoner_in_deep_confinement",
                             "level": 15,
                             "main_stat_type": "eff_hr",
                             "sub_stat_types": ["atk", "atk%", "spd", "eff_res"],
@@ -59,7 +59,7 @@
                             ]
                         },
                         "feet": {
-                            "name": "iron_cavalry_against_the_scourge",
+                            "name": "prisoner_in_deep_confinement",
                             "level": 15,
                             "main_stat_type": "atk%",
                             "sub_stat_types": ["hp%", "spd", "eff_hr", "eff_res"],
@@ -71,10 +71,10 @@
                             ]
                         },
                         "planar_sphere": {
-                            "name": "forge_of_the_kalpagni_lantern",
+                            "name": "revelry_by_sea",
                             "level": 15,
                             "main_stat_type": "lightning_dmg_boost",
-                            "sub_stat_types": ["hp%", "spd", "eff_res", "break_eff"],
+                            "sub_stat_types": ["hp%", "spd", "eff_res", "atk%"],
                             "enhancements": [
                                 [2],
                                 [2, 2],
@@ -83,7 +83,7 @@
                             ]
                         },
                         "link_rope": {
-                            "name": "forge_of_the_kalpagni_lantern",
+                            "name": "revelry_by_sea",
                             "level": 15,
                             "main_stat_type": "energy_regen_rate",
                             "sub_stat_types": ["hp%", "atk%", "eff_hr", "eff_res"],

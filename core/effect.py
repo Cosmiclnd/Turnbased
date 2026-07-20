@@ -274,6 +274,13 @@ class EffectList:
     def has_effect(self, eff):
         return eff in self.effects
     
+    def count_effect(self, f=None):
+        count = 0
+        for eff in self.effects.keys():
+            if f is None or f(eff):
+                count += 1
+        return count
+    
     def get_stacks(self, eff):
         if not self.has_effect(eff):
             return 0
