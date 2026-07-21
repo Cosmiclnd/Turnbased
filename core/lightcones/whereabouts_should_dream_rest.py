@@ -2,6 +2,7 @@ from .. import target
 from .. import enums
 from .. import modifier
 from .. import event
+from .. import event_types
 from .. import battle
 from .. import damage
 from .. import effect
@@ -23,17 +24,17 @@ class WhereaboutsShouldDreamRest(base.LightCone):
                         modifier.StatDesc(("spd", modifier.ModifierFilter.BASE, -self.effect.lightcone.get_value("spd_reduction"))),
                         None, self.eff_dead)
                     self.target.stats["spd"].modifiers.append(mod)
-                    battle.current.event_bus.add_member_listener(self.deal_damage, self.eff_dead)
+                    event.bus.add_member_listener(self.deal_damage, self.effect.lightcone.target, self.eff_dead)
                 elif self.old_stacks != 0 and stacks == 0:
                     self.eff_dead.dead_toggle = True
                 self.old_stacks = stacks
             
-            @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-            def deal_damage(self, dmg):
-                if self.target is not dmg.target or self.effect.lightcone.target is not dmg.dealer:
+            @event.member_listener(event_types.Damage.BEFORE_CALCULATE)
+            def deal_damage(self, e):
+                dmg = e.dmg
+                if self.target is not dmg.target or dmg.is_break_dmg():
                     return
-                if dmg.is_break_dmg():
-                    dmg.factors[damage.DamageFactorType.VULNERABILITY] += self.effect.lightcone.get_value("break_dmg_vulnerability")
+                dmg.factors[damage.DamageFactorType.VULNERABILITY] += self.effect.lightcone.get_value("break_dmg_vulnerability")
 
         def __init__(self, lightcone):
             super().__init__("routed", "Routed", effect.Effect.Type.DEBUFF, effect.Effect.DurationType.TURN_END, 1)
@@ -49,7 +50,7 @@ class WhereaboutsShouldDreamRest(base.LightCone):
                 modifier.StatDesc((None, None, self.get_value("break_eff_boost"))), None, t)
             t.stats["break_eff"].modifiers.append(mod)
             self.init_class()
-            battle.current.event_bus.add_member_listener(self.deal_damage, t)
+            event.bus.add_member_listener(self.deal_damage, t, t)
     
     def init_class(self):
         cls = self.__class__
@@ -58,9 +59,10 @@ class WhereaboutsShouldDreamRest(base.LightCone):
             cls.effect_types.add(self.nameid, self.RoutedEffect(self))
         self.effect_types.add_unique(cls.effect_types.get(self.nameid, "routed"))
     
-    @event.member_listener(event.ListenerPriority.PRE_PROCESS + 1)
-    def deal_damage(self, dmg):
-        if self.target is not dmg.dealer or not dmg.is_break_dmg():
+    @event.member_listener(event_types.Damage.CREATE)
+    def deal_damage(self, e):
+        dmg = e.dmg
+        if not dmg.is_break_dmg():
             return
         eff_add = effect.EffectAddition(self.target, dmg.target, self.effect_types.get(self.nameid, "routed"), self.get_value("duration"))
-        battle.current.event_bus.dispatch("add_effect", eff_add)
+        battle.current.event_bus.dispatch_legacy("add_effect", eff_add)

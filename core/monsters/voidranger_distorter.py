@@ -1,5 +1,6 @@
 from .. import target
 from .. import event
+from .. import event_types
 from .. import skill
 from .. import battle
 from .. import damage
@@ -17,33 +18,31 @@ class VoidrangerDistorter(base.Monster):
     class Skill1(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
-            t = battle.current.event_bus.query("get_monster_target", self.target)
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
+            t = battle.current.event_bus.query_legacy("get_monster_target", self.target)
             eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "lock_on"), -1)
-            battle.current.event_bus.dispatch("add_effect", eff_add)
+            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
     
     class Skill2(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
-            t = battle.current.event_bus.query("get_monster_target", self.target)
-            battle.current.event_bus.dispatch("attack_start", self.target)
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
+            t = battle.current.event_bus.query_legacy("get_monster_target", self.target)
+            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.QUANTUM, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
-            battle.current.event_bus.dispatch("hit", dmg)
-            battle.current.event_bus.dispatch("attack_end", self.target)
+            battle.current.event_bus.dispatch_legacy("hit", dmg)
+            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
     
     class LockOnEffect(effect.Effect):
         class Instance(effect.Effect.Instance):
@@ -52,15 +51,16 @@ class VoidrangerDistorter(base.Monster):
                 if self.old_stacks == 0 and stacks != 0:
                     VoidrangerDistorter.has_lock_on = (self.effect.target, self.target)
                     self.eff_dead = item.DeadToggle(self.target)
-                    battle.current.event_bus.add_member_listener(self.deal_damage, self.eff_dead)
+                    event.bus.add_member_listener(self.deal_damage, None, self.eff_dead)
                     battle.current.event_bus.add_member_resolver(self.get_monster_target, self.eff_dead)
                 elif self.old_stacks != 0 and stacks == 0:
                     VoidrangerDistorter.has_lock_on = None
                     self.eff_dead.dead_toggle = True
                 self.old_stacks = stacks
             
-            @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-            def deal_damage(self, dmg):
+            @event.member_listener(event_types.Damage.BEFORE_CALCULATE)
+            def deal_damage(self, e):
+                dmg = e.dmg
                 if self.target is not dmg.target:
                     return
                 dmg.factors[damage.DamageFactorType.VULNERABILITY] += self.effect.target.config.get_skill_value("skill1", "vulnerability")
@@ -79,8 +79,8 @@ class VoidrangerDistorter(base.Monster):
         super().__init__(uuid, "voidranger_distorter", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2))
         self.skills.selector = self.skill_selector
-        battle.current.event_bus.add_member_listener(self.reset_lock_on, self)
-        battle.current.event_bus.add_member_listener(self.check_lock_on, self)
+        battle.current.event_bus.add_member_listener_legacy(self.reset_lock_on, self)
+        battle.current.event_bus.add_member_listener_legacy(self.check_lock_on, self)
 
         self.set_effect_types()
     
@@ -94,18 +94,18 @@ class VoidrangerDistorter(base.Monster):
             return group.skills[0]
         return group.skills[1]
     
-    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    @event.member_listener_legacy(event.ListenerPriority.START, "battle_start")
     def set_initial_state(self):
         super().set_initial_state()
         VoidrangerDistorter.has_lock_on = None
     
-    @event.member_listener(event.ListenerPriority.POST_PROCESS, "attack_end")
+    @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS, "attack_end")
     def reset_lock_on(self, t):
         if self is not t or self.has_lock_on is None or self is not self.has_lock_on[0]:
             return
         self.has_lock_on[1].effects.delete(self.effect_types.get(self.nameid, "lock_on"))
     
-    @event.member_listener(event.ListenerPriority.EXECUTE, "die")
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE, "die")
     def check_lock_on(self, t):
         if self is not t or self.has_lock_on is None or self is not self.has_lock_on[0]:
             return

@@ -5,6 +5,7 @@ import uuid
 from .. import target
 from .. import skill
 from .. import event
+from .. import event_types
 from .. import battle
 from .. import config
 from .. import enums
@@ -64,9 +65,9 @@ class Character(target.Target):
         def __init__(self, t):
             super().__init__(f"{t.nameid}_ultimate_turn", f"{t.name}'s Ultimate Turn", action.ExtraTurn.Priority.ULTIMATE, t)
             
-            battle.current.event_bus.add_member_listener(self.extra_turn, self)
+            battle.current.event_bus.add_member_listener_legacy(self.extra_turn, self)
             if not battle.current.features.get("ultimate_turn_not_reset_at_new_wave"):
-                battle.current.event_bus.add_member_listener(self.new_wave_start, self)
+                battle.current.event_bus.add_member_listener_legacy(self.new_wave_start, self)
         
         def dead(self):
             if super().dead():
@@ -81,14 +82,14 @@ class Character(target.Target):
         def is_ultimate(self):
             return True
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
+        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
         def extra_turn(self, turn):
             if self is not turn:
                 return
-            battle.current.event_bus.dispatch("ultimate_turn", self)
+            battle.current.event_bus.dispatch_legacy("ultimate_turn", self)
             self.master.dead_toggle = True
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
+        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
         def new_wave_start(self):
             self.master.dead_toggle = True
 
@@ -105,8 +106,8 @@ class Character(target.Target):
             if "target" in config_data:
                 self.target_info = config_data["target"]
             self.bonus_level = 0
-            battle.current.event_bus.add_member_listener(self.skill_trigger_pre, t)
-            battle.current.event_bus.add_member_listener(self.skill_trigger_post, t)
+            event.bus.add_member_listener(self.before_skill_trigger_listener, self, t)
+            event.bus.add_member_listener(self.after_skill_trigger_listener, self, t)
         
         def is_character_target(self):
             return self.target_info["type"] == "character"
@@ -137,16 +138,12 @@ class Character(target.Target):
         def after_skill_trigger(self):
             self.skill_dead.dead_toggle = True
         
-        @event.member_listener(event.ListenerPriority.PRE_PROCESS, "skill_trigger")
-        def skill_trigger_pre(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.BEFORE_TRIGGER)
+        def before_skill_trigger_listener(self, e):
             self.before_skill_trigger()
         
-        @event.member_listener(event.ListenerPriority.POST_PROCESS, "skill_trigger")
-        def skill_trigger_post(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.AFTER_TRIGGER)
+        def after_skill_trigger_listener(self, e):
             self.after_skill_trigger()
     
     class CharacterUltimate(CharacterSkill):
@@ -179,11 +176,11 @@ class Character(target.Target):
         self.cur_energy = 0
         self.ultimate_activated = False
 
-        battle.current.event_bus.add_member_listener(self.target_action, self)
-        battle.current.event_bus.add_member_listener(self.break_weakness, self)
-        battle.current.event_bus.add_member_listener(self.regen_energy, self)
-        battle.current.event_bus.add_member_listener(self.prepare_ultimate, self)
-        battle.current.event_bus.add_member_listener(self.ultimate_turn, self)
+        battle.current.event_bus.add_member_listener_legacy(self.target_action, self)
+        battle.current.event_bus.add_member_listener_legacy(self.break_weakness, self)
+        battle.current.event_bus.add_member_listener_legacy(self.regen_energy, self)
+        battle.current.event_bus.add_member_listener_legacy(self.prepare_ultimate, self)
+        battle.current.event_bus.add_member_listener_legacy(self.ultimate_turn, self)
 
         self.init_skills()
         self.set_record(record)
@@ -292,7 +289,7 @@ class Character(target.Target):
     def set_auto_battle(self, policy):
         self.auto_battle = policy
 
-    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    @event.member_listener_legacy(event.ListenerPriority.START, "battle_start")
     def set_initial_state(self):
         # 这个listener在Target类中已经被添加
         super().set_initial_state()
@@ -305,7 +302,7 @@ class Character(target.Target):
     
     def check_technique(self):
         if self.use_technique:
-            battle.current.event_bus.dispatch("skill_group_trigger", self.skills["technique"])
+            event.bus.dispatch(event_types.SkillGroupTrigger(self.skills["technique"]))
     
     def check_ultimate_energy(self):
         return self.cur_energy >= self.stats["energy"].calculate()
@@ -313,26 +310,26 @@ class Character(target.Target):
     def ultimate_available(self):
         return self.can_act()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def target_action(self, t):
         if self is not t:
             return
-        battle.current.event_bus.dispatch("skill_group_trigger", decision.provider.provide_character_skill_option(self))
+        event.bus.dispatch(event_types.SkillGroupTrigger(decision.provider.provide_character_skill_option(self)))
     
-    @event.member_listener(event.ListenerPriority.EXECUTE + 1, "weakness_break")
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1, "weakness_break")
     def break_weakness(self, tr):
         if self is not tr.dealer:
             return
         dmg = damage.Damage.create(self, tr.target,
             modifier.StatDesc((self.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, 1)),
             self.element, damage.DmgType.BREAK, damage.DmgSource.WEAKNESS_BREAK, False)
-        battle.current.event_bus.dispatch("additional_damage", dmg)
-        battle.current.event_bus.dispatch("action_delay", tr.target.cur_normal_turn, 0.25)
+        battle.current.event_bus.dispatch_legacy("additional_damage", dmg)
+        battle.current.event_bus.dispatch_legacy("action_delay", tr.target.cur_normal_turn, 0.25)
         if self.element is enums.Element.ICE:
             eff_add = effect.EffectAddition(self, tr.target, self.effect_types.get("break", "frozen"), 1)
             self.try_apply_debuff(eff_add, 1.5)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def regen_energy(self, t, amount, fixed=False):
         if self is not t:
             return
@@ -344,17 +341,17 @@ class Character(target.Target):
         if self.cur_energy > max:
             self.cur_energy = max
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def prepare_ultimate(self, t):
         if self is not t:
             return
         self.ultimate_activated = True
         battle.current.action_list.extras.append(Character.UltimateTurn(self))
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def ultimate_turn(self, turn):
         if self is not turn.target:
             return
         decision.provider.notify({"name": "ultimate_turn", "target": str(self.uuid)})
         decision.provider.provide_ultimate_target(self)
-        battle.current.event_bus.dispatch("skill_group_trigger", self.skills["ultimate"])
+        event.bus.dispatch(event_types.SkillGroupTrigger(self.skills["ultimate"]))

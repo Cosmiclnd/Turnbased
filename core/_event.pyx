@@ -4,7 +4,167 @@ from ._item cimport Item, ItemList
 DEF MAX_STACKS = 32
 DEF TRACK_STACKS = False
 
+cdef class Event:
+    cdef readonly:
+        object main_arg
+
+    def __init__(self, object main_arg):
+        self.main_arg = main_arg
+
+cdef class EventStage:
+    cdef readonly:
+        type event_cls
+        int value
+    
+    def __init__(self, type event_cls, int stage):
+        self.event_cls = event_cls
+        self.value = stage
+
 cdef class Listener(Item):
+    cdef readonly:
+        object callback
+        int stage
+
+    def __init__(self, str nameid, str name, object callback, int stage, Item master=None):
+        super().__init__(nameid, name, master)
+        self.callback = callback
+        self.stage = stage
+
+cdef class EventBus:
+    cdef:
+        dict grouped_listeners, all_listeners
+    
+    def __init__(self):
+        self.grouped_listeners = {}
+        self.all_listeners = {}
+
+    cdef void _add_listener(self, type event_cls, Listener listener, object main_arg):
+        cdef:
+            dict groups
+            ItemList grouped_listeners, all_listeners
+        groups = self.grouped_listeners.setdefault(event_cls, {})
+        grouped_listeners = groups.setdefault(main_arg, ItemList())
+        grouped_listeners.append(listener)
+        grouped_listeners.sort(key=lambda x: x.stage)
+        all_listeners = self.all_listeners.setdefault(event_cls, ItemList())
+        all_listeners.append(listener)
+        all_listeners.sort(key=lambda x: x.stage)
+    
+    def add_member_listener(self, object member_func, object main_arg, Item master=None, str nameid=None, str name=None, bint unique=False):
+        # member_func必须是被@member_listener装饰的成员函数
+        cdef:
+            Listener listener
+        nameid = master.nameid if nameid is None else nameid
+        name = master.name if name is None else name
+        listener = Listener(nameid, name, member_func, member_func.stage.value, master)
+        if unique:
+            for l in self.listeners[member_func.stage.event_cls][main_arg]:
+                if l.callback.__func__ is member_func.__func__:
+                    return
+        self._add_listener(member_func.stage.event_cls, listener, main_arg)
+    
+    add_member_resolver = add_member_listener
+
+    cdef void _call_merge_listeners(self, Event event, ItemList listeners1, ItemList listeners2):
+        # 类似归并
+        # 总是取出两个列表中优先级较大的调用
+        cdef:
+            list items1, items2
+            Listener listener1, listener2
+            Py_ssize_t i1 = 0, i2 = 0, n1, n2
+            bint dirty1 = False, dirty2 = False
+        items1 = listeners1.items
+        items2 = listeners2.items
+        n1 = PyList_GET_SIZE(items1)
+        n2 = PyList_GET_SIZE(items2)
+        while i1 < n1 and i2 < n2:
+            listener1 = <Listener>PyList_GET_ITEM(items1, i1)
+            listener2 = <Listener>PyList_GET_ITEM(items2, i2)
+            if listener1.stage < listener2.stage:
+                if not listener1.dead():
+                    listener1.callback(event)
+                else:
+                    dirty1 = True
+                i1 += 1
+            elif listener1.stage > listener2.stage:
+                if not listener2.dead():
+                    listener2.callback(event)
+                else:
+                    dirty2 = True
+                i2 += 1
+            else:
+                if not listener1.dead():
+                    listener1.callback(event)
+                else:
+                    dirty1 = True
+                if not listener2.dead():
+                    listener2.callback(event)
+                else:
+                    dirty2 = True
+                i1 += 1
+                i2 += 1
+        while i1 < n1:
+            listener1 = <Listener>PyList_GET_ITEM(items1, i1)
+            if not listener1.dead():
+                listener1.callback(event)
+            else:
+                dirty1 = True
+            i1 += 1
+        while i2 < n2:
+            listener2 = <Listener>PyList_GET_ITEM(items2, i2)
+            if not listener2.dead():
+                listener2.callback(event)
+            else:
+                dirty2 = True
+            i2 += 1
+        if dirty1:
+            listeners1.refresh()
+        if dirty2:
+            listeners2.refresh()
+    
+    cdef void _call_listeners(self, Event event, ItemList listeners):
+        cdef:
+            list items
+            Listener listener
+            Py_ssize_t i, n
+            bint dirty = False
+        items = listeners.items
+        n = PyList_GET_SIZE(items)
+        for i in range(n):
+            listener = <Listener>PyList_GET_ITEM(items, i)
+            if not listener.dead():
+                listener.callback(event)
+            else:
+                dirty = True
+        if dirty:
+            listeners.refresh()
+
+    def dispatch(self, Event event):
+        cdef:
+            dict groups
+            ItemList listeners1, listeners2
+        if event.__class__ in self.all_listeners:
+            if event.main_arg is not None:
+                groups = self.grouped_listeners[event.__class__]
+                listeners1 = groups.setdefault(event.main_arg, ItemList())
+                listeners2 = groups.setdefault(None, ItemList())
+                self._call_merge_listeners(event, listeners1, listeners2)
+            else:
+                listeners1 = self.all_listeners[event.__class__]
+                self._call_listeners(event, listeners1)
+
+def member_listener(EventStage stage):
+    def wrapper(object member_func):
+        member_func.stage = stage
+        return member_func
+    return wrapper
+
+member_resolver = member_listener
+
+###############################################################################
+# LEGACY
+
+cdef class ListenerLegacy(Item):
     cdef readonly:
         object callback
         int priority
@@ -35,10 +195,7 @@ cdef class QueryResult:
     def __init__(self, object result):
         self.result = result
 
-# 事件有两类
-# 一类是瞬时事件，如hit
-# 一类是持续事件，如normal_turn_start和normal_turn_end
-cdef class EventBus:
+cdef class EventBusLegacy:
     cdef:
         dict listeners
         list stack
@@ -48,25 +205,25 @@ cdef class EventBus:
         if TRACK_STACKS:
             self.stack = []
     
-    cdef void _add_listener(self, str event_name, Listener listener):
+    cdef void _add_listener(self, str event_name, ListenerLegacy listener):
         if event_name not in self.listeners:
             self.listeners[event_name] = ItemList()
         self.listeners[event_name].append(listener)
         self.listeners[event_name].sort(key=lambda x: x.priority, reverse=True)
     
-    def add_member_listener(self, object member_func, Item master=None, str nameid=None, str name=None, bint unique=False):
-        # member_func必须是被@member_listener装饰的成员函数
+    def add_member_listener_legacy(self, object member_func, Item master=None, str nameid=None, str name=None, bint unique=False):
+        # member_func必须是被@member_listener_legacy装饰的成员函数
         if unique:
             for listener in self.listeners[member_func.name]:
                 if listener.callback.__func__ is member_func.__func__:
                     return
         nameid = nameid or master.nameid
         name = name or master.name
-        self._add_listener(member_func.name, Listener(nameid, name, member_func, master, member_func.priority))
+        self._add_listener(member_func.name, ListenerLegacy(nameid, name, member_func, master, member_func.priority))
     
-    add_member_resolver = add_member_listener
+    add_member_resolver = add_member_listener_legacy
     
-    def dispatch(self, str event_name, *args, **kwargs):
+    def dispatch_legacy(self, str event_name, *args, **kwargs):
         cdef:
             ItemList listeners
             list items
@@ -104,7 +261,7 @@ cdef class EventBus:
             if dirty:
                 listeners.refresh()
     
-    def query(self, str event_name, *args, **kwargs):
+    def query_legacy(self, str event_name, *args, **kwargs):
         cdef:
             ItemList listeners
             list items
@@ -157,11 +314,11 @@ cdef class EventBus:
             msg += f"\n  {event_name} -> {listener.name} ({listener.nameid})"
         return msg
 
-def member_listener(int priority, name=None):
+def member_listener_legacy(int priority, name=None):
     def decorator(object func):
         func.priority = priority
         func.name = name if name else func.__name__
         return func
     return decorator
 
-member_resolver = member_listener  # 用于提示语义
+member_resolver = member_listener_legacy  # 用于提示语义

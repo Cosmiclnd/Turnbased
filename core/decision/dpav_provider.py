@@ -6,6 +6,7 @@ from tqdm import tqdm
 from .. import config
 from .. import battle
 from .. import event
+from .. import event_types
 from .. import target
 from .. import action
 from ..characters import base as character
@@ -84,7 +85,7 @@ class DpavProvider(base.DecisionProvider):
     def on_battle_start(self):
         self.dmg_record = {}
 
-        battle.current.event_bus.add_member_listener(self.deal_damage, nameid="dpav_provider", name="DPAV Provider")
+        event.bus.add_member_listener(self.deal_damage, None, nameid="dpav_provider", name="DPAV Provider")
 
     def check_ultimate(self, character):
         if character.ultimate_activated:
@@ -111,8 +112,9 @@ class DpavProvider(base.DecisionProvider):
         battle.current.cur_main_target = character.auto_battle.skill_target(skill_group)
         return skill_group
     
-    @event.member_listener(event.ListenerPriority.EXECUTE - 1)
-    def deal_damage(self, dmg):
+    @event.member_listener(event_types.Damage.AFTER_CALCULATE)
+    def deal_damage(self, e):
+        dmg = e.dmg
         if not isinstance(dmg.dealer, character.Character):
             return
         if dmg.dealer not in self.dmg_record:

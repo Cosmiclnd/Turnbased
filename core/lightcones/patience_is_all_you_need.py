@@ -2,6 +2,7 @@ from .. import item
 from .. import modifier
 from .. import effect
 from .. import event
+from .. import event_types
 from .. import battle
 from .. import damage
 from .. import enums
@@ -25,17 +26,17 @@ class PatienceIsAllYouNeed(base.LightCone):
                 modifier.StatDesc((t.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("dot_percentage"))),
                 enums.Element.LIGHTNING, damage.DmgType.DOT, damage.DmgSource.DOT)
             self.effect_types.add_unique(effect.DotEffect("erode", "Erode", dmg_desc, effect.Debuff.SHOCK, 1))
-            battle.current.event_bus.add_member_listener(self.attack_end, t)
-            battle.current.event_bus.add_member_listener(self.hit, t)
+            battle.current.event_bus.add_member_listener_legacy(self.attack_end, t)
+            battle.current.event_bus.add_member_listener_legacy(self.hit, t)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE - 1)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
     def attack_end(self, t):
         if self.target is not t:
             return
         eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.nameid, "eff"), -1)
-        battle.current.event_bus.dispatch("add_effect", eff_add)
+        battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE + 1)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1)
     def hit(self, dmg):
         if self.target is not dmg.dealer or dmg.target.effects.has_effect(self.effect_types.get(self.nameid, "erode")):
             return

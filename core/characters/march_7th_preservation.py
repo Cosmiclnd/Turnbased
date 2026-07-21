@@ -2,6 +2,7 @@ from .. import target
 from .. import skill
 from .. import battle
 from .. import event
+from .. import event_types
 from .. import damage
 from .. import modifier
 from .. import enums
@@ -16,65 +17,59 @@ class March7ThPreservation(base.Character):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
             t = self.get_main_target()
-            battle.current.event_bus.dispatch("attack_start", self.target)
+            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
-            battle.current.event_bus.dispatch("hit", dmg)
-            battle.current.event_bus.dispatch("attack_end", self.target)
+            battle.current.event_bus.dispatch_legacy("hit", dmg)
+            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
+            pass
     
     class Ultimate(base.Character.CharacterUltimate):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
+            pass
     
     class Talent(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
+            pass
     
     class Technique(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
+            pass
     
     def __init__(self, record):
         self.set_auto_battle(AutoBattlePolicy(self))

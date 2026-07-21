@@ -1,5 +1,6 @@
 from . import item
 from . import event
+from . import event_types
 from . import battle
 from . import enums
 
@@ -31,7 +32,7 @@ class SkillGroup:
         self.target = t
         self.skills = []
         self.selector = selector
-        battle.current.event_bus.add_member_listener(self.skill_group_trigger, t)
+        event.bus.add_member_listener(self.skill_group_trigger, self, t)
     
     def current_skill(self):
         return self.selector(self)
@@ -46,9 +47,7 @@ class SkillGroup:
     def set_bonus_level(self, level):
         for skill in self.skills:
             skill.bonus_level += level
-    
-    @event.member_listener(event.ListenerPriority.EXECUTE)
-    def skill_group_trigger(self, skill_group):
-        if self is not skill_group:
-            return
-        battle.current.event_bus.dispatch("skill_trigger", self.current_skill())
+
+    @event.member_listener(event_types.SkillGroupTrigger.TRIGGER)
+    def skill_group_trigger(self, e):
+        event.bus.dispatch(event_types.SkillTrigger(self.current_skill()))

@@ -2,6 +2,7 @@ from .. import target
 from .. import enums
 from .. import modifier
 from .. import event
+from .. import event_types
 from .. import battle
 from .. import damage
 

@@ -7,6 +7,8 @@ from . import battle
 from . import enums
 from . import modifier
 from . import item
+from . import event
+from . import event_types
 
 class DmgType(enums.Enum):
     NORMAL = item.Item("normal", "Normal")
@@ -227,7 +229,6 @@ class Damage:
         for factor, value in self.factors.items():
             damage *= factor.func(self, value)
         self.damage = damage
-        return damage
     
     def get_damage(self):
         return self.damage
@@ -237,13 +238,13 @@ class Damage:
             dmg = self
         else:
             dmg = self.scale(self.hit_split_ratio)
-        battle.current.event_bus.dispatch("deal_damage", dmg)
+        event.bus.dispatch(event_types.Damage(dmg))
         if self.toughness_reduction is not None and self.target.weaknesses.has_weakness(self.toughness_reduction.element):
-            battle.current.event_bus.dispatch("reduce_toughness", dmg.toughness_reduction)
+            battle.current.event_bus.dispatch_legacy("reduce_toughness", dmg.toughness_reduction)
         if self.energy_regen is not None:
             from .characters import base as character  # TODO: Python 3.15 lazy import
             t = self.target if isinstance(self.target, character.Character) else self.dealer
-            battle.current.event_bus.dispatch("regen_energy", t, dmg.energy_regen)
+            battle.current.event_bus.dispatch_legacy("regen_energy", t, dmg.energy_regen)
     
     def scale(self, scale):
         dmg = copy.copy(self)

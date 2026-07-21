@@ -2,6 +2,7 @@ import random
 import uuid
 
 from . import event
+from . import event_types
 from . import action
 from . import item
 from . import target
@@ -70,7 +71,8 @@ class Battle:
         self.random = None
         self.config = None
         self.features = features.Features()
-        self.event_bus = event.EventBus()
+        self.event_bus = event.EventBusLegacy()
+        event.bus = event.EventBus()  # 确保每场战斗都是新的EventBus
         self.action_list = None
         self.skillpoints = Skillpoints()
         self.characters = item.ItemList()
@@ -79,12 +81,12 @@ class Battle:
         self.cur_main_target = None
         self.suspended = False
 
-        self.event_bus.add_member_listener(self.battle_start, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.new_wave_start, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.check_techniques, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.add_monster, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.normal_turn_start_message, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener(self.skill_trigger_message, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener_legacy(self.battle_start, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener_legacy(self.new_wave_start, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener_legacy(self.check_techniques, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener_legacy(self.add_monster, nameid="battle", name="Battle")
+        self.event_bus.add_member_listener_legacy(self.normal_turn_start_message, nameid="battle", name="Battle")
+        event.bus.add_member_listener(self.skill_trigger_message, None, nameid="battle", name="Battle")
     
     def type(self):
         return self.config["type"]
@@ -116,40 +118,40 @@ class Battle:
     
     def start(self):
         decision.provider.on_battle_start()  # 必须单独通知，因为provider初始化比event_bus早
-        self.event_bus.dispatch("battle_start")
+        self.event_bus.dispatch_legacy("battle_start")
         while True:
             self.action_list.next_normal_turn()
     
-    @event.member_listener(event.ListenerPriority.PRE_PROCESS)
+    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS)
     def battle_start(self):
         for t in self.characters:
             self.action_list.normals.append(t.new_normal_turn())
         self.monster_setup.check()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE - 1)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
     def new_wave_start(self):
         self.action_list.reset()
     
-    @event.member_listener(event.ListenerPriority.PRE_PROCESS - 1, "battle_start")
+    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS - 1, "battle_start")
     def check_techniques(self):
         for c in self.characters:
             c.check_technique()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def add_monster(self, m):
         self.monsters.append(m)
         turn = m.new_normal_turn()
         self.action_list.normals.append(turn)
         turn.advance(1 - m.first_turn_delay)
     
-    @event.member_listener(event.ListenerPriority.START, "normal_turn_start")
+    @event.member_listener_legacy(event.ListenerPriority.START, "normal_turn_start")
     def normal_turn_start_message(self, turn):
         if not isinstance(turn, target.Target.NormalTurn):
             return
         decision.provider.notify({"name": "normal_turn_start", "target": str(turn.target.uuid)})
     
-    @event.member_listener(event.ListenerPriority.EXECUTE + 2, "skill_trigger")
-    def skill_trigger_message(self, skill):
-        decision.provider.notify({"name": "skill_trigger", "target": str(skill.target.uuid), "skill": skill.nameid})
+    @event.member_listener(event_types.SkillTrigger.MESSAGE)
+    def skill_trigger_message(self, e):
+        decision.provider.notify({"name": "skill_trigger", "target": str(e.skill.target.uuid), "skill": e.skill.nameid})
 
 current = None

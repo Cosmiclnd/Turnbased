@@ -4,6 +4,7 @@ import uuid
 from .. import target
 from .. import skill
 from .. import event
+from .. import event_types
 from .. import battle
 from .. import config
 from .. import enums
@@ -103,12 +104,12 @@ class Monster(target.Target):
         self.cur_toughness = 0
         self.weakness_broken = False
 
-        battle.current.event_bus.add_member_listener(self.target_action, self)
-        battle.current.event_bus.add_member_listener(self.reduce_toughness, self)
-        battle.current.event_bus.add_member_listener(self.check_weakness_break, self)
-        battle.current.event_bus.add_member_listener(self.weakness_break, self)
-        battle.current.event_bus.add_member_listener(self.weakness_recover, self)
-        battle.current.event_bus.add_member_listener(self.killed_energy_regen, self)
+        battle.current.event_bus.add_member_listener_legacy(self.target_action, self)
+        battle.current.event_bus.add_member_listener_legacy(self.reduce_toughness, self)
+        battle.current.event_bus.add_member_listener_legacy(self.check_weakness_break, self)
+        battle.current.event_bus.add_member_listener_legacy(self.weakness_break, self)
+        battle.current.event_bus.add_member_listener_legacy(self.weakness_recover, self)
+        battle.current.event_bus.add_member_listener_legacy(self.killed_energy_regen, self)
         battle.current.event_bus.add_member_resolver(self.get_monster_target, self)
 
         self.config.set_base_stats()
@@ -120,21 +121,21 @@ class Monster(target.Target):
     def countable(self):
         return True
     
-    @event.member_listener(event.ListenerPriority.START, "battle_start")
+    @event.member_listener_legacy(event.ListenerPriority.START, "battle_start")
     def set_initial_state(self):
         # 这个listener在Target类中已经被添加
         super().set_initial_state()
         self.cur_toughness = self.stats["toughness"].calculate()
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def target_action(self, t):
         if self is not t:
             return
         if self.weakness_broken:
-            battle.current.event_bus.dispatch("weakness_recover", self)
-        battle.current.event_bus.dispatch("skill_group_trigger", self.skills)
+            battle.current.event_bus.dispatch_legacy("weakness_recover", self)
+        event.bus.dispatch(event_types.SkillGroupTrigger(self.skills))
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def reduce_toughness(self, tr):
         if self is not tr.target:
             return
@@ -142,34 +143,34 @@ class Monster(target.Target):
             "amount": tr.calculate()})
         self.cur_toughness -= tr.calculate()
 
-    @event.member_listener(event.ListenerPriority.POST_PROCESS, "reduce_toughness")
+    @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS, "reduce_toughness")
     def check_weakness_break(self, tr):
         if self is not tr.target:
             return
         if self.cur_toughness <= 0:
             self.cur_toughness = 0
             if not self.weakness_broken:
-                battle.current.event_bus.dispatch("weakness_break", tr)
+                battle.current.event_bus.dispatch_legacy("weakness_break", tr)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def weakness_break(self, tr):
         if self is not tr.target:
             return
         decision.provider.notify({"name": "weakness_break", "target": str(self.uuid)})
         self.weakness_broken = True
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def weakness_recover(self, t):
         if self is not t:
             return
         self.cur_toughness = self.stats["toughness"].calculate()
         self.weakness_broken = False
     
-    @event.member_listener(event.ListenerPriority.PRE_PROCESS, "clean")
+    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS, "clean")
     def killed_energy_regen(self, t):
         if self is not t:
             return
-        battle.current.event_bus.dispatch("regen_energy", self.death_state.killing_dmg.dealer, 10)
+        battle.current.event_bus.dispatch_legacy("regen_energy", self.death_state.killing_dmg.dealer, 10)
 
     @event.member_resolver(event.ListenerPriority.EXECUTE)
     def get_monster_target(self, t):
@@ -245,7 +246,7 @@ class Setup:
         while battle.current.count_monsters() < 5:
             if len(self.monster_queue) == 0:
                 break
-            battle.current.event_bus.dispatch("add_monster", self.monster_queue.pop(0))
+            battle.current.event_bus.dispatch_legacy("add_monster", self.monster_queue.pop(0))
             added = True
         if added:
             battle.current.action_list.refresh_targets()
@@ -259,5 +260,5 @@ class Setup:
                 return True
             self.check_add_monsters()
             decision.provider.notify({"name": "new_wave", "wave": self.cur_wave + 1, "total": len(self.waves)})
-            battle.current.event_bus.dispatch("new_wave_start")
+            battle.current.event_bus.dispatch_legacy("new_wave_start")
         return False

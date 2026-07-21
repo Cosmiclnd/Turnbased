@@ -1,5 +1,6 @@
 from .. import modifier
 from .. import event
+from .. import event_types
 from .. import battle
 from .. import damage
 
@@ -14,12 +15,11 @@ class PrisonerInDeepConfinement(base.RelicSet):
             self.target.stats["atk"].modifiers.append(mod)
         
         def effect_4pc(self):
-            battle.current.event_bus.add_member_listener(self.deal_damage, self.target)
+            event.bus.add_member_listener(self.deal_damage, self.target, self.target)
         
-        @event.member_listener(event.ListenerPriority.PRE_PROCESS)
-        def deal_damage(self, dmg):
-            if self.target is not dmg.dealer:
-                return
+        @event.member_listener(event_types.Damage.BEFORE_CALCULATE)
+        def deal_damage(self, e):
+            dmg = e.dmg
             count = min(dmg.target.effects.count_effect(lambda eff: eff.is_dot(dmg.target)), self.get_value_4pc("max_dots"))
             dmg.factors[damage.DamageFactorType.DEF_BOOST] -= self.get_value_4pc("def_ignore") * count
 

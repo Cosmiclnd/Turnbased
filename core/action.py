@@ -4,6 +4,7 @@ import math
 from . import item
 from . import battle
 from . import event
+from . import event_types
 from .decision import base as decision
 
 order = -1
@@ -46,9 +47,9 @@ class NormalTurn(item.Item):
         self.action_value = self.base_action_value()
         self.order = next_order()
         if self.next_advance > 0:
-            battle.current.event_bus.dispatch("action_advance", self, self.next_advance)
+            battle.current.event_bus.dispatch_legacy("action_advance", self, self.next_advance)
         elif self.next_advance < 0:
-            battle.current.event_bus.dispatch("action_delay", self, -self.next_advance)
+            battle.current.event_bus.dispatch_legacy("action_delay", self, -self.next_advance)
         self.next_advance = 0
     
     def advance(self, scale):
@@ -105,8 +106,8 @@ class ActionList:
         self.extras = item.ItemList()
         self.cur_action_value = 0
 
-        battle.current.event_bus.add_member_listener(self.action_advance, nameid="action_list", name="Action List")
-        battle.current.event_bus.add_member_listener(self.action_delay, nameid="action_list", name="Action List")
+        battle.current.event_bus.add_member_listener_legacy(self.action_advance, nameid="action_list", name="Action List")
+        battle.current.event_bus.add_member_listener_legacy(self.action_delay, nameid="action_list", name="Action List")
     
     def clear(self):
         self.normals.clear()
@@ -127,7 +128,7 @@ class ActionList:
     def check_extra_turns(self):
         while self.extras:
             extra = self.extras[0]
-            battle.current.event_bus.dispatch("extra_turn", extra)
+            battle.current.event_bus.dispatch_legacy("extra_turn", extra)
             self.refresh_targets()
             self.ask_ultimate()
             self.refresh_targets()
@@ -136,7 +137,7 @@ class ActionList:
         while True:
             character = decision.provider.provide_ultimate()
             if character is not None:
-                battle.current.event_bus.dispatch("prepare_ultimate", character)
+                battle.current.event_bus.dispatch_legacy("prepare_ultimate", character)
             else:
                 break
     
@@ -153,7 +154,7 @@ class ActionList:
         self.cur_action_value += delta
         for turn in self.normals:
             turn.action_value -= delta
-        battle.current.event_bus.dispatch("normal_turn_start", current)
+        battle.current.event_bus.dispatch_legacy("normal_turn_start", current)
         current.cur_action = -1  # 回合已经开始但是还没有行动
         num_actions = current.get_num_actions()
         for i in range(num_actions):
@@ -162,12 +163,12 @@ class ActionList:
                 break
             self.action_unit_interval()
             current.cur_action = i
-            battle.current.event_bus.dispatch("normal_turn", current)
+            battle.current.event_bus.dispatch_legacy("normal_turn", current)
         if current is self.normals[0]:
             current.next_run()
             current.cur_action = None
         self.action_unit_interval()
-        battle.current.event_bus.dispatch("normal_turn_end", current)
+        battle.current.event_bus.dispatch_legacy("normal_turn_end", current)
     
     def reset(self):
         for turn in self.normals:
@@ -181,12 +182,12 @@ class ActionList:
         for turn in self.normals:
             print(f"{turn.name} ({turn.nameid}) - {turn.action_value}")
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def action_advance(self, turn, scale):
         decision.provider.notify({"name": "action_advance", "scale": scale, "turn": turn.get_info()})
         turn.advance(scale)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def action_delay(self, turn, scale):
         decision.provider.notify({"name": "action_delay", "scale": scale, "turn": turn.get_info()})
         turn.delay(scale)

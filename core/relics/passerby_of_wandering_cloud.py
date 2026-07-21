@@ -1,6 +1,7 @@
 from .. import modifier
 from .. import battle
 from .. import event
+from .. import event_types
 from .. import effect
 
 from . import base

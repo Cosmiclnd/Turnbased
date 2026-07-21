@@ -24,9 +24,9 @@ def parse(f, path, type):
         assert indents % 4 == 0  # PEP 8
         num_indents = indents // 4
         line = line.strip()
-        if line.startswith("@event.member_" + type):
+        if line.startswith("@event.member_" + type + "_legacy"):
             cur_listener = ListenerInfo()
-            content = line[15 + len(type):-1]
+            content = line[22 + len(type):-1]
             if "," in content:
                 priority, name = content.split(", ", 1)
                 cur_listener.event_name = name.strip()[1:-1]

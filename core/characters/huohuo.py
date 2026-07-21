@@ -2,6 +2,7 @@ from .. import target
 from .. import skill
 from .. import battle
 from .. import event
+from .. import event_types
 from .. import damage
 from .. import healing
 from .. import modifier
@@ -16,14 +17,13 @@ class Huohuo(base.Character):
     class BasicAtk(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
             t = self.get_main_target()
-            battle.current.event_bus.dispatch("attack_start", self.target)
+            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
@@ -31,18 +31,17 @@ class Huohuo(base.Character):
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.2, 0.2, 0.2, 0.4):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch("hit", dmg)
-            battle.current.event_bus.dispatch("attack_end", self.target)
+                battle.current.event_bus.dispatch_legacy("hit", dmg)
+            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
             duration = self.target.config.get_skill_value("talent", "duration")
             if self.target.eidolons >= 1:
                 duration += self.target.config.get_skill_value("eidolon1", "duration")
@@ -62,17 +61,16 @@ class Huohuo(base.Character):
                         (None, None, self.get_value("sub_flat"))
                     )))
                 self.target.heal_by_skill(sub)
-            battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
+            battle.current.event_bus.dispatch_legacy("regen_energy", self.target, self.get_value("energy_regen"))
     
     class Ultimate(base.Character.CharacterUltimate):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
             duration = self.target.config.get_skill_value("talent", "duration")
             if self.target.eidolons >= 1:
                 duration += self.target.config.get_skill_value("eidolon1", "duration")
@@ -80,20 +78,20 @@ class Huohuo(base.Character):
             for t in battle.current.characters.copy():
                 if t is self.target:
                     continue
-                battle.current.event_bus.dispatch("regen_energy", t, t.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"),
+                battle.current.event_bus.dispatch_legacy("regen_energy", t, t.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"),
                     True)
                 eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "ultimate"),
                     self.get_value("duration"))
-                battle.current.event_bus.dispatch("add_effect", eff_add)
-            battle.current.event_bus.dispatch("regen_energy", self.target, self.get_value("energy_regen"))
+                battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+            battle.current.event_bus.dispatch_legacy("regen_energy", self.target, self.get_value("energy_regen"))
     
     class Talent(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
         
-            battle.current.event_bus.add_member_listener(self.turn_start, t)
-            battle.current.event_bus.add_member_listener(self.ultimate_turn_start, t)
-            battle.current.event_bus.add_member_listener(self.revive, t)
+            battle.current.event_bus.add_member_listener_legacy(self.turn_start, t)
+            battle.current.event_bus.add_member_listener_legacy(self.ultimate_turn_start, t)
+            battle.current.event_bus.add_member_listener_legacy(self.revive, t)
         
         def heal(self, t):
             heal = healing.Healing(self.target, t,
@@ -106,7 +104,7 @@ class Huohuo(base.Character):
                 self.target.dispel_count -= t.effects.dispel(min(self.get_value("num_debuffs"), self.target.dispel_count),
                     lambda eff: eff.type is effect.Effect.Type.DEBUFF)
             if self.target.traces_unlocked[2]:
-                battle.current.event_bus.dispatch("regen_energy", self.target, self.target.config.get_skill_value("bonus_trace3", "energy"))
+                battle.current.event_bus.dispatch_legacy("regen_energy", self.target, self.target.config.get_skill_value("bonus_trace3", "energy"))
         
         def trigger_divine_provision(self, t):
             self.heal(t)
@@ -115,19 +113,19 @@ class Huohuo(base.Character):
                 if c.cur_hp <= c.stats["hp"].calculate() * self.get_value("hp_threshold"):
                     self.heal(c)
             
-        @event.member_listener(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
+        @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1, "normal_turn_start")
         def turn_start(self, turn):
             if not isinstance(turn, target.Target.NormalTurn) or not isinstance(turn.target, base.Character) or not self.target.has_divine_provision():
                 return
             self.trigger_divine_provision(turn.target)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE + 1, "ultimate_turn")
+        @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1, "ultimate_turn")
         def ultimate_turn_start(self, turn):
             if not self.target.has_divine_provision():
                 return
             self.trigger_divine_provision(turn.target)
         
-        @event.member_listener(event.ListenerPriority.PRE_PROCESS, "die")
+        @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS, "die")
         def revive(self, t):
             if not isinstance(t, base.Character) or not self.target.has_divine_provision():
                 return
@@ -135,7 +133,7 @@ class Huohuo(base.Character):
                 t.death_state.clear()
                 heal = healing.Healing(self.target, t,
                     modifier.StatDesc((t.stats["hp"], modifier.ModifierFilter.CALCULATED, self.target.config.get_skill_value("eidolon2", "percentage"))))
-                battle.current.event_bus.dispatch("heal", heal)
+                battle.current.event_bus.dispatch_legacy("heal", heal)
                 self.target.effects.advance_turn(self.target.effect_types.get(self.target.nameid, "divine_provision"))
                 self.target.revive_count -= 1
                 battle.current.event_bus.interrupt("die")
@@ -144,12 +142,10 @@ class Huohuo(base.Character):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener(self.skill_trigger, t)
+            event.bus.add_member_listener(self.skill_trigger, self, t)
         
-        @event.member_listener(event.ListenerPriority.EXECUTE)
-        def skill_trigger(self, skill):
-            if self is not skill:
-                return
+        @event.member_listener(event_types.SkillTrigger.TRIGGER)
+        def skill_trigger(self, e):
             for m in battle.current.monsters:
                 eff_add = effect.EffectAddition(self.target, m, self.target.effect_types.get(self.target.nameid, "technique"),
                     self.get_value("duration"))
@@ -164,7 +160,7 @@ class Huohuo(base.Character):
                         self.eff_dead = item.DeadToggle(self.target)
                         for c in battle.current.characters:
                             eff_add = effect.EffectAddition(self.target, c, self.target.effect_types.get(self.target.nameid, "eidolon1"), -1)
-                            battle.current.event_bus.dispatch("add_effect", eff_add)
+                            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
                         if self.target.eidolons >= 1:
                             mod = modifier.Modifier(*self.target.config.get_skill_name("eidolon1"),
                                 modifier.StatDesc((None, None, self.target.config.get_skill_value("eidolon1", "outgoing_healing_boost"))),
@@ -183,7 +179,7 @@ class Huohuo(base.Character):
         self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("huohuo", record)
         
-        battle.current.event_bus.add_member_listener(self.battle_start, self)
+        battle.current.event_bus.add_member_listener_legacy(self.battle_start, self)
 
     def set_record(self, record):
         super().set_record(record)
@@ -232,7 +228,7 @@ class Huohuo(base.Character):
     
     def gain_divine_provision(self, duration):
         eff_add = effect.EffectAddition(self, self, self.effect_types.get(self.nameid, "divine_provision"), duration)
-        battle.current.event_bus.dispatch("add_effect", eff_add)
+        battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
         self.dispel_count = self.config.get_skill_value("talent", "trigger_count")
         
     def has_divine_provision(self):
@@ -244,10 +240,10 @@ class Huohuo(base.Character):
         if self.eidolons >= 6:
             eff_add = effect.EffectAddition(self, heal.target, self.effect_types.get(self.nameid, "eidolon6"),
                 self.config.get_skill_value("eidolon6", "duration"))
-            battle.current.event_bus.dispatch("add_effect", eff_add)
-        battle.current.event_bus.dispatch("heal", heal)
+            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+        battle.current.event_bus.dispatch_legacy("heal", heal)
     
-    @event.member_listener(event.ListenerPriority.EXECUTE)
+    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
     def battle_start(self):
         if self.traces_unlocked[1]:
             mod = modifier.Modifier(*self.config.get_skill_name("bonus_trace2"),
@@ -256,7 +252,7 @@ class Huohuo(base.Character):
             self.stats["control_res"].modifiers.append(mod)
         
         if self.traces_unlocked[0]:
-            battle.current.event_bus.dispatch("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))
+            battle.current.event_bus.dispatch_legacy("regen_energy", self, self.config.get_skill_value("bonus_trace1", "energy"))
             self.gain_divine_provision(self.config.get_skill_value("bonus_trace1", "duration"))
         
         self.dispel_count = 0
