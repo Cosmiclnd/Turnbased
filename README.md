@@ -37,6 +37,12 @@ cd Turnbased
 pip install -r requirements.txt
 ```
 
+Build the Cython extensions:
+
+```bash
+python setup.py build_ext --inplace
+```
+
 ### Running the Simulator
 
 1. **Start the server** (in a terminal):

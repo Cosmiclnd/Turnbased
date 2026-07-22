@@ -37,6 +37,12 @@ cd Turnbased
 pip install -r requirements.txt
 ```
 
+编译Cython扩展：
+
+```bash
+python setup.py build_ext --inplace
+```
+
 ### 运行模拟器
 
 1. **启动服务器**（在一个终端中）：
