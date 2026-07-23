@@ -64,9 +64,8 @@ def handle(websocket):
                 logging.info("connection closed")
                 break
             except Exception as e:
-                    logging.exception(e)
-                    logging.error(battle.current.event_bus.format_stack())
-                    websocket.close()
+                logging.exception(e)
+                websocket.close()
         except Exception as e:
             logging.critical(e)
             os._exit(1)

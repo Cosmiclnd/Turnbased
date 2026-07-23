@@ -27,23 +27,23 @@ class Firefly(base.Character):
                 modifier.StatDesc((None, None, ultimate.get_value("break_dmg_boost"))), None, self.skill_dead)
             self.target.stats["break_dmg_boost"].modifiers.append(break_dmg_boost_mod)
             if self.target.eidolons >= 2:
-                battle.current.event_bus.add_member_listener_legacy(self.weakness_break, self.skill_dead)
-                battle.current.event_bus.add_member_listener_legacy(self.clean, self.skill_dead)
+                event.bus.add_member_listener(self.weakness_break, self.target, self.skill_dead)
+                event.bus.add_member_listener(self.clean, None, self.skill_dead)
             if self.target.eidolons >= 6:
                 wb_eff_mod = modifier.Modifier(*self.target.config.get_skill_name("eidolon6"),
                     modifier.StatDesc((None, None, self.target.config.get_skill_value("eidolon6", "wb_eff_boost"))), None, self.skill_dead)
                 self.target.stats["wb_eff"].modifiers.append(wb_eff_mod)
         
-        @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS)
-        def weakness_break(self, tr):
-            if self.target.extra_normal_turn_triggered or self.target is not tr.dealer:
+        @event.member_listener(event_types.BreakWeakness.AFTER_BREAK)
+        def weakness_break(self, e):
+            if self.target.extra_normal_turn_triggered:
                 return
             battle.current.action_list.extras.append(target.Target.ExtraNormalTurn(self.target))
             self.target.extra_normal_turn_triggered = True
         
-        @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS)
-        def clean(self, t):
-            if self.target.extra_normal_turn_triggered or self.target is not t.death_state.killing_dmg.dealer:
+        @event.member_listener(event_types.Clean.AFTER_EXECUTE)
+        def clean(self, e):
+            if self.target.extra_normal_turn_triggered or self.target is not e.target.death_state.killing_dmg.dealer:
                 return
             battle.current.action_list.extras.append(target.Target.ExtraNormalTurn(self.target))
             self.target.extra_normal_turn_triggered = True
@@ -57,14 +57,14 @@ class Firefly(base.Character):
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
             t = self.get_main_target()
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
-            battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class EnhancedBasicAtk(FireflyEnhancedSkill):
         def __init__(self, t, skill_name):
@@ -76,17 +76,17 @@ class Firefly(base.Character):
         def skill_trigger(self, e):
             heal = healing.Healing(self.target, self.target,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("heal_percentage"))))
-            battle.current.event_bus.dispatch_legacy("heal", heal)
+            event.bus.dispatch(event_types.Heal(heal))
             t = self.get_main_target()
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ENHANCED_BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             for ratio in (0.15, 0.15, 0.15, 0.15, 0.4):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+                event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
@@ -97,18 +97,18 @@ class Firefly(base.Character):
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
             self.target.consume_hp(self.target.stats["hp"].calculate() * self.get_value("hp_cost"))
-            battle.current.event_bus.dispatch_legacy("regen_energy", self.target,
-                self.target.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"), True)
+            event.bus.dispatch(event_types.RegenEnergy(self.target,
+                self.target.stats["max_energy"].calculate() * self.get_value("energy_regen_rate"), True))
             t = self.get_main_target()
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
             dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             for ratio in (0.4, 0.6):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+                event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
             self.target.cur_normal_turn.advance_next_turn(self.get_value("advance_scale"))
     
     class EnhancedSkill(FireflyEnhancedSkill):
@@ -123,12 +123,12 @@ class Firefly(base.Character):
                 event.bus.add_member_listener(self.deal_damage, self.target, self.skill_dead)
             heal = healing.Healing(self.target, self.target,
                 modifier.StatDesc((self.target.stats["hp"], modifier.ModifierFilter.CALCULATED, self.get_value("heal_percentage"))))
-            battle.current.event_bus.dispatch_legacy("heal", heal)
+            event.bus.dispatch(event_types.Heal(heal))
             for t in [self.get_main_target()] + self.get_adjacent_targets():
                 eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "fire_weakness"),
                     self.get_value("duration"))
-                battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+                event.bus.dispatch(event_types.AddEffect(eff_add))
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             main_mult = self.get_value("main_break_eff_percentage") * min(self.target.stats["break_eff"].calculate(),
                 self.get_value("break_eff_cap")) + self.get_value("main_percentage")
             sub_mult = self.get_value("sub_break_eff_percentage") * min(self.target.stats["break_eff"].calculate(),
@@ -141,7 +141,7 @@ class Firefly(base.Character):
                 main_dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("main_toughness_reduction"),
                     self.target.element)
                 main_dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", main_dmg)
+                event.bus.dispatch(event_types.Hit(main_dmg))
                 for t in self.get_adjacent_targets():
                     sub_dmg = damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, sub_mult)),
@@ -149,8 +149,8 @@ class Firefly(base.Character):
                     sub_dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("sub_toughness_reduction"),
                         self.target.element)
                     sub_dmg.hit_split_ratio = ratio
-                    battle.current.event_bus.dispatch_legacy("hit", sub_dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+                    event.bus.dispatch(event_types.Hit(sub_dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
         
         @event.member_listener(event_types.Damage.BEFORE_CALCULATE)
         def deal_damage(self, e):
@@ -166,15 +166,16 @@ class Firefly(base.Character):
         def skill_trigger(self, e):
             self.target.energy_maxed = False
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "complete_combustion"), -1)
-            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
-            battle.current.event_bus.dispatch_legacy("action_advance", self.target.cur_normal_turn, self.get_value("advance_scale"))
-            battle.current.event_bus.dispatch_legacy("regen_energy", self.target, self.get_value("energy_regen"))
+            event.bus.dispatch(event_types.AddEffect(eff_add))
+            event.bus.dispatch(event_types.ActionAdvance(self.target.cur_normal_turn, self.get_value("advance_scale")))
+            event.bus.dispatch(event_types.RegenEnergy(self.target, self.get_value("energy_regen")))
     
     class Talent(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
             event.bus.add_member_listener(self.reduce_damage, None, t)
+            event.bus.add_member_listener(self.regen_energy, t, t)
     
         @event.member_listener(event_types.Damage.BEFORE_CALCULATE)
         def reduce_damage(self, e):
@@ -189,10 +190,8 @@ class Firefly(base.Character):
             hp_rate = max(self.target.cur_hp / self.target.stats["hp"].calculate(), threshold)
             dmg.factors[damage.DamageFactorType.MITIGATION] *= 1 - max_reduction / (threshold - 1) * (hp_rate - 1)
     
-        @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS)
-        def regen_energy(self, t, amount, fixed=False):
-            if self.target is not t:
-                return
+        @event.member_listener(event_types.RegenEnergy.AFTER_EXECUTE)
+        def regen_energy(self, e):
             if self.target.check_ultimate_energy() and not self.target.energy_maxed:
                 self.target.effects.dispel(0, lambda eff: eff.type is effect.Effect.Type.DEBUFF)
                 self.target.energy_maxed = True
@@ -201,22 +200,22 @@ class Firefly(base.Character):
         def __init__(self, t, skill_name):
             super().__init__(t, skill_name)
 
-            battle.current.event_bus.add_member_listener_legacy(self.new_wave_start, t)
+            event.bus.add_member_listener(self.new_wave_start, None, t)
 
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def new_wave_start(self):
+        @event.member_listener(event_types.NewWave.START)
+        def new_wave_start(self, e):
             for t in battle.current.monsters:
                 eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "fire_weakness"),
                     self.get_value("duration"))
-                battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+                event.bus.dispatch(event_types.AddEffect(eff_add))
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             for t in battle.current.monsters:
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+                event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class CompleteCombustionCountdown(action.NormalTurn):
         def __init__(self, t):
@@ -226,12 +225,10 @@ class Firefly(base.Character):
             self.target = t
             self.target.complete_combustion_countdown = self
 
-            battle.current.event_bus.add_member_listener_legacy(self.normal_turn, self)
+            event.bus.add_member_listener(self.normal_turn, self, self)
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def normal_turn(self, turn):
-            if self is not turn:
-                return
+        @event.member_listener(event_types.NormalTurn.Act.EXECUTE)
+        def normal_turn(self, e):
             decision.provider.notify({"name": f"{self.target.nameid}.complete_combustion_countdown", "target": str(self.target.uuid)})
             self.target.effects.delete(self.target.effect_types.get(self.target.nameid, "complete_combustion"))
             self.master.dead_toggle = True
@@ -252,9 +249,9 @@ class Firefly(base.Character):
                             self.eff_dead)
                         self.target.stats["break_eff"].modifiers.append(mod)
                         self.delay_triggers = self.target.config.get_skill_value("bonus_trace1", "trigger_count")
-                        battle.current.event_bus.add_member_listener_legacy(self.weakness_break, self.eff_dead)
+                        event.bus.add_member_listener(self.weakness_break, self.target, self.eff_dead)
                     if self.target.traces_unlocked[1]:
-                        battle.current.event_bus.add_member_listener_legacy(self.reduce_toughness, self.eff_dead)
+                        event.bus.add_member_listener(self.reduce_toughness, self.target, self.eff_dead)
                     if self.target.eidolons >= 4:
                         mod = modifier.Modifier(*self.target.config.get_skill_name("eidolon4"),
                             modifier.StatDesc((None, None, self.target.config.get_skill_value("eidolon4", "eff_res_boost"))), None,
@@ -270,39 +267,45 @@ class Firefly(base.Character):
                     self.eff_dead.dead_toggle = True
                 self.old_stacks = stacks
             
-            @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
-            def weakness_break(self, tr):
-                if self.target is not tr.dealer or tr.damage is None or tr.damage.context.source not in (damage.DmgSource.ENHANCED_BASIC_ATK,
+            @event.member_listener(event_types.BreakWeakness.AFTER_BREAK)
+            def weakness_break(self, e):
+                if e.tr.damage is None or e.tr.damage.context.source not in (damage.DmgSource.ENHANCED_BASIC_ATK,
                     damage.DmgSource.ENHANCED_SKILL):
                     return
                 if self.delay_triggers > 0:
                     self.delay_triggers -= 1
-                    battle.current.event_bus.dispatch_legacy("action_delay", self.target.complete_combustion_countdown,
-                        self.target.config.get_skill_value("bonus_trace1", "delay_scale"))
+                    event.bus.dispatch(event_types.ActionDelay(self.target.complete_combustion_countdown,
+                        self.target.config.get_skill_value("bonus_trace1", "delay_scale")))
             
-            @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
-            def reduce_toughness(self, tr):
-                if self.target is not tr.dealer or not tr.target.weakness_broken:
+            @event.member_listener(event_types.ReduceToughness.AFTER_EXECUTE)
+            def reduce_toughness(self, e):
+                if not e.tr.target.weakness_broken:
                     return
                 break_eff = self.target.stats["break_eff"].calculate()
                 if break_eff >= self.target.config.get_skill_value("bonus_trace2", "break_eff_threshold2"):
-                    battle.current.event_bus.dispatch_legacy("additional_damage",
-                        tr.to_super_break_dmg(self.target.config.get_skill_value("bonus_trace2", "percentage2")))
+                    event.bus.dispatch(event_types.AdditionalDamage(
+                        e.tr.to_super_break_dmg(self.target.config.get_skill_value("bonus_trace2", "percentage2"))))
                 elif break_eff >= self.target.config.get_skill_value("bonus_trace2", "break_eff_threshold1"):
-                    battle.current.event_bus.dispatch_legacy("additional_damage",
-                        tr.to_super_break_dmg(self.target.config.get_skill_value("bonus_trace2", "percentage1")))
+                    event.bus.dispatch(event_types.AdditionalDamage(
+                        e.tr.to_super_break_dmg(self.target.config.get_skill_value("bonus_trace2", "percentage1"))))
 
         def __init__(self):
             super().__init__("complete_combustion", "Complete Combustion", effect.Effect.Type.BUFF,
                 effect.Effect.DurationType.PERMANENT, 1, False)
     
+    class NormalTurn(target.Target.NormalTurn):
+        def __init__(self, t):
+            super().__init__(t)
+
+            if self.target.eidolons >= 2:
+                event.bus.add_member_listener(self.normal_turn_start, self, self)
+        
+        def normal_turn_start(self, e):
+            self.target.extra_normal_turn_triggered = False
+    
     def __init__(self, record):
         self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("firefly", record)
-
-        battle.current.event_bus.add_member_listener_legacy(self.battle_start, self)
-        if self.eidolons >= 2:
-            battle.current.event_bus.add_member_listener_legacy(self.normal_turn_start, self)
     
     def init_skills(self):
         super().init_skills()
@@ -345,8 +348,10 @@ class Firefly(base.Character):
             return False
         return not self.effects.has_effect(self.effect_types.get(self.nameid, "complete_combustion"))
 
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def battle_start(self):
+    @event.member_listener(override=base.Character.set_passives)
+    def set_passives(self, e):
+        super().set_passives(e)
+
         self.complete_combustion_countdown = None
         self.energy_maxed = False
 
@@ -363,19 +368,13 @@ class Firefly(base.Character):
         
         half_energy = self.stats["max_energy"].calculate() * 0.5
         if self.cur_energy < half_energy:
-            battle.current.event_bus.dispatch_legacy("regen_energy", self, half_energy - self.cur_energy, True)
+            event.bus.dispatch(event_types.RegenEnergy(self, half_energy - self.cur_energy, True))
         
         if self.eidolons >= 1:
             self.skills["skill"].skills[1].delta_skillpoints = 0
         
         if self.eidolons >= 2:
             self.extra_normal_turn_triggered = True
-        
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def normal_turn_start(self, turn):
-        if self is not turn.target:
-            return
-        self.extra_normal_turn_triggered = False
 
 import random
 

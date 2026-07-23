@@ -4,7 +4,7 @@ Syntax:
 UPDATE:
 new_wave
 normal_turn_start <target>
-ultimate_turn <character> [<target>]
+ultimate_turn <character>
 extra_turn <name> <target>
 skill_trigger <target> <skill_name>
 damage <dealer> <target> <types> <amount> [<crit>]
@@ -148,8 +148,8 @@ class Generator:
             ]
         }
     
-    def gen_ultimate_turn(self, character, target=None):
-        steps = [{
+    def gen_ultimate_turn(self, character):
+        return {
             "message_info": {
                 "type": "update",
                 "name": "ultimate_turn"
@@ -161,9 +161,7 @@ class Generator:
                     "uuid": character
                 }
             ]
-        }]
-        steps.extend(self.coerce_steps(self.gen_ask_ultimate_target(target)))
-        return steps
+        }
     
     def gen_extra_turn(self, name, target):
         return {

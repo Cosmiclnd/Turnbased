@@ -120,24 +120,22 @@ class DamageDesc:
     element: enums.Element
     types: Set[DmgType]
     context: DamageContext
-    can_kill: bool = True
     
     def summon(self, t, effect_instance=None):
         self.context.effect_instance = effect_instance
-        return Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.context, self.can_kill)
+        return Damage.create(self.dealer, t, self.stat_desc, self.element, self.types, self.context)
 
 class Damage:
     __slots__ = ("dealer", "target", "stat_desc", "element", "types", "context", "factors", "toughness_reduction", "hit_split_ratio",
-        "energy_regen", "damage", "crit", "can_kill")
+        "energy_regen", "damage", "crit")
 
-    def __init__(self, dealer, t, stat_desc, element, types, context, can_kill=True):
+    def __init__(self, dealer, t, stat_desc, element, types, context):
         self.dealer = dealer
         self.target = t
         self.stat_desc = stat_desc
         self.element = element
         self.types = set(types) if isinstance(types, Iterable) else {types}
         self.context = context
-        self.can_kill = can_kill
         self.factors = {}
         self.toughness_reduction = None
         self.hit_split_ratio = 1
@@ -146,10 +144,10 @@ class Damage:
         self.crit = False
     
     @classmethod
-    def create(cls, dealer, t, stat_desc, element, types, context, can_kill=True):
+    def create(cls, dealer, t, stat_desc, element, types, context):
         if context in DmgSource.ALL:
             context = DamageContext(context)
-        dmg = cls(dealer, t, stat_desc, element, types, context, can_kill)
+        dmg = cls(dealer, t, stat_desc, element, types, context)
         dmg.init()
         return dmg
 
@@ -240,11 +238,11 @@ class Damage:
             dmg = self.scale(self.hit_split_ratio)
         event.bus.dispatch(event_types.Damage(dmg))
         if self.toughness_reduction is not None and self.target.weaknesses.has_weakness(self.toughness_reduction.element):
-            battle.current.event_bus.dispatch_legacy("reduce_toughness", dmg.toughness_reduction)
+            event.bus.dispatch(event_types.ReduceToughness(dmg.toughness_reduction))
         if self.energy_regen is not None:
             from .characters import base as character  # TODO: Python 3.15 lazy import
             t = self.target if isinstance(self.target, character.Character) else self.dealer
-            battle.current.event_bus.dispatch_legacy("regen_energy", t, dmg.energy_regen)
+            event.bus.dispatch(event_types.RegenEnergy(t, dmg.energy_regen))
     
     def scale(self, scale):
         dmg = copy.copy(self)

@@ -81,11 +81,11 @@ class Battle:
         self.cur_main_target = None
         self.suspended = False
 
-        self.event_bus.add_member_listener_legacy(self.battle_start, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener_legacy(self.new_wave_start, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener_legacy(self.check_techniques, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener_legacy(self.add_monster, nameid="battle", name="Battle")
-        self.event_bus.add_member_listener_legacy(self.normal_turn_start_message, nameid="battle", name="Battle")
+        event.bus.add_member_listener(self.battle_start, None, nameid="battle", name="Battle")
+        event.bus.add_member_listener(self.reset_action_list, None, nameid="battle", name="Battle")
+        event.bus.add_member_listener(self.check_techniques, None, nameid="battle", name="Battle")
+        event.bus.add_member_listener(self.add_monster, None, nameid="battle", name="Battle")
+        event.bus.add_member_listener(self.normal_turn_start_message, None, nameid="battle", name="Battle")
         event.bus.add_member_listener(self.skill_trigger_message, None, nameid="battle", name="Battle")
     
     def type(self):
@@ -118,37 +118,37 @@ class Battle:
     
     def start(self):
         decision.provider.on_battle_start()  # 必须单独通知，因为provider初始化比event_bus早
-        self.event_bus.dispatch_legacy("battle_start")
+        event.bus.dispatch(event_types.BattleStart())
         while True:
             self.action_list.next_normal_turn()
     
-    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS)
-    def battle_start(self):
+    @event.member_listener(event_types.BattleStart.INIT_WAVE)
+    def battle_start(self, e):
         for t in self.characters:
             self.action_list.normals.append(t.new_normal_turn())
         self.monster_setup.check()
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
-    def new_wave_start(self):
+    @event.member_listener(event_types.NewWave.RESET)
+    def reset_action_list(self, e):
         self.action_list.reset()
     
-    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS - 1, "battle_start")
-    def check_techniques(self):
+    @event.member_listener(event_types.BattleStart.START)
+    def check_techniques(self, e):
         for c in self.characters:
             c.check_technique()
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def add_monster(self, m):
-        self.monsters.append(m)
-        turn = m.new_normal_turn()
+    @event.member_listener(event_types.AddMonster.EXECUTE)
+    def add_monster(self, e):
+        self.monsters.append(e.target)
+        turn = e.target.new_normal_turn()
         self.action_list.normals.append(turn)
-        turn.advance(1 - m.first_turn_delay)
+        if e.target.first_turn_delay != 1:
+            turn.advance(1 - e.target.first_turn_delay)
     
-    @event.member_listener_legacy(event.ListenerPriority.START, "normal_turn_start")
-    def normal_turn_start_message(self, turn):
-        if not isinstance(turn, target.Target.NormalTurn):
-            return
-        decision.provider.notify({"name": "normal_turn_start", "target": str(turn.target.uuid)})
+    @event.member_listener(event_types.NormalTurn.Start.MESSAGE)
+    def normal_turn_start_message(self, e):
+        if isinstance(e.turn, target.Target.NormalTurn):
+            decision.provider.notify({"name": "normal_turn_start", "target": str(e.turn.target.uuid)})
     
     @event.member_listener(event_types.SkillTrigger.MESSAGE)
     def skill_trigger_message(self, e):

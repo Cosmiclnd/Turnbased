@@ -115,17 +115,17 @@ class FrozenEffect(Effect):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
-                battle.current.event_bus.add_member_listener_legacy(self.normal_turn_start, self.listener_dead)
+                event.bus.add_member_listener(self.normal_turn_start, None, self.listener_dead)
             elif self.old_stacks != 0 and stacks == 0:
                 self.listener_dead.dead_toggle = True
             self.old_stacks = stacks
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def normal_turn_start(self, turn):
-            if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
+        @event.member_listener(event_types.NormalTurn.Start.EFFECT)
+        def normal_turn_start(self, e):
+            if self.target.cur_normal_turn is not e.turn:
                 return
             if self.effect.dmg_desc is not None:
-                battle.current.event_bus.dispatch_legacy("additional_damage", self.effect.dmg_desc.summon(self.target, effect_instance=self))
+                event.bus.dispatch(event_types.AdditionalDamage(self.effect.dmg_desc.summon(self.target, effect_instance=self)))
 
     def __init__(self, dmg_desc=None, dispellable=True):
         super().__init__("frozen", "Frozen", Effect.Type.DEBUFF, Effect.DurationType.TURN_END, 1, dispellable)
@@ -144,17 +144,17 @@ class DotEffect(Effect):
             stacks = self.target.effects.get_stacks(self.effect)
             if self.old_stacks == 0 and stacks != 0:
                 self.listener_dead = item.DeadToggle(self.target)
-                battle.current.event_bus.add_member_listener_legacy(self.tick_dot, self.listener_dead)
+                event.bus.add_member_listener(self.tick_dot, self.target, self.listener_dead)
             elif self.old_stacks != 0 and stacks == 0:
                 self.listener_dead.dead_toggle = True
             self.old_stacks = stacks
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def tick_dot(self, dot):
-            if self.target is not dot.target or not dot.filter(self.effect):
+        @event.member_listener(event_types.TickDot.COMMON_DOT)
+        def tick_dot(self, e):
+            if not e.dot_tick.filter(self.effect):
                 return
-            battle.current.event_bus.dispatch_legacy("additional_damage",
-                (self.effect.dmg_desc.summon(self.target, effect_instance=self)).scale(dot.percentage * self.old_stacks))
+            event.bus.dispatch(event_types.AdditionalDamage(
+                self.effect.dmg_desc.summon(self.target, effect_instance=self).scale(e.dot_tick.percentage * self.old_stacks)))
 
     def __init__(self, nameid, name, dmg_desc, debuff_type, max_stacks, dispellable=True):
         super().__init__(nameid, name, Effect.Type.DEBUFF, Effect.DurationType.TURN_END, max_stacks, dispellable)
@@ -223,9 +223,6 @@ class EffectList:
         # effect.Instance的实现保证没有副作用
         self.instances = {}
         self.start_effects = []
-
-        battle.current.event_bus.add_member_listener_legacy(self.normal_turn_start, t)
-        battle.current.event_bus.add_member_listener_legacy(self.normal_turn_end, t)
     
     def print(self, indent=0):
         print(" " * indent + f"{self.target.nameid}.effects:")
@@ -316,24 +313,21 @@ class EffectList:
             dispelled += 1
         return dispelled
     
-    def die(self):
+    def clean(self):
         for eff in list(self.effects.keys()):
             self.delete(eff)
     
-    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS)
-    def normal_turn_start(self, turn):
-        if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
-            return
-        battle.current.event_bus.dispatch_legacy("tick_dot", damage.DotTick(self.target, lambda x: True, 1))
+    # normal_turn_start和normal_turn_end这两个监听器在target.Target.NormalTurn中添加
+    @event.member_listener(event_types.NormalTurn.Start.EFFECT)
+    def normal_turn_start(self, e):
+        event.bus.dispatch(event_types.TickDot(damage.DotTick(self.target, lambda x: True, 1)))
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_START:
                 self.advance_turn(eff)
         self.start_effects = list(self.effects.keys())
     
-    @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS)
-    def normal_turn_end(self, turn):
-        if not isinstance(turn, target.Target.NormalTurn) or self.target is not turn.target:
-            return
+    @event.member_listener(event_types.NormalTurn.End.EFFECT)
+    def normal_turn_end(self, e):
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_END:
                 self.advance_turn(eff)

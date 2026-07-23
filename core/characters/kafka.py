@@ -26,7 +26,7 @@ class Kafka(base.Character):
             t = self.get_main_target()
             if self.target.eidolons >= 1:
                 self.target.dot_dmg_vulnerability_eidolon1((t,))
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
@@ -34,8 +34,8 @@ class Kafka(base.Character):
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.5, 0.5):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+                event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):
@@ -47,7 +47,7 @@ class Kafka(base.Character):
         def skill_trigger(self, e):
             if self.target.eidolons >= 1:
                 self.target.dot_dmg_vulnerability_eidolon1([self.get_main_target()] + self.get_adjacent_targets())
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             t = self.get_main_target()
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("main_percentage"))),
@@ -56,18 +56,18 @@ class Kafka(base.Character):
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.2, 0.3, 0.5):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
+                event.bus.dispatch(event_types.Hit(dmg))
             for t in self.get_adjacent_targets():
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("sub_percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("sub_toughness_reduction"), self.target.element)
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
-            battle.current.event_bus.dispatch_legacy("tick_dot",
-                damage.DotTick(self.get_main_target(), lambda x: True, self.get_value("main_dot_tick_percentage")))
+                event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
+            event.bus.dispatch(event_types.TickDot(
+                damage.DotTick(self.get_main_target(), lambda x: True, self.get_value("main_dot_tick_percentage"))))
             for t in self.get_adjacent_targets():
-                battle.current.event_bus.dispatch_legacy("tick_dot", damage.DotTick(t, lambda x: True, self.get_value("sub_dot_tick_percentage")))
+                event.bus.dispatch(event_types.TickDot(damage.DotTick(t, lambda x: True, self.get_value("sub_dot_tick_percentage"))))
     
     class Ultimate(base.Character.CharacterUltimate):
         def __init__(self, t, skill_name):
@@ -79,17 +79,17 @@ class Kafka(base.Character):
         def skill_trigger(self, e):
             if self.target.eidolons >= 1:
                 self.target.dot_dmg_vulnerability_eidolon1(battle.current.monsters.copy())
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             for t in battle.current.monsters.copy():
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
+                event.bus.dispatch(event_types.Hit(dmg))
                 self.target.inflict_shock(t, self.get_value("duration"), self.get_value("base_chance"))
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Attack.End(self.target))
             for t in battle.current.monsters.copy():
-                battle.current.event_bus.dispatch_legacy("tick_dot", damage.DotTick(t, lambda x: True, self.get_value("dot_tick_percentage")))
+                event.bus.dispatch(event_types.TickDot(damage.DotTick(t, lambda x: True, self.get_value("dot_tick_percentage"))))
             battle.current.event_bus.dispatch_legacy("energy_regen", self.target, self.get_value("energy_regen"))
             if self.target.traces_unlocked[2]:
                 self.target.regain_follow_up_count()
@@ -99,9 +99,10 @@ class Kafka(base.Character):
             def __init__(self, t, skill):
                 super().__init__(f"{t.nameid}_follow_up_turn", f"{t.name}'s Follow Up Turn", action.ExtraTurn.Priority.FOLLOW_UP, t)
                 self.skill = skill
-                battle.current.event_bus.add_member_listener_legacy(self.extra_turn, self)
+
+                event.bus.add_member_listener(self.extra_turn, self, self)
                 if not battle.current.features.get("kafka_follow_up_not_reset_at_new_wave"):
-                    battle.current.event_bus.add_member_listener_legacy(self.new_wave_start, t)
+                    event.bus.add_member_listener(self.reset, None, self)
             
             def on_removed(self, list):
                 super().on_removed(list)
@@ -111,17 +112,15 @@ class Kafka(base.Character):
             def is_follow_up(self):
                 return True
             
-            @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-            def extra_turn(self, turn):
-                if self is not turn:
-                    return
+            @event.member_listener(event_types.ExtraTurn.EXECUTE)
+            def extra_turn(self, e):
                 decision.provider.notify({"name": f"{self.target.nameid}.follow_up_turn", "target": str(self.target.uuid)})
                 self.skill.follow_up_launched = False
                 event.bus.dispatch(event_types.SkillTrigger(self.skill))
                 self.master.dead_toggle = True
         
-            @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-            def new_wave_start(self):
+            @event.member_listener(event_types.NewWave.BEFORE_RESET)
+            def reset(self, e):
                 self.master.dead_toggle = True
 
         def __init__(self, t, skill_name):
@@ -130,14 +129,14 @@ class Kafka(base.Character):
             self.skill_target = None
 
             event.bus.add_member_listener(self.skill_trigger, self, t)
-            battle.current.event_bus.add_member_listener_legacy(self.attack_end, t)
+            event.bus.add_member_listener(self.attack_end, None, t)
         
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
             self.target.follow_up_count -= 1
             if self.target.eidolons >= 1:
                 self.target.dot_dmg_vulnerability_eidolon1((self.skill_target,))
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, self.skill_target,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
@@ -145,16 +144,17 @@ class Kafka(base.Character):
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.15, 0.15, 0.15, 0.15, 0.15, 0.25):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
+                event.bus.dispatch(event_types.Hit(dmg))
                 self.target.inflict_shock(self.skill_target, self.get_value("duration"), self.get_value("base_chance"))
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Attack.End(self.target))
             if self.target.traces_unlocked[2]:
-                battle.current.event_bus.dispatch_legacy("tick_dot", damage.DotTick(self.skill_target, lambda x: True,
-                    self.target.config.get_skill_value("bonus_trace3", "dot_tick_percentage")))
+                event.bus.dispatch(event_types.TickDot(damage.DotTick(self.skill_target, lambda x: True,
+                    self.target.config.get_skill_value("bonus_trace3", "dot_tick_percentage"))))
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
-        def attack_end(self, t):
-            if self.target is t or not isinstance(t, base.Character) or self.target.follow_up_count == 0 or self.follow_up_launched:
+        @event.member_listener(event_types.Attack.End.EXECUTE)
+        def attack_end(self, e):
+            if (self.target is e.target or not isinstance(e.target, base.Character) or
+                self.target.follow_up_count == 0 or self.follow_up_launched):
                 return
             self.follow_up_launched = True
             battle.current.action_list.extras.append(self.FollowUp(self.target, self))
@@ -168,15 +168,15 @@ class Kafka(base.Character):
         
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             for t in battle.current.monsters.copy():
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
                 dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
+                event.bus.dispatch(event_types.Hit(dmg))
                 self.target.inflict_shock(t, self.get_value("duration"), self.get_value("base_chance"))
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class DotDmgVulnerabilityEffect(effect.Effect):
         class Instance(effect.Effect.Instance):
@@ -200,14 +200,22 @@ class Kafka(base.Character):
             super().__init__(nameid, name, effect.Effect.Type.DEBUFF, effect.Effect.DurationType.TURN_END, 1)
             self.amount = amount
     
+    class NormalTurn(target.Target.NormalTurn):
+        def __init__(self, t):
+            super().__init__(t)
+
+            event.bus.add_member_listener(self.normal_turn_end, self, self)
+        
+        @event.member_listener(event_types.NormalTurn.End.EXECUTE)
+        def normal_turn_end(self, e):
+            self.target.regain_follow_up_count()
+    
     def __init__(self, record):
         self.set_auto_battle(AutoBattlePolicy(self))
         super().__init__("kafka", record)
 
-        battle.current.event_bus.add_member_listener_legacy(self.battle_start, self)
-        battle.current.event_bus.add_member_listener_legacy(self.normal_turn_end, self)
         if self.traces_unlocked[1]:
-            battle.current.event_bus.add_member_listener_legacy(self.monster_cleaned, self)
+            event.bus.add_member_listener(self.monster_cleaned, None, self)
         if self.eidolons >= 2:
             event.bus.add_member_listener(self.deal_damage_eidolon2, None, self)
         if self.eidolons >= 4:
@@ -243,8 +251,10 @@ class Kafka(base.Character):
     def validator_trace1(self, stat, **kwargs):
         return stat.target.stats["eff_hr"].calculate() >= self.config.get_skill_value("bonus_trace1", "eff_hr_threshold")
 
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def battle_start(self):
+    @event.member_listener(override=base.Character.set_passives)
+    def set_passives(self, e):
+        super().set_passives(e)
+
         self.follow_up_count = self.get_current_skill("talent").get_value("trigger_count")
 
         if self.traces_unlocked[0]:
@@ -254,19 +264,13 @@ class Kafka(base.Character):
             for c in battle.current.characters:
                 c.stats["atk"].modifiers.append(mod)
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def normal_turn_end(self, turn):
-        if not isinstance(turn, target.Target.NormalTurn) or self is not turn.target:
+    @event.member_listener(event_types.Clean.AFTER_EXECUTE)
+    def monster_cleaned(self, e):
+        if not isinstance(e.target, monster.Monster):
             return
-        self.regain_follow_up_count()
-    
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1, "clean")
-    def monster_cleaned(self, t):
-        if not isinstance(t, monster.Monster):
-            return
-        context = t.death_state.killing_dmg.context
+        context = e.target.death_state.killing_dmg.context
         if context.effect is not None and context.effect.is_debuff_type(effect.Debuff.SHOCK):
-            battle.current.event_bus.dispatch_legacy("regen_energy", self, self.config.get_skill_value("bonus_trace2", "energy_regen"))
+            event.bus.dispatch(event_types.RegenEnergy(self, self.config.get_skill_value("bonus_trace2", "energy_regen")))
     
     @event.member_listener(event_types.Damage.BEFORE_CALCULATE)
     def deal_damage_eidolon2(self, e):
@@ -282,7 +286,7 @@ class Kafka(base.Character):
             return
         context = dmg.context
         if context.effect is not None and context.effect.is_debuff_type(effect.Debuff.SHOCK) and context.effect_instance.caster is self:
-            battle.current.event_bus.dispatch_legacy("regen_energy", self, self.config.get_skill_value("eidolon4", "energy_regen"))
+            event.bus.dispatch(event_types.RegenEnergy(self, self.config.get_skill_value("eidolon4", "energy_regen")))
     
     def inflict_shock(self, t, duration, base_chance):
         if self.eidolons >= 6:

@@ -53,7 +53,7 @@ class RelicSet(item.Item):
             self.pieces = pieces
             self.effect_types = effect.EffectTypes(relic_set)
 
-            battle.current.event_bus.add_member_listener_legacy(self.battle_start, t)
+            event.bus.add_member_listener(self.set_passives, None, t)
         
         def get_value_2pc(self, name):
             return self.relic_set.config.get_skill_value("2pc", name)
@@ -67,8 +67,8 @@ class RelicSet(item.Item):
         def effect_4pc(self):
             pass
             
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
-        def battle_start(self):
+        @event.member_listener(event_types.BattleStart.PASSIVES)
+        def set_passives(self, e):
             if self.pieces >= 2:
                 self.effect_2pc()
             if self.pieces >= 4:

@@ -22,14 +22,14 @@ class March7ThPreservation(base.Character):
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
             t = self.get_main_target()
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
             dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
             dmg.energy_regen = self.get_value("energy_regen")
-            battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class Skill(base.Character.CharacterSkill):
         def __init__(self, t, skill_name):

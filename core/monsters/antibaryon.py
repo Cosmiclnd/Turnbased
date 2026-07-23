@@ -18,14 +18,14 @@ class Antibaryon(base.Monster):
         
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
-            t = battle.current.event_bus.query_legacy("get_monster_target", self.target)
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            t = event.bus.query(event_types.GetMonsterSkillTarget(self.target))
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.IMAGINARY, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
-            battle.current.event_bus.dispatch_legacy("hit", dmg)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Hit(dmg))
+            event.bus.dispatch(event_types.Attack.End(self.target))
 
     def __init__(self, uuid, level, moc, stat_scales, stat_flats):
         super().__init__(uuid, "antibaryon", level, moc, stat_scales, stat_flats)

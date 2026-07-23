@@ -6,6 +6,16 @@
 
 new_wave
 
+// 战斗开始时的效果
+begin
+  add_effect huohuo huohuo huohuo.divine_provision
+  add_effect huohuo herta huohuo.anchored_to_vessel_specters_nestled
+  add_effect huohuo huohuo huohuo.anchored_to_vessel_specters_nestled
+  add_effect huohuo ruan_mei huohuo.anchored_to_vessel_specters_nestled
+  add_effect ruan_mei herta ruan_mei.somatotypical_helix
+  add_effect ruan_mei huohuo ruan_mei.somatotypical_helix
+end
+
 // 藿藿 秘技
 skill_trigger huohuo fiend_impeachment_of_evil
 ask random_rate true
@@ -17,16 +27,6 @@ add_effect huohuo voidranger_distorter huohuo.fiend_impeachment_of_evil
 
 // 阮•梅 秘技
 skill_trigger ruan_mei silken_serenade
-
-// 战斗开始时的效果
-begin
-  add_effect huohuo huohuo huohuo.divine_provision
-  add_effect huohuo herta huohuo.anchored_to_vessel_specters_nestled
-  add_effect huohuo huohuo huohuo.anchored_to_vessel_specters_nestled
-  add_effect huohuo ruan_mei huohuo.anchored_to_vessel_specters_nestled
-  add_effect ruan_mei herta ruan_mei.somatotypical_helix
-  add_effect ruan_mei huohuo ruan_mei.somatotypical_helix
-end
 
 // 阮•梅 秘技
 extra_turn ruan_mei.technique_turn ruan_mei
@@ -60,6 +60,7 @@ ask ultimate ruan_mei
 ask ultimate
 
 // 阮•梅 终结技
+ultimate_turn ruan_mei
 begin
   add_effect ruan_mei herta messenger_traversing_hakerspace.4pc_effect
   add_effect ruan_mei huohuo messenger_traversing_hakerspace.4pc_effect
@@ -69,7 +70,7 @@ begin
   add_effect huohuo ruan_mei night_of_fright.effect
   heal huohuo ruan_mei 544
 end
-ultimate_turn ruan_mei
+ask ultimate_target
 skill_trigger ruan_mei petals_to_stream_repose_in_dream
 add_effect ruan_mei ruan_mei ruan_mei.zone
 begin
@@ -106,6 +107,7 @@ ask ultimate herta
 ask ultimate
 
 // 黑塔 终结技
+ultimate_turn herta
 begin
   heal_by_huohuo herta 814
   heal_by_huohuo herta 814
@@ -113,7 +115,7 @@ begin
   heal huohuo herta 467
   add_effect herta herta hunter_of_glacial_forest.4pc_effect
 end
-ultimate_turn herta
+ask ultimate_target
 skill_trigger herta its_magic_i_added_some_magic
 character_damage herta voidranger_eliminator normal 16972 true 30
 break_weakness herta voidranger_eliminator 3848 break.frozen
@@ -151,13 +153,14 @@ ask ultimate huohuo
 ask ultimate
 
 // 藿藿 终结技
+ultimate_turn huohuo
 begin
   heal_by_huohuo huohuo 814
   heal_by_huohuo herta 814
   add_effect huohuo huohuo night_of_fright.effect
   heal huohuo huohuo 1238
 end
-ultimate_turn huohuo
+ask ultimate_target
 skill_trigger huohuo tail_spiritual_domination
 add_effect huohuo huohuo huohuo.divine_provision
 begin
@@ -259,6 +262,7 @@ ask ultimate herta
 ask ultimate
 
 // 黑塔 终结技
+ultimate_turn herta
 begin
   heal_by_huohuo herta 814
   heal_by_huohuo herta 814
@@ -266,7 +270,7 @@ begin
   heal huohuo herta 467
   add_effect herta herta hunter_of_glacial_forest.4pc_effect
 end
-ultimate_turn herta
+ask ultimate_target
 skill_trigger herta its_magic_i_added_some_magic
 character_damage herta blaze_out_of_space normal 18094 true 30
 add_effect herta herta herta.no_one_can_betray_me
@@ -316,6 +320,7 @@ ask ultimate ruan_mei
 ask ultimate
 
 // 阮•梅 终结技
+ultimate_turn ruan_mei
 begin
   add_effect ruan_mei herta messenger_traversing_hakerspace.4pc_effect
   add_effect ruan_mei huohuo messenger_traversing_hakerspace.4pc_effect
@@ -325,7 +330,7 @@ begin
   add_effect huohuo ruan_mei night_of_fright.effect
   heal huohuo ruan_mei 544
 end
-ultimate_turn ruan_mei
+ask ultimate_target
 skill_trigger ruan_mei petals_to_stream_repose_in_dream
 add_effect ruan_mei ruan_mei ruan_mei.zone
 begin

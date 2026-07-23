@@ -17,12 +17,12 @@ all_targets = {}
 class DeathState:
     target: object
     alive: bool = True
-    need_clean: bool = False
+    cleaned: bool = False
     killing_dmg: object = None
 
     def clear(self):
         self.alive = True
-        self.need_clean = False
+        self.cleaned = False
         self.killing_dmg = None
         if self.target.cur_hp < 0:
             self.target.cur_hp = 0
@@ -56,16 +56,23 @@ class Target(item.Item):
             super().__init__(f"{t.nameid}_normal_turn", f"{t.name}'s Normal Turn", t.stats["spd"], t)
             self.target = t
             
-            battle.current.event_bus.add_member_listener_legacy(self.normal_turn, self)
+            event.bus.add_member_listener(self.normal_turn, self, self)
+            event.bus.add_member_listener(self.check_frozen, self, self)
+            event.bus.add_member_listener(self.target.effects.normal_turn_start, self, self)
+            event.bus.add_member_listener(self.target.effects.normal_turn_end, self, self)
         
         def get_info(self):
             return {"target": str(self.target.uuid)} | super().get_info()
     
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def normal_turn(self, turn):
-            if self is not turn:
-                return
-            battle.current.event_bus.dispatch_legacy("target_action", self.target)
+        @event.member_listener(event_types.NormalTurn.Act.EXECUTE)
+        def normal_turn(self, e):
+            event.bus.dispatch(event_types.TargetAction(self.target))
+
+        @event.member_listener(event_types.NormalTurn.End.EXECUTE)
+        def check_frozen(self, e):
+            frozen = self.target.effects.has_debuff(effect.Debuff.FROZEN)
+            if frozen:
+                self.advance(0.5)
     
     class ExtraTurn(action.ExtraTurn):
         def __init__(self, nameid, name, priority, t):
@@ -76,20 +83,18 @@ class Target(item.Item):
         def __init__(self, t):
             super().__init__(f"{t.nameid}_extra_normal_turn", f"{t.name}'s Extra Normal Turn", action.ExtraTurn.Priority.NORMAL, t)
 
-            battle.current.event_bus.add_member_listener_legacy(self.extra_turn, self)
+            event.bus.add_member_listener(self.extra_turn, self, self)
             if not battle.current.features.get("extra_normal_turn_not_reset_at_new_wave"):
-                battle.current.event_bus.add_member_listener_legacy(self.new_wave_start, self)
+                event.bus.add_member_listener(self.reset, None, self)
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def extra_turn(self, turn):
-            if self is not turn:
-                return
+        @event.member_listener(event_types.ExtraTurn.EXECUTE)
+        def extra_turn(self, e):
             decision.provider.notify({"name": "extra_normal_turn", "target": str(self.target.uuid)})
-            battle.current.event_bus.dispatch_legacy("target_action", self.target)
+            event.bus.dispatch(event_types.TargetAction(self.target))
             self.master.dead_toggle = True
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-        def new_wave_start(self):
+        @event.member_listener(event_types.NewWave.BEFORE_RESET)
+        def reset(self, e):
             self.master.dead_toggle = True
 
     def __init__(self, uuid, nameid, name, level):
@@ -114,21 +119,21 @@ class Target(item.Item):
         self.effect_types = effect.EffectTypes(self)
         self.initial_state = {}
 
-        battle.current.event_bus.add_member_listener_legacy(self.set_initial_state, self)
-        battle.current.event_bus.add_member_listener_legacy(self.check_frozen, self)
-        battle.current.event_bus.add_member_listener_legacy(self.attack_end, self)
-        battle.current.event_bus.add_member_listener_legacy(self.hit, self)
-        battle.current.event_bus.add_member_listener_legacy(self.additional_damage, self)
+        event.bus.add_member_listener(self.set_initial_state, None, self)
+        event.bus.add_member_listener(self.set_passives, None, self)
+        event.bus.add_member_listener(self.attack_end, self, self)
+        event.bus.add_member_listener(self.hit, self, self)
+        event.bus.add_member_listener(self.additional_damage, self, self)
         event.bus.add_member_listener(self.calculate_damage, self, self)
         event.bus.add_member_listener(self.take_damage, None, self)
-        battle.current.event_bus.add_member_listener_legacy(self.cur_hp_modify, self)
-        battle.current.event_bus.add_member_listener_legacy(self.die, self)
-        battle.current.event_bus.add_member_listener_legacy(self.clean, self)
-        battle.current.event_bus.add_member_listener_legacy(self.receive_heal, self)
-        battle.current.event_bus.add_member_listener_legacy(self.add_effect, self)
+        event.bus.add_member_listener(self.cur_hp_modify, self, self)
+        event.bus.add_member_listener(self.die, self, self)
+        event.bus.add_member_listener(self.clean, self, self)
+        event.bus.add_member_listener(self.receive_heal, None, self)
+        event.bus.add_member_listener(self.add_effect, self, self)
     
     def dead(self):
-        return self.death_state.need_clean
+        return self.death_state.cleaned
     
     def new_normal_turn(self):
         self.cur_normal_turn = self.NormalTurn(self)
@@ -154,7 +159,7 @@ class Target(item.Item):
     
     def check_death(self):
         if not self.death_state.alive:
-            battle.current.event_bus.dispatch_legacy("die", self)
+            event.bus.dispatch(event_types.Die(self))
     
     def try_apply_debuff(self, eff_add, base_chance):
         chance = base_chance
@@ -166,15 +171,15 @@ class Target(item.Item):
                 debuff_res += eff_add.target.stats[f"{debuff.nameid}_res"].calculate(effect=eff_add.effect)
         chance *= max(1 - debuff_res, 0)
         if battle.current.random.rate(chance):
-            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+            event.bus.dispatch(event_types.AddEffect(eff_add))
     
     def consume_hp(self, amount):
         # 主动消耗生命值，最多使生命值降低至1点
-        battle.current.event_bus.dispatch_legacy("cur_hp_modify", self, -amount)
+        event.bus.dispatch(event_types.CurHpModify(self, -amount))
         self.cur_hp = max(1, self.cur_hp)
     
-    @event.member_listener_legacy(event.ListenerPriority.START, "battle_start")
-    def set_initial_state(self):
+    @event.member_listener(event_types.BattleStart.INIT)
+    def set_initial_state(self, e):
         if "cur_hp" in self.initial_state:
             self.cur_hp = self.initial_state["cur_hp"]
         elif "cur_hp_rate" in self.initial_state:
@@ -182,35 +187,25 @@ class Target(item.Item):
         else:
             self.cur_hp = self.stats["hp"].calculate()
         self.death_state.clear()
-
-    @event.member_listener_legacy(event.ListenerPriority.PRE_PROCESS, "normal_turn_end")
-    def check_frozen(self, turn):
-        if not isinstance(turn, self.NormalTurn) or self is not turn.target:
-            return
-        frozen = self.effects.has_debuff(effect.Debuff.FROZEN)
-        if frozen:
-            turn.advance(0.5)
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def attack_end(self, t):
-        if self is not t:
-            return
+    @event.member_listener(event_types.BattleStart.PASSIVES)
+    def set_passives(self, e):
+        pass
+    
+    @event.member_listener(event_types.Attack.End.EXECUTE)
+    def attack_end(self, e):
         for t in battle.current.all_targets():
             t.check_death()
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def hit(self, damage):
-        if self is not damage.target:
-            return
-        damage.on_hit()
+    @event.member_listener(event_types.Hit.HIT)
+    def hit(self, e):
+        e.dmg.on_hit()
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def additional_damage(self, damage):
-        if self is not damage.dealer:
-            return
-        event.bus.dispatch(event_types.Damage(damage))
-        if damage.can_kill:
-            damage.target.check_death()
+    @event.member_listener(event_types.AdditionalDamage.HIT)
+    def additional_damage(self, e):
+        event.bus.dispatch(event_types.Damage(e.dmg))
+        if not event.bus.is_during(event_types.Attack):
+            e.dmg.target.check_death()
     
     @event.member_listener(event_types.Damage.CALCULATE)
     def calculate_damage(self, e):
@@ -224,47 +219,40 @@ class Target(item.Item):
         amount = dmg.get_damage()
         decision.provider.notify({"name": "damage", "dealer": str(dmg.dealer.uuid), "target": str(self.uuid),
             "damage": dmg.get_info()})
-        battle.current.event_bus.dispatch_legacy("cur_hp_modify", self, -amount)
+        event.bus.dispatch(event_types.CurHpModify(self, -amount))
         if self.cur_hp <= 0 and self.death_state.alive:
             self.death_state.alive = False
             self.death_state.killing_dmg = dmg
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def cur_hp_modify(self, t, amount):
-        if self is not t:
-            return
-        self.cur_hp += amount
+    @event.member_listener(event_types.CurHpModify.EXECUTE)
+    def cur_hp_modify(self, e):
+        self.cur_hp += e.amount
         hp = self.stats["hp"].calculate()
         if self.cur_hp > hp:
             self.cur_hp = hp
         
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def die(self, t):
-        if self is not t:
-            return
+    @event.member_listener(event_types.Die.EXECUTE)
+    def die(self, e):
         decision.provider.notify({"name": "die", "target": str(self.uuid)})
-        battle.current.event_bus.dispatch_legacy("clean", self)
+        event.bus.dispatch(event_types.Clean(self))
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def clean(self, t):
-        if self is not t:
-            return
-        self.death_state.need_clean = True
-        self.effects.die()
+    @event.member_listener(event_types.Clean.EXECUTE)
+    def clean(self, e):
+        self.death_state.cleaned = True
+        self.effects.clean()
         battle.current.refresh()
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE, "heal")
-    def receive_heal(self, heal):
-        if self is not heal.target:
+    @event.member_listener(event_types.Heal.EXECUTE)
+    def receive_heal(self, e):
+        if self is not e.heal.target:
             return
-        amount = heal.calculate()
-        decision.provider.notify({"name": "heal", "healer": str(heal.healer.uuid), "target": str(self.uuid), "amount": amount})
-        battle.current.event_bus.dispatch_legacy("cur_hp_modify", self, amount)
+        amount = e.heal.calculate()
+        decision.provider.notify({"name": "heal", "healer": str(e.heal.healer.uuid), "target": str(self.uuid), "amount": amount})
+        event.bus.dispatch(event_types.CurHpModify(self, amount))
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE)
-    def add_effect(self, eff_add):
-        if self is not eff_add.target:
-            return
+    @event.member_listener(event_types.AddEffect.EXECUTE)
+    def add_effect(self, e):
+        eff_add = e.eff_add
         decision.provider.notify({"name": "add_effect", "adder": str(eff_add.adder.uuid), "target": str(self.uuid),
             "effect": eff_add.effect.full_name(), "duration": eff_add.duration, "stacks": eff_add.stacks})
         self.effects.add(eff_add.effect, eff_add.adder, eff_add.duration, eff_add.stacks)

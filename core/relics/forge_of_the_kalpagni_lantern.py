@@ -18,16 +18,14 @@ class ForgeOfTheKalpagniLantern(base.RelicSet):
                 modifier.StatDesc((None, None, self.get_value_2pc("break_eff_boost"))))
             self.effect_types.add_unique(effect.ModifierEffect("2pc_effect", self.relic_set.name, effect.Effect.Type.BUFF,
                 effect.Effect.DurationType.TURN_END_CHECK_START, 1, "break_eff", mod2), "2pc")
-            battle.current.event_bus.add_member_listener_legacy(self.hit, self.target)
+            event.bus.add_member_listener(self.hit, self.target, self.target)
         
-        @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1)
-        def hit(self, dmg):
-            if self.target is not dmg.dealer:
-                return
-            if dmg.target.weaknesses.has_weakness(enums.Element.FIRE):
+        @event.member_listener(event_types.Hit.BEFORE_HIT)
+        def hit(self, e):
+            if e.dmg.target.weaknesses.has_weakness(enums.Element.FIRE):
                 eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.relic_set.nameid, "2pc"),
                     self.get_value_2pc("duration"))
-                battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+                event.bus.dispatch(event_types.AddEffect(eff_add))
 
     def __init__(self):
         super().__init__("forge_of_the_kalpagni_lantern")

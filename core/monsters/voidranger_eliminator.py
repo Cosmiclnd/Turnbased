@@ -20,20 +20,20 @@ class VoidrangerEliminator(base.Monster):
         
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
-            t = battle.current.event_bus.query_legacy("get_monster_target", self.target)
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            t = event.bus.query(event_types.GetMonsterSkillTarget(self.target))
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.QUANTUM, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.33, 0.33, 0.34):
                 dmg.hit_split_ratio = ratio
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
+                event.bus.dispatch(event_types.Hit(dmg))
             eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "detonated"), -1, 3)
-            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.AddEffect(eff_add))
+            event.bus.dispatch(event_types.Attack.End(self.target))
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "overloaded"), -1)
-            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+            event.bus.dispatch(event_types.AddEffect(eff_add))
     
     class Skill2(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -51,16 +51,16 @@ class VoidrangerEliminator(base.Monster):
                 stacks = self.target.effects.get_stacks(self.effect)
                 if self.old_stacks == 0 and stacks != 0:
                     self.listener_dead = item.DeadToggle(self.target)
-                    battle.current.event_bus.add_member_listener_legacy(self.hit, self.listener_dead)
+                    event.bus.add_member_listener(self.hit, None, self.listener_dead)
                 elif self.old_stacks != 0 and stacks == 0:
                     self.listener_dead.dead_toggle = True
                 self.old_stacks = stacks
             
-            @event.member_listener_legacy(event.ListenerPriority.POST_PROCESS)
-            def hit(self, dmg):
-                if self.target is not dmg.target:
+            @event.member_listener(event_types.Hit.AFTER_HIT)
+            def hit(self, e):
+                if self.target is not e.dmg.target:
                     return
-                battle.current.event_bus.dispatch_legacy("additional_damage", self.effect.dmg_desc.summon(self.target))
+                event.bus.dispatch(event_types.AdditionalDamage(self.effect.dmg_desc.summon(self.target)))
                 self.target.effects.remove(self.effect, 1)
 
         def __init__(self, dmg_desc):
@@ -78,7 +78,7 @@ class VoidrangerEliminator(base.Monster):
         dmg_desc = damage.DamageDesc(self,
             modifier.StatDesc((self.stats["atk"], modifier.ModifierFilter.CALCULATED,
                 self.config.get_skill_value("skill1", "additional_percentage"))),
-            enums.Element.IMAGINARY, damage.DmgType.ADDITIONAL, damage.DmgSource.MONSTER, False)
+            enums.Element.IMAGINARY, damage.DmgType.ADDITIONAL, damage.DmgSource.MONSTER)
         self.effect_types.add_unique(self.DetonatedEffect(dmg_desc))
 
         self.effect_types.add_unique(effect.Effect("overloaded", "Overloaded", effect.Effect.Type.OTHERS,

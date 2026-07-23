@@ -26,19 +26,17 @@ class PatienceIsAllYouNeed(base.LightCone):
                 modifier.StatDesc((t.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("dot_percentage"))),
                 enums.Element.LIGHTNING, damage.DmgType.DOT, damage.DmgSource.DOT)
             self.effect_types.add_unique(effect.DotEffect("erode", "Erode", dmg_desc, effect.Debuff.SHOCK, 1))
-            battle.current.event_bus.add_member_listener_legacy(self.attack_end, t)
-            battle.current.event_bus.add_member_listener_legacy(self.hit, t)
+            event.bus.add_member_listener(self.attack_end, t, t)
+            event.bus.add_member_listener(self.hit, t, t)
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE - 1)
-    def attack_end(self, t):
-        if self.target is not t:
-            return
+    @event.member_listener(event_types.Attack.End.EXECUTE)
+    def attack_end(self, e):
         eff_add = effect.EffectAddition(self.target, self.target, self.effect_types.get(self.nameid, "eff"), -1)
-        battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+        event.bus.dispatch(event_types.AddEffect(eff_add))
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1)
-    def hit(self, dmg):
-        if self.target is not dmg.dealer or dmg.target.effects.has_effect(self.effect_types.get(self.nameid, "erode")):
+    @event.member_listener(event_types.Hit.BEFORE_HIT)
+    def hit(self, e):
+        if e.dmg.target.effects.has_effect(self.effect_types.get(self.nameid, "erode")):
             return
-        eff_add = effect.EffectAddition(self.target, dmg.target, self.effect_types.get(self.nameid, "erode"), self.get_value("duration"))
+        eff_add = effect.EffectAddition(self.target, e.dmg.target, self.effect_types.get(self.nameid, "erode"), self.get_value("duration"))
         self.target.try_apply_debuff(eff_add, self.get_value("base_chance"))

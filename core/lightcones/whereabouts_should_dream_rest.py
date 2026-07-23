@@ -65,4 +65,4 @@ class WhereaboutsShouldDreamRest(base.LightCone):
         if not dmg.is_break_dmg():
             return
         eff_add = effect.EffectAddition(self.target, dmg.target, self.effect_types.get(self.nameid, "routed"), self.get_value("duration"))
-        battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+        event.bus.dispatch(event_types.AddEffect(eff_add))

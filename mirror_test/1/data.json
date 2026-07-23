@@ -1716,6 +1716,21 @@
       {
         "message_info": {
           "type": "update",
+          "name": "ultimate_turn"
+        },
+        "tests": [
+          {
+            "$type": "assert_target",
+            "name": "target",
+            "uuid": "herta"
+          }
+        ]
+      }
+    ],
+    [
+      {
+        "message_info": {
+          "type": "update",
           "name": "add_effect"
         },
         "tests": [
@@ -1732,21 +1747,6 @@
           {
             "$type": "assert_effect_name",
             "name": "hunter_of_glacial_forest.4pc_effect"
-          }
-        ]
-      }
-    ],
-    [
-      {
-        "message_info": {
-          "type": "update",
-          "name": "ultimate_turn"
-        },
-        "tests": [
-          {
-            "$type": "assert_target",
-            "name": "target",
-            "uuid": "herta"
           }
         ]
       }

@@ -20,16 +20,16 @@ class BlazeOutOfSpace(base.Monster):
         
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
-            t = battle.current.event_bus.query_legacy("get_monster_target", self.target)
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            t = event.bus.query(event_types.GetMonsterSkillTarget(self.target))
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
-            battle.current.event_bus.dispatch_legacy("hit", dmg)
+            event.bus.dispatch(event_types.Hit(dmg))
             eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "enkindle"),
                 self.target.config.get_skill_value("talent", "duration"))
             self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class Skill2(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -41,7 +41,7 @@ class BlazeOutOfSpace(base.Monster):
         def skill_trigger(self, e):
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "spontaneous_combustion"),
                 -1)
-            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+            event.bus.dispatch(event_types.AddEffect(eff_add))
     
     class Skill3(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -51,19 +51,19 @@ class BlazeOutOfSpace(base.Monster):
         
         @event.member_listener(event_types.SkillTrigger.TRIGGER)
         def skill_trigger(self, e):
-            battle.current.event_bus.dispatch_legacy("attack_start", self.target)
+            event.bus.dispatch(event_types.Attack.Start(self.target))
             for i in range(self.get_value("times")):
-                t = battle.current.event_bus.query_legacy("get_monster_target", self.target)
+                t = event.bus.query(event_types.GetMonsterSkillTarget(self.target))
                 if t is None:
                     break
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     enums.Element.FIRE, damage.DmgType.NORMAL, damage.DmgSource.MONSTER)
-                battle.current.event_bus.dispatch_legacy("hit", dmg)
+                event.bus.dispatch(event_types.Hit(dmg))
                 eff_add = effect.EffectAddition(self.target, t, self.target.effect_types.get(self.target.nameid, "enkindle"),
                     self.target.config.get_skill_value("talent", "duration"))
                 self.target.try_apply_debuff(eff_add, self.target.config.get_skill_value("talent", "base_chance"))
-            battle.current.event_bus.dispatch_legacy("attack_end", self.target)
+            event.bus.dispatch(event_types.Attack.End(self.target))
     
     class Skill4(base.Monster.MonsterSkill):
         def __init__(self, t, skill_name):
@@ -75,19 +75,28 @@ class BlazeOutOfSpace(base.Monster):
         def skill_trigger(self, e):
             eff_add = effect.EffectAddition(self.target, self.target, self.target.effect_types.get(self.target.nameid, "atk_boost"),
                 self.get_value("duration"))
-            battle.current.event_bus.dispatch_legacy("add_effect", eff_add)
+            event.bus.dispatch(event_types.AddEffect(eff_add))
     
     class NormalTurn(target.Target.NormalTurn):
+        def __init__(self, t):
+            super().__init__(t)
+
+            event.bus.add_member_listener(self.reset_next_skill, self, self)
+
         def get_num_actions(self):
             return 2
+    
+        @event.member_listener(event_types.NormalTurn.Start.EXECUTE)
+        def reset_next_skill(self, turn):
+            self.target.next_skill = None
 
     def __init__(self, uuid, level, moc, stat_scales, stat_flats):
         super().__init__(uuid, "blaze_out_of_space", level, moc, stat_scales, stat_flats)
         self.init_skills((self.Skill1, self.Skill2, self.Skill3, self.Skill4))
         self.skills.selector = self.skill_selector
         self.next_skill = None
-        battle.current.event_bus.add_member_listener_legacy(self.reset_next_skill, self)
-        battle.current.event_bus.add_member_listener_legacy(self.discharge, self)
+
+        event.bus.add_member_listener(self.discharge, None, self)
 
         self.set_effect_types()
     
@@ -116,15 +125,9 @@ class BlazeOutOfSpace(base.Monster):
             self.next_skill = group.skills[1]
             return group.skills[0]
     
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE + 1, "normal_turn")
-    def reset_next_skill(self, turn):
-        if not isinstance(turn, target.Target.NormalTurn) or self is not turn.target or turn.cur_action != 0:
-            return
-        self.next_skill = None
-    
-    @event.member_listener_legacy(event.ListenerPriority.EXECUTE, "weakness_break")
-    def discharge(self, tr):
-        if self is not tr.target:
+    @event.member_listener(event_types.BreakWeakness.AFTER_BREAK)
+    def discharge(self, e):
+        if self is not e.tr.target:
             return
         self.effects.delete(self.effect_types.get(self.nameid, "spontaneous_combustion"))
         self.effects.delete(self.effect_types.get(self.nameid, "atk_boost"))
