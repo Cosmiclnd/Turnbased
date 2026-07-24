@@ -71,7 +71,6 @@ class Battle:
         self.random = None
         self.config = None
         self.features = features.Features()
-        self.event_bus = event.EventBusLegacy()
         event.bus = event.EventBus()  # 确保每场战斗都是新的EventBus
         self.action_list = None
         self.skillpoints = Skillpoints()
@@ -117,7 +116,7 @@ class Battle:
         self.check_targets()
     
     def start(self):
-        decision.provider.on_battle_start()  # 必须单独通知，因为provider初始化比event_bus早
+        decision.provider.on_battle_start()  # 必须单独通知，因为provider初始化比event.bus早
         event.bus.dispatch(event_types.BattleStart())
         while True:
             self.action_list.next_normal_turn()

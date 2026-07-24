@@ -61,7 +61,7 @@ class Firefly(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             dmg.energy_regen = self.get_value("energy_regen")
             event.bus.dispatch(event_types.Hit(dmg))
             event.bus.dispatch(event_types.Attack.End(self.target))
@@ -82,7 +82,7 @@ class Firefly(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ENHANCED_BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             for ratio in (0.15, 0.15, 0.15, 0.15, 0.4):
                 dmg.hit_split_ratio = ratio
                 event.bus.dispatch(event_types.Hit(dmg))
@@ -104,7 +104,7 @@ class Firefly(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             for ratio in (0.4, 0.6):
                 dmg.hit_split_ratio = ratio
                 event.bus.dispatch(event_types.Hit(dmg))
@@ -138,16 +138,16 @@ class Firefly(base.Character):
                 main_dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, main_mult)),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ENHANCED_SKILL)
-                main_dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("main_toughness_reduction"),
-                    self.target.element)
+                main_dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("main_toughness_reduction"),
+                    self.target.element))
                 main_dmg.hit_split_ratio = ratio
                 event.bus.dispatch(event_types.Hit(main_dmg))
                 for t in self.get_adjacent_targets():
                     sub_dmg = damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, sub_mult)),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ENHANCED_SKILL)
-                    sub_dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("sub_toughness_reduction"),
-                        self.target.element)
+                    sub_dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("sub_toughness_reduction"),
+                        self.target.element))
                     sub_dmg.hit_split_ratio = ratio
                     event.bus.dispatch(event_types.Hit(sub_dmg))
             event.bus.dispatch(event_types.Attack.End(self.target))
@@ -213,7 +213,7 @@ class Firefly(base.Character):
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+                dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
                 event.bus.dispatch(event_types.Hit(dmg))
             event.bus.dispatch(event_types.Attack.End(self.target))
     

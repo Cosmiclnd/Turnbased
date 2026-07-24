@@ -27,7 +27,7 @@ class RuanMei(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             dmg.energy_regen = self.get_value("energy_regen")
             event.bus.dispatch(event_types.Hit(dmg))
             event.bus.dispatch(event_types.Attack.End(self.target))

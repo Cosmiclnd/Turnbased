@@ -203,6 +203,7 @@ class Target(item.Item):
     
     @event.member_listener(event_types.AdditionalDamage.HIT)
     def additional_damage(self, e):
+        e.dmg.init_hit_properties()
         event.bus.dispatch(event_types.Damage(e.dmg))
         if not event.bus.is_during(event_types.Attack):
             e.dmg.target.check_death()

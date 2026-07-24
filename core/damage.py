@@ -96,16 +96,16 @@ DamageFactorType.MAX_TOUGHNESS = DamageFactorType(lambda dmg, value: value, max_
 DamageFactorType.MULTIPLIER = DamageFactorType(lambda dmg, value: value, multiplier_base_func)  # 指击破的倍率
 DamageFactorType.CRIT = DamageFactorType(crit_factor_func, crit_factor_base_func)
 DamageFactorType.DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, dmg_boost_base_func)
-DamageFactorType.WEAKEN = DamageFactorType(lambda dmg, value: 1 - value, lambda dmg: 0)
+DamageFactorType.WEAKEN = DamageFactorType(lambda dmg, value: 1 - value, None)
 DamageFactorType.DEFENCE = DamageFactorType(defence_factor_func, defence_factor_base_func)
-DamageFactorType.DEF_BOOST = DamageFactorType(lambda dmg, value: 1, lambda dmg: 0)
+DamageFactorType.DEF_BOOST = DamageFactorType(lambda dmg, value: 1, None)
 DamageFactorType.RESISTANCE = DamageFactorType(lambda dmg, value: min(max(1 - value, 0.1), 2), resistance_base_func)
-DamageFactorType.VULNERABILITY = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
+DamageFactorType.VULNERABILITY = DamageFactorType(lambda dmg, value: 1 + value, None)
 DamageFactorType.MITIGATION = DamageFactorType(lambda dmg, value: max(value, 0.01), mitigation_factor_base_func)
 DamageFactorType.BREAK_EFF = DamageFactorType(lambda dmg, value: 1 + value, break_eff_base_func)
 DamageFactorType.BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, break_dmg_boost_base_func)
-DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS = DamageFactorType(lambda dmg, value: value, lambda dmg: 0)
-DamageFactorType.SUPER_BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, lambda dmg: 0)
+DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS = DamageFactorType(lambda dmg, value: value, None)
+DamageFactorType.SUPER_BREAK_DMG_BOOST = DamageFactorType(lambda dmg, value: 1 + value, None)
 
 @dataclass(slots=True, eq=False)
 class DamageContext:
@@ -130,6 +130,8 @@ class Damage:
         "energy_regen", "damage", "crit")
 
     def __init__(self, dealer, t, stat_desc, element, types, context):
+        if context in DmgSource.ALL:
+            context = DamageContext(context)
         self.dealer = dealer
         self.target = t
         self.stat_desc = stat_desc
@@ -140,18 +142,18 @@ class Damage:
         self.toughness_reduction = None
         self.hit_split_ratio = 1
         self.energy_regen = None
+    
+    def init_hit_properties(self):
         self.damage = None
         self.crit = False
     
     @classmethod
     def create(cls, dealer, t, stat_desc, element, types, context):
-        if context in DmgSource.ALL:
-            context = DamageContext(context)
         dmg = cls(dealer, t, stat_desc, element, types, context)
-        dmg.init()
+        dmg.init_factors()
         return dmg
 
-    def init(self):
+    def init_factors(self):
         if self.types in ({DmgType.NORMAL}, {DmgType.ADDITIONAL}):
             for factor in (
                 DamageFactorType.DMG_BOOST,
@@ -220,10 +222,20 @@ class Damage:
     def new_factor(self, factor):
         if factor in self.factors:
             return
-        self.factors[factor] = factor.base_func(self)
+        func = factor.base_func
+        if func is None:
+            self.factors[factor] = 0
+        else:
+            self.factors[factor] = func(self)
+    
+    def set_toughness_reduction(self, tr):
+        tr.damage = self
+        tr.dealer = self.dealer
+        tr.target = self.target
+        self.toughness_reduction = tr
     
     def calculate(self):
-        damage = self.stat_desc.calculate(damage=self)
+        damage = self.stat_desc.calculate(damage=self) * self.hit_split_ratio
         for factor, value in self.factors.items():
             damage *= factor.func(self, value)
         self.damage = damage
@@ -232,17 +244,14 @@ class Damage:
         return self.damage
     
     def on_hit(self):
-        if self.hit_split_ratio == 1:
-            dmg = self
-        else:
-            dmg = self.scale(self.hit_split_ratio)
-        event.bus.dispatch(event_types.Damage(dmg))
+        self.init_hit_properties()
+        event.bus.dispatch(event_types.Damage(self))
         if self.toughness_reduction is not None and self.target.weaknesses.has_weakness(self.toughness_reduction.element):
-            event.bus.dispatch(event_types.ReduceToughness(dmg.toughness_reduction))
+            event.bus.dispatch(event_types.ReduceToughness(self.toughness_reduction))
         if self.energy_regen is not None:
             from .characters import base as character  # TODO: Python 3.15 lazy import
             t = self.target if isinstance(self.target, character.Character) else self.dealer
-            event.bus.dispatch(event_types.RegenEnergy(t, dmg.energy_regen))
+            event.bus.dispatch(event_types.RegenEnergy(t, self.energy_regen * self.hit_split_ratio))
     
     def scale(self, scale):
         dmg = copy.copy(self)
@@ -255,13 +264,6 @@ class Damage:
     
     def get_info(self):
         return {"amount": self.damage, "crit": self.crit, "types": [t.nameid for t in self.types]}
-    
-    def __setattr__(self, name, value):
-        super().__setattr__(name, value)
-        if name == "toughness_reduction" and self.toughness_reduction is not None:
-            self.toughness_reduction.damage = self
-            self.toughness_reduction.dealer = self.dealer
-            self.toughness_reduction.target = self.target
     
     def is_break_dmg(self):
         return self.types in ({DmgType.BREAK}, {DmgType.ADDITIONAL, DmgType.BREAK}, {DmgType.SUPER_BREAK})
@@ -289,6 +291,8 @@ class ToughnessReduction:
     
     def calculate(self):
         value = self.base_amount
+        if self.damage is not None:
+            value *= self.damage.hit_split_ratio
         if self.element is not None:
             value *= (1 + min(self.dealer.stats["wb_eff"].calculate(toughness_reduction=self), 3) +
                 self.target.stats["toughness_vulnerability"].calculate(toughness_reduction=self))
@@ -301,7 +305,7 @@ class ToughnessReduction:
         return tr
     
     def to_super_break_dmg(self, multiplier):
-        dmg = Damage.create(self.dealer, self.target,
+        dmg = Damage(self.dealer, self.target,
             modifier.StatDesc((self.dealer.stats["base_break_dmg"], modifier.ModifierFilter.CALCULATED, multiplier)), self.element, {DmgType.SUPER_BREAK}, self.damage.context, False)
         dmg.factors[DamageFactorType.SUPER_BREAK_MAX_TOUGHNESS] = self.calculate() / 10
         return dmg

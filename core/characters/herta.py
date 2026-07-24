@@ -28,7 +28,7 @@ class Herta(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             dmg.energy_regen = self.get_value("energy_regen")
             event.bus.dispatch(event_types.Hit(dmg))
             if self.target.eidolons >= 1:
@@ -54,7 +54,7 @@ class Herta(base.Character):
                     dmg = damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-                    dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+                    dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
                     dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
                     if t.cur_hp >= t.stats["hp"].calculate() * self.get_value("hp_threshold"):
                         dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.get_value("dmg_boost")
@@ -77,7 +77,7 @@ class Herta(base.Character):
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+                dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
                 dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
                 if self.target.traces_unlocked[2] and t.effects.has_debuff(effect.Debuff.FROZEN):
                     dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("bonus_trace3", "dmg_boost")
@@ -136,7 +136,7 @@ class Herta(base.Character):
                     dmg = damage.Damage.create(self.target, t,
                         modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                         self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
-                    dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+                    dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
                     dmg.energy_regen = self.get_value("energy_regen") / len(battle.current.monsters)
                     if self.target.eidolons >= 4:
                         dmg.factors[damage.DamageFactorType.DMG_BOOST] += self.target.config.get_skill_value("eidolon4", "dmg_boost")

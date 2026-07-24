@@ -59,7 +59,7 @@ class WhereaboutsShouldDreamRest(base.LightCone):
             cls.effect_types.add(self.nameid, self.RoutedEffect(self))
         self.effect_types.add_unique(cls.effect_types.get(self.nameid, "routed"))
     
-    @event.member_listener(event_types.Damage.CREATE)
+    @event.member_listener(event_types.Damage)
     def deal_damage(self, e):
         dmg = e.dmg
         if not dmg.is_break_dmg():

@@ -296,6 +296,12 @@ class EffectList:
                 return False
         return True
     
+    def has_dot(self):
+        for eff in self.effects.keys():
+            if eff.is_dot(self.target):
+                return True
+        return False
+    
     def dispel(self, count, f=None):
         # count=0表示全部驱散
         dispelled = 0
@@ -317,10 +323,11 @@ class EffectList:
         for eff in list(self.effects.keys()):
             self.delete(eff)
     
-    # normal_turn_start和normal_turn_end这两个监听器在target.Target.NormalTurn中添加
+    # 这些监听器在target.Target.NormalTurn中添加
     @event.member_listener(event_types.NormalTurn.Start.EFFECT)
     def normal_turn_start(self, e):
-        event.bus.dispatch(event_types.TickDot(damage.DotTick(self.target, lambda x: True, 1)))
+        if self.has_dot():
+            event.bus.dispatch(event_types.TickDot(damage.DotTick(self.target, lambda x: True, 1)))
         for eff in list(self.effects.keys()):
             if eff.duration_type == Effect.DurationType.TURN_START:
                 self.advance_turn(eff)

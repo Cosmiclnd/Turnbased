@@ -30,7 +30,7 @@ class Kafka(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.5, 0.5):
                 dmg.hit_split_ratio = ratio
@@ -52,7 +52,7 @@ class Kafka(base.Character):
             dmg = damage.Damage.create(self.target, t,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("main_percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("main_toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("main_toughness_reduction"), self.target.element))
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.2, 0.3, 0.5):
                 dmg.hit_split_ratio = ratio
@@ -61,7 +61,7 @@ class Kafka(base.Character):
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("sub_percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.SKILL)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("sub_toughness_reduction"), self.target.element)
+                dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("sub_toughness_reduction"), self.target.element))
                 event.bus.dispatch(event_types.Hit(dmg))
             event.bus.dispatch(event_types.Attack.End(self.target))
             event.bus.dispatch(event_types.TickDot(
@@ -84,13 +84,13 @@ class Kafka(base.Character):
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.ULTIMATE)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+                dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
                 event.bus.dispatch(event_types.Hit(dmg))
                 self.target.inflict_shock(t, self.get_value("duration"), self.get_value("base_chance"))
             event.bus.dispatch(event_types.Attack.End(self.target))
             for t in battle.current.monsters.copy():
                 event.bus.dispatch(event_types.TickDot(damage.DotTick(t, lambda x: True, self.get_value("dot_tick_percentage"))))
-            battle.current.event_bus.dispatch_legacy("energy_regen", self.target, self.get_value("energy_regen"))
+            event.bus.dispatch(event_types.RegenEnergy(self.target, self.get_value("energy_regen")))
             if self.target.traces_unlocked[2]:
                 self.target.regain_follow_up_count()
     
@@ -140,7 +140,7 @@ class Kafka(base.Character):
             dmg = damage.Damage.create(self.target, self.skill_target,
                 modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                 self.target.element, damage.DmgType.NORMAL, damage.DmgSource.FOLLOW_UP)
-            dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+            dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
             dmg.energy_regen = self.get_value("energy_regen")
             for ratio in (0.15, 0.15, 0.15, 0.15, 0.15, 0.25):
                 dmg.hit_split_ratio = ratio
@@ -173,7 +173,7 @@ class Kafka(base.Character):
                 dmg = damage.Damage.create(self.target, t,
                     modifier.StatDesc((self.target.stats["atk"], modifier.ModifierFilter.CALCULATED, self.get_value("percentage"))),
                     self.target.element, damage.DmgType.NORMAL, damage.DmgSource.BASIC_ATK)
-                dmg.toughness_reduction = damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element)
+                dmg.set_toughness_reduction(damage.ToughnessReduction(self.get_value("toughness_reduction"), self.target.element))
                 event.bus.dispatch(event_types.Hit(dmg))
                 self.target.inflict_shock(t, self.get_value("duration"), self.get_value("base_chance"))
             event.bus.dispatch(event_types.Attack.End(self.target))
